@@ -1,0 +1,22 @@
+# Compiled files
+*.o
+*.obj
+*.out
+*.exe
+*.app
+
+# Libraries
+*.lib
+*.dll
+*.a
+*.so
+*.dylib
+
+# Editor and OS
+.vscode/
+.idea/
+.DS_tore
+*.swp
+*~
+Thumbs.db
+

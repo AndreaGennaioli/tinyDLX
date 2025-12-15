@@ -1,0 +1,5 @@
+# Hide all files
+*
+
+# Except this one
+!.gitignore
