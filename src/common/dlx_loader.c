@@ -19,14 +19,14 @@ int dlx_load_program(DLX_state *state, const char *filename) {
   rewind(fp);
 
   // Ensure program fit in memory
-  if(file_size > DLX_MEM_SIZE) {
-    error("Program too large: %ld bytes and DLX memory is %d bytes.", file_size, DLX_MEM_SIZE);
+  if(file_size > DLX_ROM_SIZE) {
+    error("Program too large: %ld bytes and ROM is %d bytes.", file_size, DLX_ROM_SIZE);
     fclose(fp);
     return 0;
   }
 
   // Read file and copy bytes into memory
-  size_t read_bytes = fread(state->memory, 1, file_size, fp);
+  size_t read_bytes = fread(state->rom, 1, file_size, fp);
 
   // Check readed bytes
   if(read_bytes != file_size) {
@@ -35,7 +35,7 @@ int dlx_load_program(DLX_state *state, const char *filename) {
     return 0;
   }
 
-  info("Loaded %ld bytes into memory from %s", file_size, filename);
+  info("Loaded %ld bytes into ROM from %s", file_size, filename);
 
   fclose(fp);
   return 1;

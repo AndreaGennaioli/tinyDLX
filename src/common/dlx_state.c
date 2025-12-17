@@ -7,41 +7,42 @@
 int dlx_state_init(DLX_state *state) {
   if(state == NULL) return 0;
 
-  // Allocate and set to 0 the memory
-  state->memory = calloc(DLX_MEM_SIZE, sizeof(uint8_t));
-  if(state->memory == NULL) {
-    error("Failed to allocate %d bytes for DLX memory.", DLX_MEM_SIZE);
+  // Allocate and set to 0 the ROM
+  state->rom = calloc(DLX_ROM_SIZE, sizeof(uint8_t));
+  if(state->rom == NULL) {
+    error("Failed to allocate %d bytes for DLX ROM.", DLX_ROM_SIZE);
     return 0;
   }
 
-  // Reset GPR, PC and memory
-  return dlx_state_reset(state);
-}
+  // Allocate the RAM (random values are expected)
+  state->ram = malloc(DLX_RAM_SIZE * sizeof(uint8_t));
+  if(state->ram == NULL) {
+    error("Failed to allocate %d bytes for DLX ram.", DLX_RAM_SIZE);
 
-int dlx_state_reset(DLX_state *state) {
-  if(state == NULL) return 0;
-
-  // Reset GPR (R[31..0] <- 0)
-  memset(state->gpr, 0, sizeof(state->gpr));
-
-  // Set PC to 0 (PC <- 0)
-  state->pc = 0;
-
-  // Set memory to 0 if allocated (MEM[DLX_MEM_SIZE..0] <- 0)
-  if(state->memory != NULL) {
-    memset(state->memory, 0, DLX_MEM_SIZE);
+    free(state->rom);
+    state->rom = NULL;
+    return 0;
   }
 
+  // Set pc to 0 (pc <- 0)
+  state->pc = 0;
+
+  // Random values for GPRs are expected, except for R0
+  state->gpr[0] = 0;
+
   return 1;
 }
 
-int dlx_state_cleanup(DLX_state *state) {
-  if(state == NULL) return 0;
+void dlx_state_free(DLX_state *state) {
+  if (state == NULL) return;
 
-  // Free memory
-  free(state->memory);
+  if (state->rom != NULL) {
+    free(state->rom);
+    state->rom = NULL;
+  }
 
-  state->memory = NULL;
-
-  return 1;
+  if (state->ram != NULL) {
+    free(state->ram);
+    state->ram = NULL;
+  }
 }
