@@ -6,13 +6,13 @@
 // Converts a DLX address into a real memory pointer
 static uint8_t *get_phys_ptr(DLX_state *state, uint32_t address) {
   // Check ROM
-  if (addr >= DLX_ROM_BASE && addr < (DLX_ROM_BASE + DLX_ROM_SIZE)) {
-    return &state->rom[addr - DLX_ROM_BASE];
+  if (address >= DLX_ROM_BASE && address < (DLX_ROM_BASE + DLX_ROM_SIZE)) {
+    return &state->rom[address - DLX_ROM_BASE];
   }
 
   // Check RAM
-  if (addr >= DLX_RAM_BASE && addr < (DLX_RAM_BASE + DLX_RAM_SIZE)) {
-    return &state->ram[addr - DLX_RAM_BASE];
+  if (address >= DLX_RAM_BASE && address < (DLX_RAM_BASE + DLX_RAM_SIZE)) {
+    return &state->ram[address - DLX_RAM_BASE];
   }
 
   // Not mapped address or MMIO
@@ -23,7 +23,7 @@ uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address) {
   if(state == NULL) return 0;
 
   if(address % 4 != 0) {
-    warn("Unaligned read at 0x%08X", addr);
+    warn("Unaligned read at 0x%08X", address);
   }
 
   // MMIO to be implemented here!
