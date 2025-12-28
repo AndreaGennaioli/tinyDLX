@@ -5,6 +5,9 @@
 *.exe
 *.app
 
+# Binaries
+tests/*.bin
+
 # Libraries
 *.lib
 *.dll
@@ -15,8 +18,10 @@
 # Editor and OS
 .vscode/
 .idea/
+.cache/
 .DS_tore
 *.swp
 *~
 Thumbs.db
+compile_commands.json
 
