@@ -1,7 +1,7 @@
-#include <stdlib.h>
-#include "dlx_defs.h"
 #include "dlx_memory_bus.h"
 #include "debug.h"
+#include "dlx_defs.h"
+#include <stdlib.h>
 
 // Converts a DLX address into a real memory pointer
 static uint8_t *get_phys_ptr(DLX_state *state, uint32_t address) {
@@ -20,9 +20,10 @@ static uint8_t *get_phys_ptr(DLX_state *state, uint32_t address) {
 }
 
 uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address) {
-  if(state == NULL) return 0;
+  if (state == NULL)
+    return 0;
 
-  if(address % 4 != 0) {
+  if (address % 4 != 0) {
     warn("Unaligned read at 0x%08X", address);
   }
 
@@ -39,5 +40,5 @@ uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address) {
   uint8_t b2 = ptr[2];
   uint8_t b3 = ptr[3];
 
-  return (uint32_t) ((b3 << 24) | (b2 << 16) | (b1 << 8) | b0);
+  return (uint32_t)((b3 << 24) | (b2 << 16) | (b1 << 8) | b0);
 }

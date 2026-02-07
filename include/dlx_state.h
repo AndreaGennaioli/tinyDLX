@@ -7,7 +7,7 @@
 // It allocates the memory.
 int dlx_state_init(DLX_state *state);
 
-// Frees all the allocated memory 
+// Frees all the allocated memory
 void dlx_state_free(DLX_state *state);
 
 #endif // !DLX_STATE_H
