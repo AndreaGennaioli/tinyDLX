@@ -5,10 +5,6 @@ This project aims to develop two implementations:
 1. **Sequential DLX**: a standard IF-ID-EX-MEM-WB serial execution (CPI = 5).
 2. **Pipelined DLX**: a pipelined implementation (CPI = 1) with hazard handling.
 
-## Project state
-**WORK IN PROGRESS**
-Next steps: define global structures in `include/`, like the **ISA definitions** or **System parameters**.
-
 ## Project structure
 - `bin/`: compiled files.
 - `docs/`: ISA reference (and more, maybe).
