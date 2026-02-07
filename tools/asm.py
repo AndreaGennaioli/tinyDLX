@@ -23,8 +23,10 @@ OPCODES = {
     "SLE": {"type": "R", "op": 0x00, "func": 0x2E},  # SET LESS EQUAL
 
     # ---- J-Type
+    # Jumps
     "J": {"type": "J", "op": 0x02},
     "JAL": {"type": "J", "op": 0x03},
+    # Special instructions
     "RFE": {"type": "J", "op": 0x3F},
 
     # ---- I-Type
@@ -118,18 +120,18 @@ def assemble_instr(instr, labels):
 
     if op['type'] == "R":
         # Format    OP RD, RS1, RS2
-        # Encoding  [OP] [RS1] [RS2] [RD] [...] [FUNC]
+        # Encoding  [OP] [RS2] [RS1] [RD] [...] [FUNC]
         rd = register_to_int(parts[1])
         rs1 = register_to_int(parts[2])
         rs2 = register_to_int(parts[3])
         func = op['func']
 
-        return (opcode << 26) | (rs1 << 21) | (rs2 << 16) | (rd << 11) | func
+        return (opcode << 26) | (rs2 << 21) | (rs1 << 16) | (rd << 11) | func
     elif op['type'] == "I":
         # Format                OP RD, RS1, Imm16
         # Branch format         OP RS1, Imm16
         # Jump register format  OP RS1
-        # Encoding              [OP] [RD] [RS1] [Imm16]
+        # Encoding              [OP] [RS2/RD] [RS1] [Imm16]
         if mnemonic in ["BNEZ", "BEQZ"]:
             rd = 0
             rs1 = register_to_int(parts[1])
@@ -147,14 +149,14 @@ def assemble_instr(instr, labels):
             rs1 = register_to_int(parts[2])
             imm16 = get_address_value(parts[3], labels, None)
 
-        return (opcode << 26) | (rs1 << 21) | (rd << 16) | (imm16 & 0xFFFF)
+        return (opcode << 26) | (rd << 21) | (rs1 << 16) | (imm16 & 0xFFFF)
     elif op['type'] == "M":
         # Format    OP RS1, Imm16(RS2)
-        rd = register_to_int(parts[1])
+        rs1 = register_to_int(parts[1])
         imm16 = int(parts[2], 0)
-        rs1 = register_to_int(parts[3])
+        rd = register_to_int(parts[3])
 
-        return (opcode << 26) | (rs1 << 21) | (rd << 16) | (imm16 & 0xFFFF)
+        return (opcode << 26) | (rd << 21) | (rs1 << 16) | (imm16 & 0xFFFF)
     elif op['type'] == "J":
         # Format    OP Imm26
         # Encoding  [OP] [Imm26]
