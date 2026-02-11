@@ -19,7 +19,7 @@ int dlx_load_program(DLX_state *state, const char *filename) {
   long file_size = ftell(fp);
   rewind(fp);
 
-  // Ensure program fit in memory
+  // Ensure program fits in memory
   if (file_size > DLX_ROM_SIZE) {
     error("Program too large: %ld bytes and ROM is %d bytes.", file_size,
           DLX_ROM_SIZE);
