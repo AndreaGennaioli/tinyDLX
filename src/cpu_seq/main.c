@@ -1,6 +1,7 @@
 #include "debug.h"
 #include "dlx_defs.h"
 #include "dlx_loader.h"
+#include "dlx_seq_core.h"
 #include "dlx_state.h"
 #include <stdlib.h>
 
@@ -25,8 +26,10 @@ int main(int argc, char *argv[]) {
   if (dlx_load_program(&state, argv[1]) == 0)
     return 0;
 
-  // Debug dump of memory
-  dlx_dump_memory(&state, 0, 256);
+  // Arbitrary limit based on full_isa.asm test file
+  while (state.pc < 276) {
+    dlx_seq_step(&state);
+  }
 
   return EXIT_SUCCESS;
 }
