@@ -6,6 +6,7 @@
 ; The code assumes that:
 ; - RAM Base address: 0x40000000
 ; ============================================================================
+ADDI R31, R0, 8
 
 ; Target instruction for JALR test
 JR R31
@@ -110,7 +111,7 @@ LB  R26, 8(R10)              ; R26 = 0xFFFFFFCF (Sign extended byte)
 ; ============================================================================
 ; JUMP TESTS (J-Type & I-Type Register Jump)
 ; ============================================================================
-ADD R1, R0, R0
+ADDI R1, R0, 4
 JALR R1
 J JUMP_TARGET
 ADDI R0, R0, 0               ; Should not be executed
