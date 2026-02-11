@@ -17,11 +17,11 @@
 //     ROM 64 KB     |       RAM 2 MB       |         MMIO
 
 typedef struct {
-  uint32_t gpr[DLX_GPR_COUNT];
-  uint32_t pc;
-
   uint8_t *rom;
   uint8_t *ram;
+
+  uint32_t gpr[DLX_GPR_COUNT];
+  uint32_t pc;
 } DLX_state;
 
 #endif // !DLX_DEFS_H
