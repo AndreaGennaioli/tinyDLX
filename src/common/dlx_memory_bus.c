@@ -19,7 +19,8 @@ static uint8_t *get_phys_ptr(DLX_state *state, uint32_t address) {
   return NULL;
 }
 
-uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address) {
+uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address,
+                              uint8_t convert_endianess) {
   if (state == NULL)
     return 0;
 
@@ -32,13 +33,14 @@ uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address) {
   // Getting the real pointer
   uint8_t *ptr = get_phys_ptr(state, address);
 
-  // From Big Endian to Little Endian:
+  // If convert_endianess = 1 convert from Big Endian to Little Endian:
   // everything stored in the DLX memory has to be in Big Endian,
-  // but in order to use uint32_t a conversion is needed
-  uint8_t b0 = ptr[0];
-  uint8_t b1 = ptr[1];
-  uint8_t b2 = ptr[2];
-  uint8_t b3 = ptr[3];
+  // but in order to use uint32_t a conversion is needed, since the eumulator
+  // architecture is Little Endian.
+  uint8_t b0 = convert_endianess ? ptr[0] : ptr[3];
+  uint8_t b1 = convert_endianess ? ptr[1] : ptr[2];
+  uint8_t b2 = convert_endianess ? ptr[2] : ptr[1];
+  uint8_t b3 = convert_endianess ? ptr[3] : ptr[0];
 
   return (uint32_t)((b3 << 24) | (b2 << 16) | (b1 << 8) | b0);
 }
