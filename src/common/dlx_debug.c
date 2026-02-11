@@ -3,12 +3,17 @@
 #include <ctype.h>
 #include <stdio.h>
 
-void dlx_dump_memory(DLX_state *state, uint32_t start, uint32_t len) {
-  if (state == NULL || state->ram == NULL)
+void dlx_dump_state(DLX_state *state) {
+  if (state == NULL)
     return;
 
-  fprintf(stderr, "\n=== MEMORY DUMP [0x%08X - 0x%08X] ===", start,
-          start + len);
+  fprintf(stderr, "\n=== STATE DUMP ==============================");
+  fprintf(stderr, "\nPC: 0x%08X (%d)", state->pc, state->pc);
+  for (uint8_t i = 0; i < 32; i++) {
+    fprintf(stderr, "\nGPR %d: 0x%08X (%d)", i, state->gpr[i], state->gpr[i]);
+  }
+  fprintf(stderr, "\n=============================================\n");
+}
 
 static void dump_memory(uint8_t *memory, uint32_t start, uint32_t len) {
   for (uint32_t i = start; i < len; i += 16) {
