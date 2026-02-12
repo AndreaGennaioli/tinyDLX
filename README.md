@@ -19,3 +19,5 @@ This project aims to develop two implementations:
 make
 ```
 
+## ISA reference
+See [ISA.md](./ISA.md) for the full ISA reference.
