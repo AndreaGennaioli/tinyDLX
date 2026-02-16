@@ -12,6 +12,9 @@ void dlx_dump_state(DLX_state *state) {
   fprintf(stderr, "\nPC: 0x%08X (%d)", state->pc, state->pc);
   for (uint8_t i = 0; i < 32; i++) {
     fprintf(stderr, "\nGPR %d: 0x%08X (%d)", i, state->gpr[i], state->gpr[i]);
+    if ((int32_t)state->gpr[i] < 0) {
+      fprintf(stderr, " (%u)", state->gpr[i]);
+    }
   }
   fprintf(stderr, "\n=============================================\n");
 }
@@ -107,7 +110,10 @@ void dlx_dump_decoded_instruction(decoded_instruction *decoded_i) {
     case I_SLE_FUNC:
       fprintf(stderr, "SLE");
       break;
+    default:
+      fprintf(stderr, "NOT_IMPLEMENTED_FUNC");
     }
+    break;
   case I_BEQZ:
     fprintf(stderr, "BEQZ");
     break;
