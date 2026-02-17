@@ -29,6 +29,7 @@ int main(int argc, char *argv[]) {
   // Arbitrary limit based on full_isa.asm test file
   while (state.pc < 276) {
     dlx_seq_step(&state);
+    getc(stdin);
   }
 
   return EXIT_SUCCESS;
