@@ -20,4 +20,4 @@ make
 ```
 
 ## ISA reference
-See [ISA.md](./ISA.md) for the full ISA reference.
+See [ISA.md](./docs/ISA.md) for the full ISA reference.
