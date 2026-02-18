@@ -44,3 +44,95 @@ uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address,
 
   return (uint32_t)((b3 << 24) | (b2 << 16) | (b1 << 8) | b0);
 }
+
+uint32_t dlx_memory_read_half_word(DLX_state *state, uint32_t address,
+                                   uint8_t convert_endianess) {
+  if (state == NULL)
+    return 0;
+
+  if (address % 2 != 0) {
+    warn("Unaligned read at 0x%08X", address);
+  }
+
+  // MMIO to be implemented here!
+
+  // Getting the real pointer
+  uint8_t *ptr = get_phys_ptr(state, address);
+
+  // If convert_endianess = 1 convert from Big Endian to Little Endian:
+  // everything stored in the DLX memory has to be in Big Endian,
+  // but in order to use uint32_t a conversion is needed, since the eumulator
+  // architecture is Little Endian.
+  uint8_t b0 = convert_endianess ? ptr[0] : ptr[3];
+  uint8_t b1 = convert_endianess ? ptr[1] : ptr[2];
+
+  return (uint32_t)((b1 << 8) | b0);
+}
+
+uint32_t dlx_memory_read_byte(DLX_state *state, uint32_t address,
+                              uint8_t convert_endianess) {
+  if (state == NULL)
+    return 0;
+
+  // MMIO to be implemented here!
+
+  // Getting the real pointer
+  uint8_t *ptr = get_phys_ptr(state, address);
+
+  // If convert_endianess = 1 convert from Big Endian to Little Endian:
+  // everything stored in the DLX memory has to be in Big Endian,
+  // but in order to use uint32_t a conversion is needed, since the eumulator
+  // architecture is Little Endian.
+  uint8_t b0 = convert_endianess ? ptr[0] : ptr[3];
+
+  return (uint32_t)b0;
+}
+
+void dlx_memory_write_word(DLX_state *state, uint32_t address, uint32_t data) {
+  if (state == NULL)
+    return;
+
+  if (address % 4 != 0) {
+    warn("Unaligned write at 0x%08X", address);
+  }
+
+  // MMIO to be implemented here!
+
+  // Getting real physic pointer
+  uint8_t *ptr = get_phys_ptr(state, address);
+
+  ptr[0] = data & 0xFF;
+  ptr[1] = (data & 0xFF00) >> 8;
+  ptr[2] = (data & 0xFF0000) >> 16;
+  ptr[3] = (data & 0xFF000000) >> 24;
+}
+
+void dlx_memory_write_half_word(DLX_state *state, uint32_t address,
+                                uint16_t data) {
+  if (state == NULL)
+    return;
+
+  if (address % 2 != 0) {
+    warn("Unaligned write at 0x%08X", address);
+  }
+
+  // MMIO to be implemented here!
+
+  // Getting real physic pointer
+  uint8_t *ptr = get_phys_ptr(state, address);
+
+  ptr[0] = data & 0xFF;
+  ptr[1] = (data & 0xFF00) >> 8;
+}
+
+void dlx_memory_write_byte(DLX_state *state, uint32_t address, uint8_t data) {
+  if (state == NULL)
+    return;
+
+  // MMIO to be implemented here!
+
+  // Getting real physic pointer
+  uint8_t *ptr = get_phys_ptr(state, address);
+
+  ptr[0] = data & 0xFF;
+}
