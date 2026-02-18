@@ -1,4 +1,5 @@
 #include "debug.h"
+#include "dlx_debug.h"
 #include "dlx_defs.h"
 #include "dlx_loader.h"
 #include "dlx_seq_core.h"
@@ -27,7 +28,7 @@ int main(int argc, char *argv[]) {
     return 0;
 
   // Arbitrary limit based on full_isa.asm test file
-  while (state.pc < 276) {
+  while (state.pc <= 276) {
     dlx_seq_step(&state);
     getc(stdin);
   }
