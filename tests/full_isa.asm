@@ -18,15 +18,15 @@ ADDI  R1, R0, 10             ; R1 = 10 (0x0000000A)
 ADDI  R2, R0, 0xFFFF         ; R2 = -1
 ADDUI R2, R0, 0xFFFF         ; R2 = 0xFFFF
 SUBI  R3, R2, 5              ; R3 = 0xFFFA
-SUBUI  R3, R2, -1              ; R3 = 0xFFF9
+SUBUI R3, R2, -1             ; R3 = 0 (0xFFFF - 0xFFFF)
 ADDI  R4, R0, -5             ; R4 = -5 (0xFFFFFFFB)
 
 ; I-Type Shifts
-ADDI R1, R1, 0x1             ; R1 = 1 (2^0)
+ADDI R1, R0, 0x1             ; R1 = 1 (2^0)
 SLLI R1, R1, 0x4             ; R1 = 16 (2^4)
 SRLI R1, R1, 0x2             ; R1 = 4 (2^2)
 SRAI R1, R1, 0x1             ; R1 = 2 (2^1)
-ADDI R1, R1, 0xFF00          ; R1 = 0xFFFFFF00
+ADDI R1, R0, 0xFF00          ; R1 = 0xFFFFFF00
 SRAI R1, R1, 0x4             ; R1 = 0xFFFFFFF0
 
 ; Test Logic Immediate
@@ -43,7 +43,7 @@ ADDI R1, R0, 0xFFFF
 BACK_BRANCH:
 ADDI R1, R0, 0x1
 ALLWAYS_BRANCH:
-BEQZ R1, BACK_BRANCH         ; Should jump only the fisrt time
+BEQZ R1, BACK_BRANCH         ; Should jump only the first time
 
 ; ============================================================================
 ; R-TYPE
@@ -51,7 +51,6 @@ BEQZ R1, BACK_BRANCH         ; Should jump only the fisrt time
 ADDI R1, R0, 15
 ADDI R2, R0, 7
 
-; TODO finish COMMENTS
 ADD R3, R1, R2               ; R3 = 15 + 7 = 22
 SUB R3, R1, R2               ; R3 = 15 - 7 = 8
 AND R3, R1, R2               ; R3 = 15 & 7 = 0b1111 & 0b0111 = 0b0111 = 7
@@ -59,11 +58,12 @@ OR  R3, R1, R2               ; R3 = 15 | 7 = 15
 XOR R3, R1, R2               ; R3 = 15 ^ 7 = 0b1000 = 8
 
 ; R-Type Shifts (Amount in Register)
-ADDI R1, R0, 0b10000
+ADDI R1, R0, 0x10
 ADDI R11, R0, 4              ; R11 = 4 (Shift amount)
-SLL  R12, R1, R11            ; R12 = 1
-SRL  R12, R1, R11            ; R12 = 0b10000 = 16
-SRA  R12, R1, R11            ; R12 = 1
+SLL  R12, R1, R11            ; R12 = 0x100 = 256
+SRL  R12, R1, R11            ; R12 = 0x001
+ADDI R1, R0, 0xFF00          ; R1 = 0xFFFFFF00
+SRA  R12, R1, R11            ; R12 = 0xFFFFFFF0
 
 ; ============================================================================
 ; COMPARISON / SET (R-Type & I-Type)
@@ -93,7 +93,7 @@ SNE R21, R1, R4              ; R21 = 1 (R1 != R4)
 ; Base RAM Address into R10 (0x40000000)
 LHI  R10, 0x4000             ; R10 = 0x40000000
 
-ADDI R1, R0, 0x000A
+ADDUI R1, R0, 0x800A
 ADDI R5, R0, 0x00CF
 
 ; Store tests
@@ -102,9 +102,9 @@ SH R1, 4(R10)                ; Writes 0x000A at 0x40000004
 SB R5, 8(R10)                ; Writes 0xCF at 0x40000008
 
 ; Load tests
-LW  R22, 0(R10)              ; R22 = 0x0000000A
-LHU R23, 4(R10)              ; R23 = 0x0000000A (Zero extended)
-LH  R24, 4(R10)              ; R24 = 0x0000000A (Sign extended)
+LW  R22, 0(R10)              ; R22 = 0x0000800A
+LHU R23, 4(R10)              ; R23 = 0x0000800A (Zero extended)
+LH  R24, 4(R10)              ; R24 = 0xFFFF800A (Sign extended)
 LBU R25, 8(R10)              ; R25 = 0x000000CF
 LB  R26, 8(R10)              ; R26 = 0xFFFFFFCF (Sign extended byte)
 
