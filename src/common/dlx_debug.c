@@ -210,6 +210,9 @@ void dlx_dump_decoded_instruction(decoded_instruction *decoded_i) {
   case I_RFE:
     fprintf(stderr, "RFE");
     break;
+  case I_INT:
+    fprintf(stderr, "RFE");
+    break;
   default:
     fprintf(stderr, "NOT_IMPLEMENTED");
   }

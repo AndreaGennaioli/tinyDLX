@@ -1,6 +1,7 @@
 #include "dlx_seq_core.h"
 #include "debug.h"
 #include "dlx_debug.h"
+#include "dlx_interrupts.h"
 #include "dlx_isa.h"
 #include "dlx_memory_bus.h"
 #include <stdlib.h>
@@ -293,6 +294,14 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
   case I_JAL:
     state->gpr[31] = state->pc;
     state->pc = state->pc + decoded_i->imm26_sext;
+    break;
+  case I_INT:
+    if (decoded_i->imm26 >= 0xF0) {
+      // Debug interrupts
+      dlx_exec_debug_interrupt(decoded_i->imm26);
+    } else {
+      warn("EXECUTE: 0x%02X unknown interrupt", decoded_i->imm26);
+    }
     break;
   default:
     warn("EXECUTE: 0x%02X not implemented instruction", decoded_i->opcode);

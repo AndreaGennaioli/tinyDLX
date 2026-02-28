@@ -59,6 +59,7 @@ typedef struct {
 #define I_J 0x02
 #define I_JAL 0x03
 #define I_RFE 0x3F
+#define I_INT 0x39
 #define I_SLL_FUNC 0x04
 #define I_SRL_FUNC 0x06
 #define I_SRA_FUNC 0x07
