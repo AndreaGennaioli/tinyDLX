@@ -27,11 +27,17 @@ int main(int argc, char *argv[]) {
   if (dlx_load_program(&state, argv[1]) == 0)
     return 0;
 
+  info("Executing program...");
+
   // Arbitrary limit based on full_isa.asm test file
   while (state.pc <= 276) {
     dlx_seq_step(&state);
     getc(stdin);
   }
+
+  info("Execution terminated");
+
+  info("Exiting, bye bye...");
 
   return EXIT_SUCCESS;
 }
