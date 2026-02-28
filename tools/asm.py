@@ -28,6 +28,7 @@ OPCODES = {
     "JAL": {"type": "J", "op": 0x03},
     # Special instructions
     "RFE": {"type": "J", "op": 0x3F},
+    "INT": {"type": "J", "op": 0x39},
 
     # ---- I-Type
     # Branch
@@ -162,6 +163,8 @@ def assemble_instr(instr, labels):
         # Encoding  [OP] [Imm26]
         if mnemonic in ["RFE"]:
             imm26 = 0
+        elif mnemonic in ["INT"]:
+            imm26 = int(parts[1], 0)
         else:
             imm26 = get_address_value(parts[1], labels, instr[1])
 
