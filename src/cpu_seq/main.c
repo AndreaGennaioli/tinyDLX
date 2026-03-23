@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   // Mounting program file
   // The program file is a binary file containing the program
   if (dlx_load_program(&state, argv[1]) == 0)
-    return 0;
+    return EXIT_FAILURE;
 
   info("Executing program...");
 
