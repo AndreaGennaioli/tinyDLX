@@ -24,13 +24,14 @@ int main(int argc, char *argv[]) {
 
   // Mounting program file
   // The program file is a binary file containing the program
-  if (dlx_load_program(&state, argv[1]) == 0)
+  uint32_t program_size;
+  if (dlx_load_program(&state, config.program_file, &program_size) == 0)
     return EXIT_FAILURE;
 
   info("Executing program...");
 
   // Arbitrary limit based on full_isa.asm test file
-  while (state.pc <= 276) {
+  while (state.pc < program_size) {
     dlx_seq_step(&state);
     getc(stdin);
   }
