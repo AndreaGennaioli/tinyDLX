@@ -24,4 +24,8 @@ typedef struct {
   uint32_t pc;
 } DLX_state;
 
+typedef struct {
+  char *program_file;
+} DLX_config;
+
 #endif // !DLX_DEFS_H
