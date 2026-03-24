@@ -1,4 +1,5 @@
 #include "debug.h"
+#include "dlx_cli.h"
 #include "dlx_debug.h"
 #include "dlx_defs.h"
 #include "dlx_loader.h"
@@ -7,12 +8,12 @@
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
-  if (argc != 2) {
-    fprintf(stderr, "Usage: %s <binary_file>\n", argv[0]);
+  DLX_config config = {.program_file = "\0"};
+  DLX_state state;
+
+  if (parse_arguments(argc, argv, &config) == 0) {
     return EXIT_FAILURE;
   }
-
-  DLX_state state;
 
   info("Initializing DLX state");
 
