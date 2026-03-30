@@ -38,6 +38,7 @@ uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address,
 
   if (address % 4 != 0) {
     warn("Unaligned read at 0x%08X", address);
+    return 0;
   }
 
   // MMIO
@@ -72,6 +73,7 @@ uint32_t dlx_memory_read_half_word(DLX_state *state, uint32_t address,
 
   if (address % 2 != 0) {
     warn("Unaligned read at 0x%08X", address);
+    return 0;
   }
 
   // MMIO
@@ -130,6 +132,7 @@ void dlx_memory_write_word(DLX_state *state, uint32_t address, uint32_t data) {
 
   if (address % 4 != 0) {
     warn("Unaligned write at 0x%08X", address);
+    return;
   }
 
   // MMIO
@@ -143,6 +146,7 @@ void dlx_memory_write_word(DLX_state *state, uint32_t address, uint32_t data) {
   uint8_t *ptr = get_phys_ptr(state, address);
   if (ptr == NULL) {
     warn("MEMORY: write at unmapped address 0x%08X", address);
+    return;
   }
 
   ptr[0] = data & 0xFF;
@@ -158,6 +162,7 @@ void dlx_memory_write_half_word(DLX_state *state, uint32_t address,
 
   if (address % 2 != 0) {
     warn("Unaligned write at 0x%08X", address);
+    return;
   }
 
   // MMIO
@@ -171,6 +176,7 @@ void dlx_memory_write_half_word(DLX_state *state, uint32_t address,
   uint8_t *ptr = get_phys_ptr(state, address);
   if (ptr == NULL) {
     warn("MEMORY: write at unmapped address 0x%08X", address);
+    return;
   }
 
   ptr[0] = data & 0xFF;
@@ -192,6 +198,7 @@ void dlx_memory_write_byte(DLX_state *state, uint32_t address, uint8_t data) {
   uint8_t *ptr = get_phys_ptr(state, address);
   if (ptr == NULL) {
     warn("MEMORY: write at unmapped address 0x%08X", address);
+    return;
   }
 
   ptr[0] = data & 0xFF;
