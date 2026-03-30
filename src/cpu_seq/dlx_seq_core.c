@@ -6,6 +6,8 @@
 #include "dlx_memory_bus.h"
 #include <stdlib.h>
 
+// Extend sign of immediate of 8 bits
+static int32_t sign_extend_8(uint8_t imm8);
 // Extend sign of immediate of 16 bits
 static int32_t sign_extend_16(uint16_t imm16);
 // Extend sign of immediate of 26 bits
