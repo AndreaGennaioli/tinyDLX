@@ -1,0 +1,33 @@
+#include "devices/dlx_startup_circuit.h"
+#include <stdlib.h>
+
+static void d_free(void *state);
+static uint32_t d_read(void *state, uint32_t offset, uint8_t bytes);
+static void d_write(void *state, uint32_t offset, uint32_t data, uint8_t bytes);
+
+DLX_device *dlx_startup_circuit_create(uint32_t base_address,
+                                       uint32_t range_size) {
+  DLX_device *dev = (DLX_device *)malloc(sizeof(DLX_device));
+
+  dev->base_address = base_address;
+  dev->range_size = range_size;
+  dev->state = malloc(sizeof(uint8_t));
+  *(uint8_t *)dev->state = 1;
+
+  dev->free = d_free;
+  dev->read = d_read;
+  dev->write = d_write;
+
+  return dev;
+}
+
+static void d_free(void *state) { free(state); }
+
+static uint32_t d_read(void *state, uint32_t offset, uint8_t bytes) {
+  return 0x00000001 & *(uint8_t *)state;
+}
+
+static void d_write(void *state, uint32_t offset, uint32_t data,
+                    uint8_t bytes) {
+  *(uint8_t *)state = 0;
+}

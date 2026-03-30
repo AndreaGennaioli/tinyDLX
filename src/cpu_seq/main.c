@@ -1,4 +1,5 @@
 #include "debug.h"
+#include "devices/dlx_startup_circuit.h"
 #include "dlx_cli.h"
 #include "dlx_debug.h"
 #include "dlx_defs.h"
@@ -22,6 +23,10 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
 
   info("DLX state initialized");
+
+  // Initialize devices
+  dlx_device_register(&state, dlx_startup_circuit_create(0xC0000000, 4));
+  info("Device created: Startup Circuit");
 
   // Mounting program file
   // The program file is a binary file containing the program
