@@ -306,4 +306,7 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
   default:
     warn("EXECUTE: 0x%02X not implemented instruction", decoded_i->opcode);
   }
+
+  // R0 is wired to 0
+  state->gpr[0] = 0;
 }
