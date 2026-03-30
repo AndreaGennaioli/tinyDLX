@@ -1,7 +1,19 @@
 #include "dlx_memory_bus.h"
 #include "debug.h"
 #include "dlx_defs.h"
-#include <stdlib.h>
+
+static DLX_device *get_device(DLX_state *state, uint32_t address) {
+  for (int i = 0; i < state->device_count; i++) {
+    DLX_device *dev = state->devices[i];
+
+    if (address >= dev->base_address &&
+        address < dev->base_address + dev->range_size) {
+      return dev;
+    }
+  }
+
+  return NULL;
+}
 
 // Converts a DLX address into a real memory pointer
 static uint8_t *get_phys_ptr(DLX_state *state, uint32_t address) {
@@ -28,10 +40,18 @@ uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address,
     warn("Unaligned read at 0x%08X", address);
   }
 
-  // MMIO to be implemented here!
+  // MMIO
+  DLX_device *dev = get_device(state, address);
+  if (dev != NULL) {
+    return dev->read(dev->state, address - dev->base_address, 4);
+  }
 
   // Getting the real pointer
   uint8_t *ptr = get_phys_ptr(state, address);
+  if (ptr == NULL) {
+    warn("MEMORY: read at unmapped address 0x%08X", address);
+    return 0;
+  }
 
   // If convert_endianess = 1 convert from Big Endian to Little Endian:
   // everything stored in the DLX memory has to be in Big Endian,
@@ -54,10 +74,18 @@ uint32_t dlx_memory_read_half_word(DLX_state *state, uint32_t address,
     warn("Unaligned read at 0x%08X", address);
   }
 
-  // MMIO to be implemented here!
+  // MMIO
+  DLX_device *dev = get_device(state, address);
+  if (dev != NULL) {
+    return dev->read(dev->state, address - dev->base_address, 2);
+  }
 
   // Getting the real pointer
   uint8_t *ptr = get_phys_ptr(state, address);
+  if (ptr == NULL) {
+    warn("MEMORY: read at unmapped address 0x%08X", address);
+    return 0;
+  }
 
   // If convert_endianess = 1 convert from Big Endian to Little Endian:
   // everything stored in the DLX memory has to be in Big Endian,
@@ -74,10 +102,18 @@ uint32_t dlx_memory_read_byte(DLX_state *state, uint32_t address,
   if (state == NULL)
     return 0;
 
-  // MMIO to be implemented here!
+  // MMIO
+  DLX_device *dev = get_device(state, address);
+  if (dev != NULL) {
+    return dev->read(dev->state, address - dev->base_address, 1);
+  }
 
   // Getting the real pointer
   uint8_t *ptr = get_phys_ptr(state, address);
+  if (ptr == NULL) {
+    warn("MEMORY: read at unmapped address 0x%08X", address);
+    return 0;
+  }
 
   // If convert_endianess = 1 convert from Big Endian to Little Endian:
   // everything stored in the DLX memory has to be in Big Endian,
@@ -96,10 +132,18 @@ void dlx_memory_write_word(DLX_state *state, uint32_t address, uint32_t data) {
     warn("Unaligned write at 0x%08X", address);
   }
 
-  // MMIO to be implemented here!
+  // MMIO
+  DLX_device *dev = get_device(state, address);
+  if (dev != NULL) {
+    dev->write(dev->state, address - dev->base_address, data, 4);
+    return;
+  }
 
   // Getting real physic pointer
   uint8_t *ptr = get_phys_ptr(state, address);
+  if (ptr == NULL) {
+    warn("MEMORY: write at unmapped address 0x%08X", address);
+  }
 
   ptr[0] = data & 0xFF;
   ptr[1] = (data & 0xFF00) >> 8;
@@ -116,10 +160,18 @@ void dlx_memory_write_half_word(DLX_state *state, uint32_t address,
     warn("Unaligned write at 0x%08X", address);
   }
 
-  // MMIO to be implemented here!
+  // MMIO
+  DLX_device *dev = get_device(state, address);
+  if (dev != NULL) {
+    dev->write(dev->state, address - dev->base_address, data, 2);
+    return;
+  }
 
   // Getting real physic pointer
   uint8_t *ptr = get_phys_ptr(state, address);
+  if (ptr == NULL) {
+    warn("MEMORY: write at unmapped address 0x%08X", address);
+  }
 
   ptr[0] = data & 0xFF;
   ptr[1] = (data & 0xFF00) >> 8;
@@ -129,10 +181,18 @@ void dlx_memory_write_byte(DLX_state *state, uint32_t address, uint8_t data) {
   if (state == NULL)
     return;
 
-  // MMIO to be implemented here!
+  // MMIO
+  DLX_device *dev = get_device(state, address);
+  if (dev != NULL) {
+    dev->write(dev->state, address - dev->base_address, data, 1);
+    return;
+  }
 
   // Getting real physic pointer
   uint8_t *ptr = get_phys_ptr(state, address);
+  if (ptr == NULL) {
+    warn("MEMORY: write at unmapped address 0x%08X", address);
+  }
 
   ptr[0] = data & 0xFF;
 }

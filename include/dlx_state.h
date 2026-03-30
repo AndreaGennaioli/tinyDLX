@@ -10,4 +10,7 @@ int dlx_state_init(DLX_state *state);
 // Frees all the allocated memory
 void dlx_state_free(DLX_state *state);
 
+// Allocates new device in state->devices
+void dlx_device_register(DLX_state *state, DLX_device *device);
+
 #endif // !DLX_STATE_H

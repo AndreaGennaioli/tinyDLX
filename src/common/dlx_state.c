@@ -30,7 +30,14 @@ int dlx_state_init(DLX_state *state) {
   // Random values for GPRs are expected, except for R0
   state->gpr[0] = 0;
 
+  state->device_count = 0;
+
   return 1;
+}
+
+void dlx_device_register(DLX_state *state, DLX_device *device) {
+  state->devices[state->device_count] = device;
+  state->device_count++;
 }
 
 void dlx_state_free(DLX_state *state) {
@@ -45,5 +52,10 @@ void dlx_state_free(DLX_state *state) {
   if (state->ram != NULL) {
     free(state->ram);
     state->ram = NULL;
+  }
+
+  for (int i = 0; i < state->device_count; i++) {
+    state->devices[i]->free(state->devices[i]);
+    free(state->devices[i]);
   }
 }

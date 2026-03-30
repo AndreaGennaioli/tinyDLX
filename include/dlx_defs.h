@@ -12,9 +12,21 @@
 #define DLX_RAM_BASE 0x40000000        // After 1 GB
 #define DLX_RAM_SIZE (1024 * 1024 * 2) // 2 MB
 
+// MMIO Devices
+#define DLX_MAX_DEVICES 16
+
 // Address space:
 // 0 ___________ 0x3FFFFFFF ___________ 0xC0000000 _________ 0xFFFFFFFF
 //     ROM 64 KB     |       RAM 2 MB       |         MMIO
+
+typedef struct {
+  uint32_t base_address;
+  uint32_t range_size;
+  void *state;
+  void (*free)(void *state);
+  uint32_t (*read)(void *state, uint32_t offset, uint8_t bytes);
+  void (*write)(void *state, uint32_t offset, uint32_t data, uint8_t bytes);
+} DLX_device;
 
 typedef struct {
   uint8_t *rom;
@@ -22,6 +34,9 @@ typedef struct {
 
   uint32_t gpr[DLX_GPR_COUNT];
   uint32_t pc;
+  uint32_t device_count;
+
+  DLX_device *devices[DLX_MAX_DEVICES];
 } DLX_state;
 
 typedef struct {
