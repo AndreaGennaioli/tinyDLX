@@ -14,6 +14,7 @@ To know the memory mappings and the interrupt codes see [Mapping.md](./Mappings.
 The startup circuit consists of 1 FFD which is asserted on the emulator startup. A read operation will return the value of the FFD. The FFD value can be set to 0 by a dummy write.
 The circuit scheme is as follows.
 ![Startup circuit scheme](assets/Startup_Circuit.svg)
+
 *RESET is asynchronous and it is asserted on the system startup. CS_STARTUP_CIRCUIT is from the first level decoder*
 
 ## Interrupt Controller
