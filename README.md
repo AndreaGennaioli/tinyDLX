@@ -37,3 +37,4 @@ python tools/asm.py tests/interrupt.asm tests/interrupt.bin
 - [I/O and devices](docs/IO.md)
 - [Interrupt system](docs/Interrupts.md)
 - [Memory mappings](docs/Mappings.md)
+- [Sequential core architecture](docs/seq/Architecture.md)
