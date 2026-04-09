@@ -1,6 +1,7 @@
 #include "debug.h"
 #include "devices/dlx_ic.h"
 #include "devices/dlx_input_port.h"
+#include "devices/dlx_output_port.h"
 #include "devices/dlx_startup_circuit.h"
 #include "dlx_cli.h"
 #include "dlx_debug.h"
@@ -40,6 +41,9 @@ int main(int argc, char *argv[]) {
   dlx_device_register(
       &state, dlx_input_port_create(0xC0040000, ic->state, 0));
   info("Device created: Input Port");
+  dlx_device_register(
+      &state, dlx_output_port_create(0xC0080000));
+  info("Device created: Output Port");
 
   // Mounting program file
   // The program file is a binary file containing the program
