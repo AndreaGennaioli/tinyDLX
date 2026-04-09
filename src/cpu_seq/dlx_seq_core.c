@@ -26,6 +26,15 @@ void dlx_seq_step(DLX_state *state) {
     if (state->devices[i]->tick != NULL)
       state->devices[i]->tick(state->devices[i]->state);
   }
+
+  // Check if DLX interrupt line is asserted.
+  // If so, set IEN to 1, set IAR to current pc and jump to address 0
+  if(state->interrupt_line && (state->sr & SR_IEN) == 0) {
+    state->sr |= SR_IEN;
+    state->iar = state->pc;
+    state->pc = 0;
+  }
+
   // FETCH
   // The program is expected to be in Big Endian, so no conversion is needed
   uint32_t raw_i = dlx_memory_read_word(state, state->pc, 0);
@@ -40,6 +49,11 @@ void dlx_seq_step(DLX_state *state) {
 
   // EXECUTE - MEMORY - WRITE BACK
   execute(state, &decoded_i);
+
+  // Reset interrupt line
+  // It will be reasserted by any device on tick (if needed)
+  state->interrupt_line = 0;
+
 }
 
 static int32_t sign_extend_8(uint8_t imm8) {
