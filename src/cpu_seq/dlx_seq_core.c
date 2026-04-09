@@ -1,10 +1,8 @@
 #include "dlx_seq_core.h"
 #include "debug.h"
-#include "dlx_debug.h"
 #include "dlx_interrupts.h"
 #include "dlx_isa.h"
 #include "dlx_memory_bus.h"
-#include <stdlib.h>
 #include <unistd.h>
 
 // Extend sign of immediate of 8 bits
