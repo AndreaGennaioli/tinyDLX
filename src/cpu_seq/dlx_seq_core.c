@@ -5,6 +5,7 @@
 #include "dlx_isa.h"
 #include "dlx_memory_bus.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 // Extend sign of immediate of 8 bits
 static int32_t sign_extend_8(uint8_t imm8);
@@ -53,6 +54,9 @@ void dlx_seq_step(DLX_state *state) {
   // Reset interrupt line
   // It will be reasserted by any device on tick (if needed)
   state->interrupt_line = 0;
+
+  // Sleep to avoid core overload
+  usleep(1000);
 
 }
 
