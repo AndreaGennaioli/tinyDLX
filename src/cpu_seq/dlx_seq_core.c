@@ -305,6 +305,10 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
       warn("EXECUTE: 0x%02X unknown interrupt", decoded_i->imm26);
     }
     break;
+  case I_RFE:
+    state->sr &= ~SR_IEN;
+    state->pc = state->iar;
+    break;
   default:
     warn("EXECUTE: 0x%02X not implemented instruction", decoded_i->opcode);
   }
