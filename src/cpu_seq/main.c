@@ -7,6 +7,7 @@
 #include "dlx_loader.h"
 #include "dlx_seq_core.h"
 #include "dlx_state.h"
+#include "dlx_terminal.h"
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
@@ -44,10 +45,9 @@ int main(int argc, char *argv[]) {
 
   info("Executing program...");
 
-  // Arbitrary limit based on full_isa.asm test file
   while (state.pc < program_size) {
     dlx_seq_step(&state);
-    getc(stdin);
+    // getc(stdin);
   }
 
   info("Execution terminated");
