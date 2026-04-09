@@ -1,4 +1,5 @@
 #include "debug.h"
+#include "devices/dlx_ic.h"
 #include "devices/dlx_startup_circuit.h"
 #include "dlx_cli.h"
 #include "dlx_debug.h"
@@ -30,6 +31,10 @@ int main(int argc, char *argv[]) {
   dlx_device_register(
       &state, dlx_startup_circuit_create(0xC0000000));
   info("Device created: Startup Circuit");
+  DLX_device *ic =
+      dlx_ic_create(0xC00C0000, DLX_MAX_DEVICES, state.assert_interrupt, &state);
+  dlx_device_register(&state, ic);
+  info("Device created: Interrupt Controller");
 
   // Mounting program file
   // The program file is a binary file containing the program
