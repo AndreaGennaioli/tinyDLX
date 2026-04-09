@@ -21,6 +21,11 @@ void dlx_seq_step(DLX_state *state) {
   if (state == NULL)
     return;
 
+  // Update devices tick
+  for (int i = 0; i < state->device_count; i++) {
+    if (state->devices[i]->tick != NULL)
+      state->devices[i]->tick(state->devices[i]->state);
+  }
   // FETCH
   // The program is expected to be in Big Endian, so no conversion is needed
   uint32_t raw_i = dlx_memory_read_word(state, state->pc, 0);
