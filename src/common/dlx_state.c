@@ -32,6 +32,9 @@ int dlx_state_init(DLX_state *state) {
 
   state->device_count = 0;
 
+  state->interrupt_line = 0;
+  state->assert_interrupt = dlx_assert_interrupt;
+
   return 1;
 }
 
@@ -58,4 +61,8 @@ void dlx_state_free(DLX_state *state) {
     state->devices[i]->free(state->devices[i]);
     free(state->devices[i]);
   }
+}
+
+void dlx_assert_interrupt(void *state) {
+  ((DLX_state *)state)->interrupt_line = 1;
 }

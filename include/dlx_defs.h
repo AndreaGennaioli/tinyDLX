@@ -45,6 +45,10 @@ typedef struct {
   uint32_t device_count;
 
   DLX_device *devices[DLX_MAX_DEVICES];
+
+  void (*assert_interrupt)(void *state);
+
+  uint8_t interrupt_line;
 } DLX_state;
 
 typedef struct {
