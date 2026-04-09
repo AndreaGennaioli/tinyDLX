@@ -52,6 +52,11 @@ typedef struct {
   //  INDEX - DESC
   //    0   - IEN interrupt enable
   uint32_t sr;
+  // Instruction Address Register
+  // the register where the return address is stored before a interrupt
+  // handling.
+  uint32_t iar;
+
   DLX_device *devices[DLX_MAX_DEVICES];
 
   void (*assert_interrupt)(void *state);
