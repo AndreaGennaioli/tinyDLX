@@ -4,7 +4,6 @@
 #include "devices/dlx_output_port.h"
 #include "devices/dlx_startup_circuit.h"
 #include "dlx_cli.h"
-#include "dlx_debug.h"
 #include "dlx_defs.h"
 #include "dlx_loader.h"
 #include "dlx_seq_core.h"
