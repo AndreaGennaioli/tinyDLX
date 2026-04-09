@@ -16,6 +16,8 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
+  dlx_terminal_raw();
+
   info("Initializing DLX state");
 
   // Initialize DLX state
@@ -44,6 +46,8 @@ int main(int argc, char *argv[]) {
   }
 
   info("Execution terminated");
+
+  dlx_terminal_restore();
 
   info("Exiting, bye bye...");
 
