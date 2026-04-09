@@ -8,4 +8,4 @@
 | **Input Port** | 0xC0040000 | Read byte from stdin buffer | - |
 | **Output Port** | 0xC0080000 | Read port status (0 = busy, 1 = ready) | Write byte to stdout buffer |
 | **Interrupt Controller** | 0xC00C0000 | Read code of the active interrupt | - |
-| **Power Manager** | 0xC00C0000 | - | Exit emulator |
+| **Power Manager** | 0xC0100000 | - | Exit emulator |
