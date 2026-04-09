@@ -5,12 +5,11 @@ static void d_free(void *state);
 static uint32_t d_read(void *state, uint32_t offset, uint8_t bytes);
 static void d_write(void *state, uint32_t offset, uint32_t data, uint8_t bytes);
 
-DLX_device *dlx_startup_circuit_create(uint32_t base_address,
-                                       uint32_t range_size) {
+DLX_device *dlx_startup_circuit_create(uint32_t base_address) {
   DLX_device *dev = (DLX_device *)malloc(sizeof(DLX_device));
 
   dev->base_address = base_address;
-  dev->range_size = range_size;
+  dev->range_size = 1;
   dev->state = malloc(sizeof(uint8_t));
   *(uint8_t *)dev->state = 1;
 

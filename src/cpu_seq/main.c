@@ -25,7 +25,8 @@ int main(int argc, char *argv[]) {
   info("DLX state initialized");
 
   // Initialize devices
-  dlx_device_register(&state, dlx_startup_circuit_create(0xC0000000, 4));
+  dlx_device_register(
+      &state, dlx_startup_circuit_create(0xC0000000));
   info("Device created: Startup Circuit");
 
   // Mounting program file
