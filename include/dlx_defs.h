@@ -19,10 +19,17 @@
 // 0 ___________ 0x3FFFFFFF ___________ 0xC0000000 _________ 0xFFFFFFFF
 //     ROM 64 KB     |       RAM 2 MB       |         MMIO
 
+typedef struct DLX_ic_base {
+  uint8_t lines[DLX_MAX_DEVICES];
+  void (*assert_interrupt)(struct DLX_ic_base *ic, uint8_t index);
+  void (*controller_assert_interrupt)(void* controller_state);
+} DLX_ic_base;
+
 typedef struct {
   uint32_t base_address;
   uint32_t range_size;
   void *state;
+  DLX_ic_base *ic;
   void (*free)(void *state);
   uint32_t (*read)(void *state, uint32_t offset, uint8_t bytes);
   void (*write)(void *state, uint32_t offset, uint32_t data, uint8_t bytes);
