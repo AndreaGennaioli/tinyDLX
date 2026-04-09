@@ -43,7 +43,7 @@ uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address,
 
   // MMIO
   DLX_device *dev = get_device(state, address);
-  if (dev != NULL) {
+  if (dev != NULL && dev->read != NULL) {
     return dev->read(dev->state, address - dev->base_address, 4);
   }
 
@@ -78,7 +78,7 @@ uint32_t dlx_memory_read_half_word(DLX_state *state, uint32_t address,
 
   // MMIO
   DLX_device *dev = get_device(state, address);
-  if (dev != NULL) {
+  if (dev != NULL && dev->read != NULL) {
     return dev->read(dev->state, address - dev->base_address, 2);
   }
 
@@ -106,7 +106,7 @@ uint32_t dlx_memory_read_byte(DLX_state *state, uint32_t address,
 
   // MMIO
   DLX_device *dev = get_device(state, address);
-  if (dev != NULL) {
+  if (dev != NULL && dev->read != NULL) {
     return dev->read(dev->state, address - dev->base_address, 1);
   }
 
@@ -143,7 +143,7 @@ void dlx_memory_write_word(DLX_state *state, uint32_t address, uint32_t data) {
 
   // MMIO
   DLX_device *dev = get_device(state, address);
-  if (dev != NULL) {
+  if (dev != NULL && dev->write != NULL) {
     dev->write(dev->state, address - dev->base_address, data, 4);
     return;
   }
@@ -179,7 +179,7 @@ void dlx_memory_write_half_word(DLX_state *state, uint32_t address,
 
   // MMIO
   DLX_device *dev = get_device(state, address);
-  if (dev != NULL) {
+  if (dev != NULL && dev->write != NULL) {
     dev->write(dev->state, address - dev->base_address, data, 2);
     return;
   }
@@ -207,7 +207,7 @@ void dlx_memory_write_byte(DLX_state *state, uint32_t address, uint8_t data) {
 
   // MMIO
   DLX_device *dev = get_device(state, address);
-  if (dev != NULL) {
+  if (dev != NULL && dev->write != NULL) {
     dev->write(dev->state, address - dev->base_address, data, 1);
     return;
   }
