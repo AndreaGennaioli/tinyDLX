@@ -30,6 +30,7 @@ typedef struct {
   uint32_t range_size;
   void *state;
   DLX_ic_base *ic;
+  void (*tick)(void *state);
   void (*free)(void *state);
   uint32_t (*read)(void *state, uint32_t offset, uint8_t bytes);
   void (*write)(void *state, uint32_t offset, uint32_t data, uint8_t bytes);
