@@ -39,14 +39,12 @@ void dlx_seq_step(DLX_state *state) {
   // FETCH
   // The program is expected to be in Big Endian, so no conversion is needed
   uint32_t raw_i = dlx_memory_read_word(state, state->pc, 0);
-  // TODO: add interrupt integration (INT signal and IEN flag)
 
   // DECODE
   state->pc += 4;
   decoded_instruction decoded_i;
   decode(raw_i, &decoded_i);
 
-  dlx_dump_decoded_instruction(&decoded_i);
 
   // EXECUTE - MEMORY - WRITE BACK
   execute(state, &decoded_i);
