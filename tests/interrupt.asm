@@ -45,6 +45,8 @@ HANDLE_INTERRUPT:
 HANDLE_INPUT_PORT:
   LHI R1, 0xC004
   LBU  R3, 0x0000(R1)
+  SUBI R2, R3, 0x71             ; 0x71 = 'q'
+  BEQZ R2, PROC_EXIT
   JAL PROC_OUTPUT
   J EXIT_INTERRUPT_HANDLER
 
@@ -85,6 +87,10 @@ CHECK_PORT_STATUS:
 
   JR R31
 
+PROC_EXIT:
+  LHI R26, 0xC010
+  SB R0, 0x0000(R26)
+
 MAIN:
   ADDI R3, R0, 0x21
 MAIN_LOOP:                      ; Dummy loop
@@ -96,5 +102,3 @@ MAIN_LOOP:                      ; Dummy loop
 
   J MAIN_LOOP
 
-EXIT:
-  ADD R0, R0, R0
