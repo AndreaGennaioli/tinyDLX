@@ -32,6 +32,7 @@ int dlx_state_init(DLX_state *state) {
 
   state->device_count = 0;
 
+  state->sr = 0;
   state->interrupt_line = 0;
   state->assert_interrupt = dlx_assert_interrupt;
 

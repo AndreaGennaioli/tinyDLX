@@ -36,6 +36,10 @@ typedef struct {
   void (*write)(void *state, uint32_t offset, uint32_t data, uint8_t bytes);
 } DLX_device;
 
+typedef enum {
+    SR_IEN = 1 << 0,  // 00000001
+} StatusRegisterFlags;
+
 typedef struct {
   uint8_t *rom;
   uint8_t *ram;
@@ -44,6 +48,10 @@ typedef struct {
   uint32_t pc;
   uint32_t device_count;
 
+  // Status register bits:
+  //  INDEX - DESC
+  //    0   - IEN interrupt enable
+  uint32_t sr;
   DLX_device *devices[DLX_MAX_DEVICES];
 
   void (*assert_interrupt)(void *state);
