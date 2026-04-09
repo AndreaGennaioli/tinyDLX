@@ -121,7 +121,7 @@ uint32_t dlx_memory_read_byte(DLX_state *state, uint32_t address,
   // everything stored in the DLX memory has to be in Big Endian,
   // but in order to use uint32_t a conversion is needed, since the eumulator
   // architecture is Little Endian.
-  uint8_t b0 = convert_endianess ? ptr[0] : ptr[3];
+  uint8_t b0 = ptr[0];
 
   return (uint32_t)b0;
 }
