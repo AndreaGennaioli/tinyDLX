@@ -15,4 +15,7 @@ void dlx_device_register(DLX_state *state, DLX_device *device);
 
 void dlx_assert_interrupt(void *state);
 
+// Exits the emulator
+void dlx_exit(DLX_state *state);
+
 #endif // !DLX_STATE_H

@@ -57,11 +57,5 @@ int main(int argc, char *argv[]) {
     // getc(stdin);
   }
 
-  info("Execution terminated");
-
-  dlx_terminal_restore();
-
-  info("Exiting, bye bye...");
-
-  return EXIT_SUCCESS;
+  dlx_exit(&state);
 }
