@@ -10,10 +10,28 @@
 #include "dlx_state.h"
 #include "dlx_terminal.h"
 #include <stdlib.h>
+#include <signal.h>
+
+DLX_state *global_state = NULL;
+
+void handle_exit_signal(int signum) {
+  if (global_state != NULL) {
+    info("Received exit signal");
+    dlx_exit(global_state); 
+  } else {
+    dlx_terminal_restore();
+    exit(EXIT_SUCCESS);
+  }
+}
 
 int main(int argc, char *argv[]) {
   DLX_config config = {.program_file = "\0"};
   DLX_state state;
+
+  global_state = &state;
+
+  signal(SIGINT, handle_exit_signal);
+  signal(SIGTERM, handle_exit_signal);
 
   if (parse_arguments(argc, argv, &config) == 0) {
     return EXIT_FAILURE;
