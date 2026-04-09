@@ -61,7 +61,9 @@ void dlx_state_free(DLX_state *state) {
   }
 
   for (int i = 0; i < state->device_count; i++) {
-    state->devices[i]->free(state->devices[i]);
+    if(state->devices[i]->free != NULL) {
+      state->devices[i]->free(state->devices[i]->state);
+    }
     free(state->devices[i]);
   }
 }
