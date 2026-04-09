@@ -14,6 +14,7 @@ DLX_device *dlx_startup_circuit_create(uint32_t base_address,
   dev->state = malloc(sizeof(uint8_t));
   *(uint8_t *)dev->state = 1;
 
+  dev->tick = NULL;
   dev->free = d_free;
   dev->read = d_read;
   dev->write = d_write;
