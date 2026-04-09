@@ -2,6 +2,7 @@
 #include "devices/dlx_ic.h"
 #include "devices/dlx_input_port.h"
 #include "devices/dlx_output_port.h"
+#include "devices/dlx_power_manager.h"
 #include "devices/dlx_startup_circuit.h"
 #include "dlx_cli.h"
 #include "dlx_defs.h"
@@ -61,6 +62,9 @@ int main(int argc, char *argv[]) {
   dlx_device_register(
       &state, dlx_output_port_create(0xC0080000));
   info("Device created: Output Port");
+  dlx_device_register(
+      &state, dlx_power_manager_create(0xC0100000, &state));
+  info("Device created: Power Manager");
 
   // Mounting program file
   // The program file is a binary file containing the program
