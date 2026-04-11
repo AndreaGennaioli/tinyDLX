@@ -21,6 +21,12 @@ int dlx_load_program(DLX_state *state, const char *filename,
   long file_size = ftell(fp);
   rewind(fp);
 
+  if (file_size < 0) {
+    error("Cannot determine file size: %s", filename);
+    fclose(fp);
+    return 0;
+  }
+
   // Ensure program fits in memory
   if (file_size > DLX_ROM_SIZE) {
     error("Program too large: %ld bytes and ROM is %d bytes.", file_size,
