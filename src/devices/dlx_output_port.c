@@ -51,6 +51,10 @@ static uint32_t d_read(void *state, uint32_t offset, uint8_t bytes) {
 static void d_write(void *state, uint32_t offset, uint32_t data,
                         uint8_t bytes) {
   OutputPortState *s = (OutputPortState *)state;
+
+  if (s->ready == 0)
+    return;
+
   putchar(data & 0xFF);
   fflush(stdout);
   s->ready = 0;
