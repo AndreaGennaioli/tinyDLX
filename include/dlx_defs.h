@@ -22,6 +22,7 @@
 typedef struct DLX_ic_base {
   uint8_t lines[DLX_MAX_DEVICES];
   void (*assert_interrupt)(struct DLX_ic_base *ic, uint8_t index);
+  void (*deassert_interrupt)(struct DLX_ic_base *ic, uint8_t index);
   void (*controller_assert_interrupt)(void* controller_state);
 } DLX_ic_base;
 
