@@ -192,15 +192,15 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
     state->gpr[decoded_i->rs2] = state->gpr[decoded_i->rs1] - decoded_i->imm16;
     break;
   case I_SLLI:
-    state->gpr[decoded_i->rs2] = state->gpr[decoded_i->rs1] << decoded_i->imm16;
+    state->gpr[decoded_i->rs2] = state->gpr[decoded_i->rs1] << (decoded_i->imm16 & 0x1F);
     break;
   case I_SRLI:
     state->gpr[decoded_i->rs2] =
-        (uint32_t)state->gpr[decoded_i->rs1] >> decoded_i->imm16;
+        (uint32_t)state->gpr[decoded_i->rs1] >> (decoded_i->imm16 & 0x1F);
     break;
   case I_SRAI:
     state->gpr[decoded_i->rs2] =
-        (int32_t)state->gpr[decoded_i->rs1] >> decoded_i->imm16;
+        (int32_t)state->gpr[decoded_i->rs1] >> (decoded_i->imm16 & 0x1F);
     break;
   case I_ORI:
     state->gpr[decoded_i->rs2] =
