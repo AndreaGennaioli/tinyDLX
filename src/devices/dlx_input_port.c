@@ -38,9 +38,12 @@ static void d_tick(void *state) {
 
   struct pollfd pfd = {.fd = STDIN_FILENO, .events = POLLIN};
   if (poll(&pfd, 1, 0) > 0) {
-    s->data = getchar();
-    s->ready = 1;
-    s->ic->assert_interrupt(s->ic, s->int_index);
+    char c;
+    if (read(STDIN_FILENO, &c, 1) == 1) {
+      s->data = c;
+      s->ready = 1;
+      s->ic->assert_interrupt(s->ic, s->int_index);
+    }
   }
 }
 
