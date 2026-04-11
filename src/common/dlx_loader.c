@@ -1,6 +1,6 @@
 #include "dlx_loader.h"
 #include "debug.h"
-#include <inttypes.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
