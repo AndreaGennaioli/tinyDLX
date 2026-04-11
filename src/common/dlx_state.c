@@ -79,7 +79,6 @@ void dlx_assert_interrupt(void *state) {
 void dlx_exit(DLX_state *state) {
   info("Execution terminated");
 
-  dlx_terminal_restore();
   dlx_state_free(state);
 
   info("Exiting, bye bye...");
