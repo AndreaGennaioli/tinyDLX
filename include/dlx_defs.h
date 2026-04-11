@@ -67,6 +67,7 @@ typedef struct {
 
 typedef struct {
   char *program_file;
+  uint32_t freq_hz;
 } DLX_config;
 
 #endif // !DLX_DEFS_H

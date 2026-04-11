@@ -50,10 +50,6 @@ void dlx_seq_step(DLX_state *state) {
   // Reset interrupt line
   // It will be reasserted by any device on tick (if needed)
   state->interrupt_line = 0;
-
-  // Sleep to avoid core overload
-  usleep(1000);
-
 }
 
 static int32_t sign_extend_8(uint8_t imm8) {

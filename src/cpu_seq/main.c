@@ -10,8 +10,22 @@
 #include "dlx_seq_core.h"
 #include "dlx_state.h"
 #include "dlx_terminal.h"
+#include <stdint.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <time.h>
+
+// Number of cycles between two synchronizations.
+#define THROTTLE_INTERVAL 1000
+// Nanoseconds in one second (used for conversions with frequency)
+#define NS_PER_SEC 1000000000ULL
+
+// Returns current time in ns
+static uint64_t now_ns(void) {
+  struct timespec ts;
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  return (uint64_t)ts.tv_sec * NS_PER_SEC + ts.tv_nsec;
+}
 
 DLX_state *global_state = NULL;
 
@@ -74,9 +88,37 @@ int main(int argc, char *argv[]) {
 
   info("Executing program...");
 
+  // Cycle counter and start timestamp
+  uint64_t cycle = 0;
+  uint64_t start_ns = now_ns();
+
+  // The sync interval is calculated from the frequency:
+  //    ~100 synchronizations per second of simulated time.
+  // Falls back to THROTTLE_INTERVAL in max-speed mode (freq_hz = 0).
+  uint64_t sync_interval = (config.freq_hz > 0)
+    ? ((uint64_t)config.freq_hz / 100 > 0 ? (uint64_t)config.freq_hz / 100 : 1)
+    : THROTTLE_INTERVAL;
   while (state.pc < program_size) {
     dlx_seq_step(&state);
-    // getc(stdin);
+    cycle++;
+
+    // Each interval of sync_interval cycles, the current elapsed time
+    // it compared to the expected elapsed time based on the requested
+    // frequency: if simulated_ns > elapsed_ns it means the emulator is running
+    // faster than requested, so we wait; if elapsed_ns > simulated_ns it means
+    // the emulator is running at max speed (100% use of core).
+    if (config.freq_hz > 0 && cycle % sync_interval == 0) {
+      uint64_t simulated_ns = (cycle * NS_PER_SEC) / config.freq_hz;
+      uint64_t elapsed_ns   = now_ns() - start_ns;
+
+      if (simulated_ns > elapsed_ns) {
+        struct timespec sleep_ts = {
+          .tv_sec  =  (simulated_ns - elapsed_ns) / NS_PER_SEC,
+          .tv_nsec = ((simulated_ns - elapsed_ns) % NS_PER_SEC),
+        };
+        nanosleep(&sleep_ts, NULL);
+      }
+    }
   }
 
   dlx_exit(&state);
