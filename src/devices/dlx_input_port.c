@@ -53,5 +53,10 @@ static uint32_t d_read(void *state, uint32_t offset, uint8_t bytes) {
   InputPortState *s = (InputPortState *)state;
   uint8_t data = s->data;
   s->ready = 0;
+
+  if (s->ic && s->ic->deassert_interrupt) {
+      s->ic->deassert_interrupt(s->ic, s->int_index);
+  }
+
   return (uint32_t)data;
 }
