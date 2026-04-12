@@ -51,7 +51,7 @@ typedef struct {
 
   // Status register bits:
   //  INDEX - DESC
-  //    0   - IEN interrupt enable
+  //    0   - IEN: 1 = interrupts enabled, 0 = interrupts disabled
   uint32_t sr;
   // Instruction Address Register
   // the register where the return address is stored before a interrupt

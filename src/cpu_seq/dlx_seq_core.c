@@ -27,9 +27,9 @@ void dlx_seq_step(DLX_state *state) {
   }
 
   // Check if DLX interrupt line is asserted.
-  // If so, set IEN to 1, set IAR to current pc and jump to address 0
-  if(state->interrupt_line && (state->sr & SR_IEN) == 0) {
-    state->sr |= SR_IEN;
+  // If so, disable interrupts (IEN = 0), set IAR to current pc and jump to address 0
+  if(state->interrupt_line && (state->sr & SR_IEN)) {
+    state->sr &= ~SR_IEN;
     state->iar = state->pc;
     state->pc = 0;
   }
@@ -321,7 +321,7 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
     }
     break;
   case I_RFE:
-    state->sr &= ~SR_IEN;
+    state->sr |= SR_IEN;
     state->pc = state->iar;
     break;
   default:
