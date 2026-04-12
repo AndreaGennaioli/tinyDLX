@@ -45,23 +45,37 @@ typedef struct {
   uint8_t *rom;
   uint8_t *ram;
 
+  // General Purpose Registers
   uint32_t gpr[DLX_GPR_COUNT];
+  // Program Counter
   uint32_t pc;
-  uint32_t device_count;
-
-  // Status register bits:
+  // Status Register:
   //  INDEX - DESC
   //    0   - IEN: 1 = interrupts enabled, 0 = interrupts disabled
   uint32_t sr;
-  // Instruction Address Register
+  // Instruction Address Register:
   // the register where the return address is stored before a interrupt
   // handling.
   uint32_t iar;
+  // Cause Register:
+  // contains the interrupt code of the last interrupt asserted.
+  // Since the DLX is not capable of identifying the source of an hardware
+  // interrupt, for HW interrupts the Cause Register is set to 0 (the program
+  // has the task to comunicate with the Interrupt Controller), instead, for
+  // SW interrupts (asserted using INT) the interrupt code is set into the
+  // Cause Register.
+  uint32_t cr;
 
+  // Array containing all the devices. Every device contained in the array
+  // can be mapped in a specified range of addresses, can define handlers
+  // for write and read operations, can define a tick function executed at the
+  // start of every cycle and can assert interrutps. Inter-device communication
+  // is also possible with appropriate configuration.
   DLX_device *devices[DLX_MAX_DEVICES];
+  uint32_t device_count;
 
+  // Asserts the DLX's interrupt line. The state is voluntarily of void type.
   void (*assert_interrupt)(void *state);
-
   uint8_t interrupt_line;
 } DLX_state;
 
