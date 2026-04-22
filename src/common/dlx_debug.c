@@ -217,19 +217,19 @@ void dlx_dump_decoded_instruction(decoded_instruction *decoded_i) {
     fprintf(stderr, "NOT_IMPLEMENTED");
   }
 
-  if (decoded_i->rs2 >= 0 && decoded_i->rs2 < 32) {
+  if (decoded_i->rs2 < 32) {
     fprintf(stderr, "\nRS2: R%d", decoded_i->rs2);
   } else {
     fprintf(stderr, "\nRS2: -");
   }
 
-  if (decoded_i->rs1 >= 0 && decoded_i->rs1 < 32) {
+  if (decoded_i->rs1 < 32) {
     fprintf(stderr, "\nRS1: R%d", decoded_i->rs1);
   } else {
     fprintf(stderr, "\nRS1: -");
   }
 
-  if (decoded_i->rd >= 0 && decoded_i->rd < 32) {
+  if (decoded_i->rd < 32) {
     fprintf(stderr, "\nRD: R%d", decoded_i->rd);
   } else {
     fprintf(stderr, "\nRD: -");
