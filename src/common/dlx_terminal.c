@@ -1,5 +1,4 @@
 #include "dlx_terminal.h"
-#include <signal.h>
 #include <stdlib.h>
 #include <termios.h>
 #include <unistd.h>
