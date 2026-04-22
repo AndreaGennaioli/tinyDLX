@@ -13,6 +13,9 @@ typedef struct {
   uint8_t rs1, rs2, rd;
 } decoded_instruction;
 
+// Follows all the instructions of the ISA.
+// R-type instructions are identified by their function (func) code
+
 #define I_SLL 0x00
 #define I_SRL 0x00
 #define I_SRA 0x00

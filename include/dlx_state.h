@@ -13,6 +13,7 @@ void dlx_state_free(DLX_state *state);
 // Allocates new device in state->devices
 void dlx_device_register(DLX_state *state, DLX_device *device);
 
+// Assert DLX interrupt line
 void dlx_assert_interrupt(void *state);
 
 // Exits the emulator
