@@ -27,23 +27,15 @@ static uint64_t now_ns(void) {
   return (uint64_t)ts.tv_sec * NS_PER_SEC + ts.tv_nsec;
 }
 
-DLX_state *global_state = NULL;
+volatile sig_atomic_t quit = 0;
 
 void handle_exit_signal(int signum) {
-  if (global_state != NULL) {
-    info("Received exit signal");
-    dlx_exit(global_state); 
-  } else {
-    dlx_terminal_restore();
-    exit(EXIT_SUCCESS);
-  }
+    quit = 1;
 }
 
 int main(int argc, char *argv[]) {
   DLX_config config = {.program_file = "\0"};
   DLX_state state;
-
-  global_state = &state;
 
   signal(SIGINT, handle_exit_signal);
   signal(SIGTERM, handle_exit_signal);
@@ -98,7 +90,7 @@ int main(int argc, char *argv[]) {
   uint64_t sync_interval = (config.freq_hz > 0)
     ? ((uint64_t)config.freq_hz / 100 > 0 ? (uint64_t)config.freq_hz / 100 : 1)
     : THROTTLE_INTERVAL;
-  while (state.pc < program_size) {
+  while (!quit && state.pc < program_size) {
     dlx_seq_step(&state);
     cycle++;
 
