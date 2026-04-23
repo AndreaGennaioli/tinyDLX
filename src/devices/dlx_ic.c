@@ -38,7 +38,7 @@ static void deassert_interrupt(struct DLX_ic_base *ic, uint8_t index) {
   ic->lines[index] = 0;
 }
 
-void assert_interrupt(struct DLX_ic_base *ic, uint8_t index) {
+static void assert_interrupt(struct DLX_ic_base *ic, uint8_t index) {
   ic->lines[index] = 1;
 }
 
