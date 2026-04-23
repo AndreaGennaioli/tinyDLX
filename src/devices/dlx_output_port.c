@@ -16,10 +16,17 @@ static void d_write(void *state, uint32_t offset, uint32_t data,
 
 DLX_device *dlx_output_port_create(uint32_t base_address) {
   DLX_device *dev = (DLX_device *)malloc(sizeof(DLX_device));
+  if(dev == NULL) return NULL;
 
   dev->base_address = base_address;
   dev->range_size = 1;
   dev->state = malloc(sizeof(OutputPortState));
+
+  if(dev->state == NULL) {
+    free(dev);
+    return NULL;
+  }
+
   ((OutputPortState *)dev->state)->ready = 1;
   ((OutputPortState *)dev->state)->delay = 0;
 

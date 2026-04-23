@@ -11,10 +11,16 @@ DLX_device *dlx_ic_create(uint32_t base_address, uint32_t devices_size,
                           void (*controller_assert_interrupt)(void *state),
                           void *controller_state) {
   DLX_device *dev = (DLX_device *)malloc(sizeof(DLX_device));
+  if(dev == NULL) return NULL;
 
   dev->base_address = base_address;
   dev->range_size = 1;
   dev->state = malloc(sizeof(ICState));
+
+  if(dev->state == NULL) {
+    free(dev);
+    return NULL;
+  }
 
   ICState *ic_state = (ICState *)dev->state;
   for (int i = 0; i < DLX_MAX_DEVICES; i++) {

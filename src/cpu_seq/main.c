@@ -55,21 +55,45 @@ int main(int argc, char *argv[]) {
   info("DLX state initialized");
 
   // Initialize devices
-  dlx_device_register(
-      &state, dlx_startup_circuit_create(0xC0000000));
+  DLX_device *startup_circuit = dlx_startup_circuit_create(0xC0000000);
+  if (startup_circuit == NULL) {
+    error("Failed to create a device: Startup Circuit");
+    dlx_exit(&state, EXIT_FAILURE);
+  }
+  dlx_device_register(&state, startup_circuit);
   info("Device created: Startup Circuit");
-  DLX_device *ic =
-      dlx_ic_create(0xC00C0000, DLX_MAX_DEVICES, state.assert_interrupt, &state);
+
+  DLX_device *ic = dlx_ic_create(0xC00C0000, DLX_MAX_DEVICES,
+                                 state.assert_interrupt, &state);
+  if (ic == NULL) {
+    error("Failed to create a device: Interrupt Controller");
+    dlx_exit(&state, EXIT_FAILURE);
+  }
   dlx_device_register(&state, ic);
   info("Device created: Interrupt Controller");
-  dlx_device_register(
-      &state, dlx_input_port_create(0xC0040000, ic->state, 0));
+
+  DLX_device *input_port = dlx_input_port_create(0xC0040000, ic->state, 0);
+  if (input_port == NULL) {
+    error("Failed to create a device: Input Port");
+    dlx_exit(&state, EXIT_FAILURE);
+  }
+  dlx_device_register(&state, input_port);
   info("Device created: Input Port");
-  dlx_device_register(
-      &state, dlx_output_port_create(0xC0080000));
+
+  DLX_device *output_port = dlx_output_port_create(0xC0080000);
+  if (output_port == NULL) {
+    error("Failed to create a device: Output Port");
+    dlx_exit(&state, EXIT_FAILURE);
+  }
+  dlx_device_register(&state, output_port);
   info("Device created: Output Port");
-  dlx_device_register(
-      &state, dlx_power_manager_create(0xC0100000, &state));
+
+  DLX_device *power_manager = dlx_power_manager_create(0xC0100000, &state);
+  if (power_manager == NULL) {
+    error("Failed to create a device: Power Manager");
+    dlx_exit(&state, EXIT_FAILURE);
+  }
+  dlx_device_register(&state, power_manager);
   info("Device created: Power Manager");
 
   // Mounting program file

@@ -7,10 +7,17 @@ static void d_write(void *state, uint32_t offset, uint32_t data, uint8_t bytes);
 
 DLX_device *dlx_startup_circuit_create(uint32_t base_address) {
   DLX_device *dev = (DLX_device *)malloc(sizeof(DLX_device));
+  if(dev == NULL) return NULL;
 
   dev->base_address = base_address;
   dev->range_size = 1;
   dev->state = malloc(sizeof(uint8_t));
+  
+  if(dev->state == NULL) {
+    free(dev);
+    return NULL;
+  }
+
   *(uint8_t *)dev->state = 1;
 
   dev->tick = NULL;

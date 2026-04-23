@@ -12,10 +12,17 @@ static uint32_t d_read(void *state, uint32_t offset, uint8_t bytes);
 DLX_device *dlx_input_port_create(uint32_t base_address, DLX_ic_base *ic,
                                   uint8_t int_index) {
   DLX_device *dev = (DLX_device *)malloc(sizeof(DLX_device));
+  if(dev == NULL) return NULL;
 
   dev->base_address = base_address;
   dev->range_size = 1;
   dev->state = malloc(sizeof(InputPortState));
+
+  if(dev->state == NULL) {
+    free(dev);
+    return NULL;
+  }
+
   ((InputPortState *)dev->state)->ic = ic;
   ((InputPortState *)dev->state)->ready = 0;
   ((InputPortState *)dev->state)->data = 0;
