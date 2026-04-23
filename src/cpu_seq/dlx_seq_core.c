@@ -35,8 +35,7 @@ void dlx_seq_step(DLX_state *state) {
   }
 
   // FETCH
-  // The program is expected to be in Big Endian, so no conversion is needed
-  uint32_t raw_i = dlx_memory_read_word(state, state->pc, 0);
+  uint32_t raw_i = dlx_memory_read_word(state, state->pc);
 
   // DECODE
   state->pc += 4;
@@ -280,23 +279,23 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
     break;
   case I_LW:
     state->gpr[decoded_i->rs1] = dlx_memory_read_word(
-        state, state->gpr[decoded_i->rs2] + decoded_i->imm16_sext, 1);
+        state, state->gpr[decoded_i->rs2] + decoded_i->imm16_sext);
     break;
   case I_LHU:
     state->gpr[decoded_i->rs1] = dlx_memory_read_half_word(
-        state, state->gpr[decoded_i->rs2] + decoded_i->imm16_sext, 1);
+        state, state->gpr[decoded_i->rs2] + decoded_i->imm16_sext);
     break;
   case I_LH:
     state->gpr[decoded_i->rs1] = sign_extend_16(dlx_memory_read_half_word(
-        state, state->gpr[decoded_i->rs2] + decoded_i->imm16_sext, 1));
+        state, state->gpr[decoded_i->rs2] + decoded_i->imm16_sext));
     break;
   case I_LBU:
     state->gpr[decoded_i->rs1] = dlx_memory_read_byte(
-        state, state->gpr[decoded_i->rs2] + decoded_i->imm16_sext, 1);
+        state, state->gpr[decoded_i->rs2] + decoded_i->imm16_sext);
     break;
   case I_LB:
     state->gpr[decoded_i->rs1] = sign_extend_8(dlx_memory_read_byte(
-        state, state->gpr[decoded_i->rs2] + decoded_i->imm16_sext, 1));
+        state, state->gpr[decoded_i->rs2] + decoded_i->imm16_sext));
     break;
   case I_JR:
     state->pc = state->gpr[decoded_i->rs1];

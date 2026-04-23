@@ -31,8 +31,7 @@ static uint8_t *get_phys_ptr(DLX_state *state, uint32_t address) {
   return NULL;
 }
 
-uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address,
-                              uint8_t convert_endianess) {
+uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address) {
   if (state == NULL)
     return 0;
 
@@ -54,20 +53,12 @@ uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address,
     return 0;
   }
 
-  // If convert_endianess = 1 convert from Big Endian to Little Endian:
-  // everything stored in the DLX memory has to be in Big Endian,
-  // but in order to use uint32_t a conversion is needed, since the eumulator
-  // architecture is Little Endian.
-  uint8_t b0 = convert_endianess ? ptr[0] : ptr[3];
-  uint8_t b1 = convert_endianess ? ptr[1] : ptr[2];
-  uint8_t b2 = convert_endianess ? ptr[2] : ptr[1];
-  uint8_t b3 = convert_endianess ? ptr[3] : ptr[0];
-
-  return (uint32_t)((b3 << 24) | (b2 << 16) | (b1 << 8) | b0);
+  // Memory is big-endian: byte at lowest address is the MSB.
+  return ((uint32_t)ptr[0] << 24) | ((uint32_t)ptr[1] << 16)
+       | ((uint32_t)ptr[2] << 8)  |  (uint32_t)ptr[3];
 }
 
-uint32_t dlx_memory_read_half_word(DLX_state *state, uint32_t address,
-                                   uint8_t convert_endianess) {
+uint32_t dlx_memory_read_half_word(DLX_state *state, uint32_t address) {
   if (state == NULL)
     return 0;
 
@@ -89,18 +80,11 @@ uint32_t dlx_memory_read_half_word(DLX_state *state, uint32_t address,
     return 0;
   }
 
-  // If convert_endianess = 1 convert from Big Endian to Little Endian:
-  // everything stored in the DLX memory has to be in Big Endian,
-  // but in order to use uint32_t a conversion is needed, since the eumulator
-  // architecture is Little Endian.
-  uint8_t b0 = convert_endianess ? ptr[0] : ptr[1];
-  uint8_t b1 = convert_endianess ? ptr[1] : ptr[0];
-
-  return (uint32_t)((b1 << 8) | b0);
+  // Memory is big-endian: byte at lowest address is the MSB.
+  return ((uint32_t)ptr[0] << 8) | (uint32_t)ptr[1];
 }
 
-uint32_t dlx_memory_read_byte(DLX_state *state, uint32_t address,
-                              uint8_t convert_endianess) {
+uint32_t dlx_memory_read_byte(DLX_state *state, uint32_t address) {
   if (state == NULL)
     return 0;
 
@@ -117,13 +101,7 @@ uint32_t dlx_memory_read_byte(DLX_state *state, uint32_t address,
     return 0;
   }
 
-  // If convert_endianess = 1 convert from Big Endian to Little Endian:
-  // everything stored in the DLX memory has to be in Big Endian,
-  // but in order to use uint32_t a conversion is needed, since the eumulator
-  // architecture is Little Endian.
-  uint8_t b0 = ptr[0];
-
-  return (uint32_t)b0;
+  return (uint32_t)ptr[0];
 }
 
 void dlx_memory_write_word(DLX_state *state, uint32_t address, uint32_t data) {
@@ -155,10 +133,11 @@ void dlx_memory_write_word(DLX_state *state, uint32_t address, uint32_t data) {
     return;
   }
 
-  ptr[0] = data & 0xFF;
-  ptr[1] = (data & 0xFF00) >> 8;
-  ptr[2] = (data & 0xFF0000) >> 16;
-  ptr[3] = (data & 0xFF000000) >> 24;
+  // Memory is big-endian: MSB at lowest address.
+  ptr[0] = (data >> 24) & 0xFF;
+  ptr[1] = (data >> 16) & 0xFF;
+  ptr[2] = (data >> 8)  & 0xFF;
+  ptr[3] =  data        & 0xFF;
 }
 
 void dlx_memory_write_half_word(DLX_state *state, uint32_t address,
@@ -191,8 +170,9 @@ void dlx_memory_write_half_word(DLX_state *state, uint32_t address,
     return;
   }
 
-  ptr[0] = data & 0xFF;
-  ptr[1] = (data & 0xFF00) >> 8;
+  // Memory is big-endian: MSB at lowest address.
+  ptr[0] = (data >> 8) & 0xFF;
+  ptr[1] =  data       & 0xFF;
 }
 
 void dlx_memory_write_byte(DLX_state *state, uint32_t address, uint8_t data) {
