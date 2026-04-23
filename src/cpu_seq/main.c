@@ -137,5 +137,5 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  dlx_exit(&state);
+  dlx_exit(&state, EXIT_SUCCESS);
 }

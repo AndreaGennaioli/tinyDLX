@@ -76,12 +76,12 @@ void dlx_assert_interrupt(void *state) {
   ((DLX_state *)state)->interrupt_line = 1;
 }
 
-void dlx_exit(DLX_state *state) {
+void dlx_exit(DLX_state *state, int exit_code) {
   info("Execution terminated");
 
   dlx_state_free(state);
 
   info("Exiting, bye bye...");
 
-  exit(EXIT_SUCCESS);
+  exit(exit_code);
 }
