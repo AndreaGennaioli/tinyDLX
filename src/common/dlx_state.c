@@ -42,6 +42,10 @@ int dlx_state_init(DLX_state *state) {
 }
 
 void dlx_device_register(DLX_state *state, DLX_device *device) {
+  if (device == NULL) {
+    error("Cannot register NULL device");
+    return;
+  }
   if (state->device_count >= DLX_MAX_DEVICES) {
     error("Too many devices: max %d", DLX_MAX_DEVICES);
     return;
