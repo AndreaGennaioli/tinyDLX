@@ -81,6 +81,7 @@ void dlx_assert_interrupt(void *state) {
 }
 
 void dlx_exit(DLX_state *state, int exit_code) {
+  fputc('\n', stdout);
   info("Execution terminated");
 
   dlx_state_free(state);
