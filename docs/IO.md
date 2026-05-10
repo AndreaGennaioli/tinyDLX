@@ -5,9 +5,9 @@ Input and output are managed as memory mapped devices. For now the interaction w
 For now there are only 5 fixed devices:
  - **Startup Circuit**: 1 bit register which is set to 1 on the startup of the system and can be turned to 0 with a dummy write. It is very useful, since it is the only way to distinct an interrupt from the system startup. No interrupt is asserted.
  - **Input Port**: 8 bits input port. Interrupt is asserted when the port buffer is full.
- - **Output Port**: 8 bits output port. Interrupt is asserted when the port is ready to output.
+ - **Output Port**: 8 bits output port. A read returns the state of the port (1 = buffer full), a write writes to the output port, which prints to stdout. No interrupt is asserted.
  - **Interrupt Controller**: it is the controller for the hardware interrupts. When a interrupt from a device is received, its interrupt line is asserted. A read to its specific memory address will return the interrupt code.
- - **Power Manager**: a dummy read/write to this device makes the emulator exit. No interrupt is asserted.
+ - **Power Manager**: a dummy write to this device makes the emulator exit. No interrupt is asserted.
 To know the memory mappings and the interrupt codes see [Mapping.md](./Mappings.md).
 
 ## Startup Circuit
