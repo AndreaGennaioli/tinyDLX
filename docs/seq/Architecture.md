@@ -18,7 +18,7 @@ A Power Manager device is planned, which will eventually allow the program to ex
 
 Each call to `dlx_seq_step` performs the following operations:
     1. **Tick al devices**: each registered device gets a `tick()` call, allowing it to update internal state and assert interrupt lines id needed.
-    2. **Check the interrupt line**: if the interrupt line is asserted and interrupts are enabled (`SR[IEN] == 0`), the CPU saves `PC` into `IAR`, sets `SR[IEN] = 1`, and jumps to address `0x00000000`.
+    2. **Check the interrupt line**: if the interrupt line is asserted and interrupts are enabled (`SR[IEN] == 1`), the CPU saves `PC` into `IAR`, sets `SR[IEN] = 0`, and jumps to address `0x00000000`.
     3. **Fetch**: reads the 32-bit instruction at `PC` from the memory bus. Memory (both ROM and RAM) is big-endian: the byte at the lowest address is the most significant. The memory bus reassembles multi-byte values accordingly, regardless of host endianness.
     4. **Decode**: increments `PC` by 4, then decodes the raw instruction.
     5. **Execute/Memory/Write-back**: all collapsed into a single function `execute()`. Memory accesses use the memory bus, which handles address decoding, endianness conversion, and MMIO dispatch.
