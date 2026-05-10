@@ -6,15 +6,14 @@ The program loaded into the emulator is a **flat binary**. This means there is n
 
 ## Execution model
 
-The sequential emulator runs a synchronous step loop:
+The sequential emulator runs a simple synchronous step loop similar to:
 
 ```c
 while (state.pc < program_size) {
     dlx_seq_step(&state);
 }
 ```
-
-A Power Manager device is planned, which will eventually allow the program to exit the emulator explicitly via a memory mapped write.
+A program can exit at its end or use the Power Manager device to exit.
 
 Each call to `dlx_seq_step` performs the following operations:
     1. **Tick al devices**: each registered device gets a `tick()` call, allowing it to update internal state and assert interrupt lines id needed.
