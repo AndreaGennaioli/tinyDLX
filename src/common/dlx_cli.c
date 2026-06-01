@@ -54,7 +54,7 @@ static void print_help(const char *program_name, FILE *output) {
   fprintf(output, "Options:\n");
   fprintf(output, "  -b, --binary-file FILE    Binary program file"
                   "(required)\n");
-  fprintf(output, "  -f, --freq FREQUENCE    Target frequency of execution, if not specified or 0 full use of host CPU (core) is expected\n");
+  fprintf(output, "  -f, --freq FREQUENCE      Target frequency of execution, if not specified or 0, full use of host CPU (core) is expected\n");
   fprintf(output,
           "  -h, --help                Shows this help comand and exits\n");
 }
