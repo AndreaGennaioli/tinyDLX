@@ -39,6 +39,6 @@ static void d_write(void *state, uint32_t offset, uint32_t data,
   (void) data;
   (void) bytes;
   PowerManagerState *s = (PowerManagerState *)state;
-  dlx_exit(s->dlx_state, EXIT_SUCCESS);
+  s->dlx_state->exec_state = DLX_HALT;
 }
 

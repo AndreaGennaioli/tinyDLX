@@ -68,9 +68,10 @@ int main(int argc, char *argv[]) {
 
   // Mounting program file
   // The program file is a binary file containing the program
-  uint32_t program_size;
-  if (dlx_load_program(&state, config.program_file, &program_size) == 0)
+  if (dlx_load_program(&state, config.program_file) == 0) {
+    dlx_state_free(&state);
     return EXIT_FAILURE;
+  }
 
   info("Executing program...");
 
@@ -84,7 +85,12 @@ int main(int argc, char *argv[]) {
   uint64_t sync_interval = (config.freq_hz > 0)
     ? ((uint64_t)config.freq_hz / 100 > 0 ? (uint64_t)config.freq_hz / 100 : 1)
     : THROTTLE_INTERVAL;
-  while (!quit && state.pc < program_size) {
+  while (state.exec_state == DLX_RUNNING) {
+    if(quit) {
+      state.exec_state = DLX_SIGNAL;
+      break;
+    }
+
     dlx_seq_step(&state);
     cycle++;
 
@@ -107,7 +113,24 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  dlx_exit(&state, EXIT_SUCCESS);
+  int code;
+  switch(state.exec_state) {
+    case DLX_HALT:   code = 0; break;
+    case DLX_FAULT:  code = 1; break;
+    case DLX_SIGNAL: code = 2; break;
+    // Internal emulator error
+    default:         code = 3; break;
+  }
+
+  fputc('\n', stderr);
+  info("Execution terminated");
+
+  dlx_state_free(&state);
+
+  info("Exiting, bye bye...");
+
+  return code;
+}
 
 static int add_device(DLX_state *state, const char *name, DLX_device *dev) {
   if(dev == NULL){

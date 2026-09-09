@@ -61,6 +61,17 @@ typedef enum {
   SR_IEN = 1 << 0,
 } StatusRegisterFlags;
 
+// Describes the DLX running state.
+typedef enum {
+  DLX_RUNNING = 0,
+  // The emulated program is exited as expected. No errors.
+  DLX_HALT,
+  // The emulated program exited because of an error.
+  DLX_FAULT,
+  // Eg: CTRL+C
+  DLX_SIGNAL
+} DLX_exec_state;
+
 typedef struct {
   uint8_t *rom;
   uint8_t *ram;
@@ -97,6 +108,7 @@ typedef struct {
   // Asserts the DLX's interrupt line. The state is voluntarily of void type.
   void (*assert_interrupt)(void *state);
   uint8_t interrupt_line;
+  DLX_exec_state exec_state;
 } DLX_state;
 
 // Configuration struct for the emulator.

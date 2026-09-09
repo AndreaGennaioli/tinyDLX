@@ -19,7 +19,4 @@ void dlx_device_destroy(DLX_device *device);
 // Assert DLX interrupt line
 void dlx_assert_interrupt(void *state);
 
-// Exits the emulator with the given exit code
-void dlx_exit(DLX_state *state, int exit_code);
-
 #endif // !DLX_STATE_H

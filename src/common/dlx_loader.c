@@ -4,8 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int dlx_load_program(DLX_state *state, const char *filename,
-                     uint32_t *program_size) {
+int dlx_load_program(DLX_state *state, const char *filename) {
   if (state == NULL)
     return 0;
 
@@ -44,8 +43,6 @@ int dlx_load_program(DLX_state *state, const char *filename,
     fclose(fp);
     return 0;
   }
-
-  *program_size = read_bytes;
 
   info("Loaded %ld bytes into ROM from %s", file_size, filename);
 

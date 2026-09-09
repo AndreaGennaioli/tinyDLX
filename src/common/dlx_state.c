@@ -1,4 +1,5 @@
 #include "dlx_state.h"
+#include "dlx_defs.h"
 #include "dlx_terminal.h"
 #include "debug.h"
 #include <stdlib.h>
@@ -37,6 +38,8 @@ int dlx_state_init(DLX_state *state) {
   state->iar = 0;
   state->interrupt_line = 0;
   state->assert_interrupt = dlx_assert_interrupt;
+
+  state->exec_state = DLX_RUNNING;
 
   return 1;
 }
@@ -86,15 +89,4 @@ void dlx_state_free(DLX_state *state) {
 
 void dlx_assert_interrupt(void *state) {
   ((DLX_state *)state)->interrupt_line = 1;
-}
-
-void dlx_exit(DLX_state *state, int exit_code) {
-  fputc('\n', stdout);
-  info("Execution terminated");
-
-  dlx_state_free(state);
-
-  info("Exiting, bye bye...");
-
-  exit(exit_code);
 }
