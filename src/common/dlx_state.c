@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int dlx_state_init(DLX_state *state) {
+int dlx_state_init(DLX_state *state, DLX_config *config) {
   if (state == NULL)
     return 0;
 
@@ -41,6 +41,8 @@ int dlx_state_init(DLX_state *state) {
 
   state->exec_state = DLX_RUNNING;
 
+  state->cycles = 0;
+  state->max_cycles = config->max_cycles;
   return 1;
 }
 

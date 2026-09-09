@@ -38,7 +38,7 @@ static int add_device(DLX_state *state, const char *name, DLX_device *dev);
 static int setup_devices(DLX_state *state);
 
 int main(int argc, char *argv[]) {
-  DLX_config config = {.program_file = "\0"};
+  DLX_config config = {.program_file = "\0", .freq_hz = 0, .max_cycles = 0};
   DLX_state state;
 
   signal(SIGINT, handle_exit_signal);
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
   info("Initializing DLX state");
 
   // Initialize DLX state
-  if (dlx_state_init(&state) == 0)
+  if (dlx_state_init(&state, &config) == 0)
     return EXIT_FAILURE;
 
   info("DLX state initialized");
@@ -75,8 +75,7 @@ int main(int argc, char *argv[]) {
 
   info("Executing program...");
 
-  // Cycle counter and start timestamp
-  uint64_t cycle = 0;
+  // Start timestamp
   uint64_t start_ns = now_ns();
 
   // The sync interval is calculated from the frequency:
@@ -92,15 +91,20 @@ int main(int argc, char *argv[]) {
     }
 
     dlx_seq_step(&state);
-    cycle++;
+    state.cycles++;
+
+    if(state.max_cycles != 0 && state.cycles >= state.max_cycles) {
+      state.exec_state = DLX_TIMEOUT;
+      break;
+    }
 
     // Each interval of sync_interval cycles, the current elapsed time
     // it compared to the expected elapsed time based on the requested
     // frequency: if simulated_ns > elapsed_ns it means the emulator is running
     // faster than requested, so we wait; if elapsed_ns > simulated_ns it means
     // the emulator is running at max speed (100% use of core).
-    if (config.freq_hz > 0 && cycle % sync_interval == 0) {
-      uint64_t simulated_ns = (cycle * NS_PER_SEC) / config.freq_hz;
+    if (config.freq_hz > 0 && state.cycles % sync_interval == 0) {
+      uint64_t simulated_ns = (state.cycles * NS_PER_SEC) / config.freq_hz;
       uint64_t elapsed_ns   = now_ns() - start_ns;
 
       if (simulated_ns > elapsed_ns) {
@@ -118,6 +122,7 @@ int main(int argc, char *argv[]) {
     case DLX_HALT:   code = 0; break;
     case DLX_FAULT:  code = 1; break;
     case DLX_SIGNAL: code = 2; break;
+    case DLX_TIMEOUT: code = 4; break;
     // Internal emulator error
     default:         code = 3; break;
   }

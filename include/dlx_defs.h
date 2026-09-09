@@ -69,12 +69,16 @@ typedef enum {
   // The emulated program exited because of an error.
   DLX_FAULT,
   // Eg: CTRL+C
-  DLX_SIGNAL
+  DLX_SIGNAL,
+  // When state->cycle exceeds state->max_cycles
+  DLX_TIMEOUT
 } DLX_exec_state;
 
 typedef struct {
   uint8_t *rom;
   uint8_t *ram;
+  uint64_t cycles;
+  uint64_t max_cycles;
 
   // General Purpose Registers
   uint32_t gpr[DLX_GPR_COUNT];
@@ -118,6 +122,7 @@ typedef struct {
   // Filename of the program to load in the ROM. See dlx_loader
   char *program_file;
   uint32_t freq_hz;
+  uint64_t max_cycles;
 } DLX_config;
 
 #endif // !DLX_DEFS_H

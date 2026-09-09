@@ -14,16 +14,20 @@ int parse_arguments(int argc, char **argv, DLX_config *config) {
       {"binary-file", required_argument, NULL, 'b'},
       {"help", no_argument, NULL, 'h'},
       {"freq", required_argument, NULL, 'f'},
+      {"max-cycles", required_argument, NULL, 'C'},
       {0, 0, 0, 0},
   };
 
-  while ((opt = getopt_long(argc, argv, "b:f:h", longopts, NULL)) != -1) {
+  while ((opt = getopt_long(argc, argv, "b:f:C:h", longopts, NULL)) != -1) {
     switch (opt) {
     case 'b':
       config->program_file = optarg;
       break;
     case 'f':
       config->freq_hz = (uint32_t)atoi(optarg);
+      break;
+    case 'C':
+      config->max_cycles = (uint64_t)atoi(optarg);
       break;
     case 'h':
       print_help(argv[0], stdout);
@@ -55,6 +59,7 @@ static void print_help(const char *program_name, FILE *output) {
   fprintf(output, "  -b, --binary-file FILE    Binary program file"
                   "(required)\n");
   fprintf(output, "  -f, --freq FREQUENCE      Target frequency of execution, if not specified or 0, full use of host CPU (core) is expected\n");
+  fprintf(output, "  -C, --max-cycles CYCLES   Maximum number of execution cycles\n");
   fprintf(output,
           "  -h, --help                Shows this help comand and exits\n");
 }
