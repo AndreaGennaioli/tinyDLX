@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -I./include/ -Wall -g
+CFLAGS := -I./include/ -Wall -Wextra -g
 BIN_DIR := bin
 OBJ_DIR := obj
 SRC_COMMON := $(wildcard src/common/*.c)
