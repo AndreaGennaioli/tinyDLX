@@ -1,12 +1,18 @@
 #include "dlx_cli.h"
 #include "getopt.h"
 #include <bits/getopt_ext.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <errno.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
 static void print_help(const char *program_name, FILE *output);
 static int check_config(const char *program_name, DLX_config *config);
+
+static int parse_u64(const char *str, uint64_t *out);
+static int parse_u32(const char *str, uint32_t *out);
 
 int parse_arguments(int argc, char **argv, DLX_config *config) {
   int opt;
@@ -24,10 +30,16 @@ int parse_arguments(int argc, char **argv, DLX_config *config) {
       config->program_file = optarg;
       break;
     case 'f':
-      config->freq_hz = (uint32_t)atoi(optarg);
+      if(parse_u32(optarg, &config->freq_hz) == 0) {
+        fprintf(stderr, "An error while parsing --freq value.");
+        exit(EXIT_FAILURE);
+      }
       break;
     case 'C':
-      config->max_cycles = (uint64_t)atoi(optarg);
+      if(parse_u64(optarg, &config->max_cycles) == 0) {
+        fprintf(stderr, "An error while parsing --max-cycles value.");
+        exit(EXIT_FAILURE);
+      }
       break;
     case 'h':
       print_help(argv[0], stdout);
@@ -40,6 +52,31 @@ int parse_arguments(int argc, char **argv, DLX_config *config) {
   }
 
   return check_config(argv[0], config);
+}
+
+static int parse_u64(const char *str, uint64_t *out) {
+  const char *p = str;
+  while (isspace((unsigned char)*p)) p++;
+  if(*p == '-' || *p == '+') return 0;
+
+  // strtoull does not set errno to 0 if success
+  errno = 0;
+  char *end;
+  unsigned long long v = strtoull(p, &end, 0);
+  if(end == p) return 0;
+  if(*end != '\0') return 0;
+  if(errno == ERANGE) return 0;
+
+  *out = (uint64_t)v;
+  return 1;
+}
+
+static int parse_u32(const char *str, uint32_t *out) {
+  uint64_t v;
+  if(parse_u64(str, &v) == 0) return 0;
+  if(v > UINT32_MAX) return 0;
+  *out = (uint32_t)v;
+  return 1;
 }
 
 static int check_config(const char *program_name, DLX_config *config) {
