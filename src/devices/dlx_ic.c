@@ -51,7 +51,7 @@ static void assert_interrupt(struct DLX_ic_base *ic, uint8_t index) {
 static void d_tick(void *state) {
   ICState *ic_state = (ICState *)state;
 
-  for (int i = 0; i < ic_state->devices_size; i++) {
+  for (uint32_t i = 0; i < ic_state->devices_size; i++) {
     if (ic_state->base.lines[i]) {
       ic_state->base.controller_assert_interrupt(ic_state->controller_state);
       break;
@@ -65,7 +65,7 @@ static uint32_t d_read(void *state, uint32_t offset, uint8_t bytes) {
   (void) offset;
   (void) bytes;
   ICState *ic_state = (ICState *)state;
-  int i;
+  uint32_t i;
 
   for (i = 0; i < ic_state->devices_size; i++) {
     if (ic_state->base.lines[i]) {

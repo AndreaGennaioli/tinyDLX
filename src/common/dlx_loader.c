@@ -39,7 +39,7 @@ int dlx_load_program(DLX_state *state, const char *filename,
   size_t read_bytes = fread(state->rom, 1, file_size, fp);
 
   // Check readed bytes
-  if (read_bytes != file_size) {
+  if (read_bytes != (size_t) file_size) {
     error("Reading Error: expected %ld bytes, got %lu", file_size, read_bytes);
     fclose(fp);
     return 0;

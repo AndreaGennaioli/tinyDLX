@@ -21,7 +21,7 @@ void dlx_seq_step(DLX_state *state) {
     return;
 
   // Update devices tick
-  for (int i = 0; i < state->device_count; i++) {
+  for (uint32_t i = 0; i < state->device_count; i++) {
     if (state->devices[i]->tick != NULL)
       state->devices[i]->tick(state->devices[i]->state);
   }

@@ -68,7 +68,7 @@ void dlx_state_free(DLX_state *state) {
     state->ram = NULL;
   }
 
-  for (int i = 0; i < state->device_count; i++) {
+  for (uint32_t i = 0; i < state->device_count; i++) {
     if(state->devices[i]->free != NULL) {
       state->devices[i]->free(state->devices[i]->state);
     }

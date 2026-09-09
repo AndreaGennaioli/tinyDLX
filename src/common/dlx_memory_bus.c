@@ -3,7 +3,7 @@
 #include "dlx_defs.h"
 
 static DLX_device *get_device(DLX_state *state, uint32_t address) {
-  for (int i = 0; i < state->device_count; i++) {
+  for (uint32_t i = 0; i < state->device_count; i++) {
     DLX_device *dev = state->devices[i];
 
     if (address >= dev->base_address &&
