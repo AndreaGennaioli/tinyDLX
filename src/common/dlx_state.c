@@ -41,17 +41,28 @@ int dlx_state_init(DLX_state *state) {
   return 1;
 }
 
-void dlx_device_register(DLX_state *state, DLX_device *device) {
+int dlx_device_register(DLX_state *state, DLX_device *device) {
   if (device == NULL) {
     error("Cannot register NULL device");
-    return;
+    return 0;
   }
   if (state->device_count >= DLX_MAX_DEVICES) {
     error("Too many devices: max %d", DLX_MAX_DEVICES);
-    return;
+    return 0;
   }
   state->devices[state->device_count] = device;
   state->device_count++;
+  return 1;
+}
+
+void dlx_device_destroy(DLX_device *device) {
+  if (device == NULL)
+    return;
+
+  if(device->free != NULL) {
+    device->free(device->state);
+  }
+  free(device);
 }
 
 void dlx_state_free(DLX_state *state) {
@@ -69,10 +80,7 @@ void dlx_state_free(DLX_state *state) {
   }
 
   for (uint32_t i = 0; i < state->device_count; i++) {
-    if(state->devices[i]->free != NULL) {
-      state->devices[i]->free(state->devices[i]->state);
-    }
-    free(state->devices[i]);
+    dlx_device_destroy(state->devices[i]);
   }
 }
 

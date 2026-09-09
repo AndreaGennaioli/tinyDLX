@@ -11,7 +11,10 @@ int dlx_state_init(DLX_state *state);
 void dlx_state_free(DLX_state *state);
 
 // Allocates new device in state->devices
-void dlx_device_register(DLX_state *state, DLX_device *device);
+int dlx_device_register(DLX_state *state, DLX_device *device);
+
+// Destroy a device (free memory of the device)
+void dlx_device_destroy(DLX_device *device);
 
 // Assert DLX interrupt line
 void dlx_assert_interrupt(void *state);
