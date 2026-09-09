@@ -62,6 +62,8 @@ static void d_tick(void *state) {
 static void d_free(void *state) { free(state); }
 
 static uint32_t d_read(void *state, uint32_t offset, uint8_t bytes) {
+  (void) offset;
+  (void) bytes;
   ICState *ic_state = (ICState *)state;
   int i;
 

@@ -30,7 +30,8 @@ static uint64_t now_ns(void) {
 volatile sig_atomic_t quit = 0;
 
 void handle_exit_signal(int signum) {
-    quit = 1;
+  (void) signum;
+  quit = 1;
 }
 
 int main(int argc, char *argv[]) {

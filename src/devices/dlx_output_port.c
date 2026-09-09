@@ -51,12 +51,16 @@ static void d_tick(void *state) {
 static void d_free(void *state) { free(state); }
 
 static uint32_t d_read(void *state, uint32_t offset, uint8_t bytes) {
+  (void) offset;
+  (void) bytes;
   OutputPortState *s = (OutputPortState *)state;
   return s->ready; // 1=ready, 0=busy
 }
 
 static void d_write(void *state, uint32_t offset, uint32_t data,
                         uint8_t bytes) {
+  (void) offset;
+  (void) bytes;
   OutputPortState *s = (OutputPortState *)state;
 
   if (s->ready == 0)

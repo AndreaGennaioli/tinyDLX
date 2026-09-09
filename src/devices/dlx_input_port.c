@@ -57,6 +57,8 @@ static void d_tick(void *state) {
 static void d_free(void *state) { free(state); }
 
 static uint32_t d_read(void *state, uint32_t offset, uint8_t bytes) {
+  (void) offset;
+  (void) bytes;
   InputPortState *s = (InputPortState *)state;
   uint8_t data = s->data;
   s->ready = 0;

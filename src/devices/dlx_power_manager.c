@@ -35,6 +35,9 @@ static void d_free(void *state) { free(state); }
 
 static void d_write(void *state, uint32_t offset, uint32_t data,
                         uint8_t bytes) {
+  (void) offset;
+  (void) data;
+  (void) bytes;
   PowerManagerState *s = (PowerManagerState *)state;
   dlx_exit(s->dlx_state, EXIT_SUCCESS);
 }

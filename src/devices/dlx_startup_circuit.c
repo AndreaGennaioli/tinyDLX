@@ -31,10 +31,15 @@ DLX_device *dlx_startup_circuit_create(uint32_t base_address) {
 static void d_free(void *state) { free(state); }
 
 static uint32_t d_read(void *state, uint32_t offset, uint8_t bytes) {
+  (void) offset;
+  (void) bytes;
   return 0x00000001 & *(uint8_t *)state;
 }
 
 static void d_write(void *state, uint32_t offset, uint32_t data,
                     uint8_t bytes) {
+  (void) offset;
+  (void) data;
+  (void) bytes;
   *(uint8_t *)state = 0;
 }
