@@ -74,11 +74,20 @@ typedef enum {
   DLX_TIMEOUT
 } DLX_exec_state;
 
+// Configuration struct for the emulator.
+// All the configurations can be set by command line arguments.
+// The command line arguments are parsed by dlx_cli
+typedef struct {
+  // Filename of the program to load in the ROM. See dlx_loader
+  char *program_file;
+  uint32_t freq_hz;
+  uint64_t max_cycles;
+} DLX_config;
+
 typedef struct {
   uint8_t *rom;
   uint8_t *ram;
   uint64_t cycles;
-  uint64_t max_cycles;
 
   // General Purpose Registers
   uint32_t gpr[DLX_GPR_COUNT];
@@ -111,18 +120,9 @@ typedef struct {
 
   // Asserts the DLX's interrupt line. The state is voluntarily of void type.
   void (*assert_interrupt)(void *state);
+  DLX_config *config;
   uint8_t interrupt_line;
   DLX_exec_state exec_state;
 } DLX_state;
-
-// Configuration struct for the emulator.
-// All the configurations can be set by command line arguments.
-// The command line arguments are parsed by dlx_cli
-typedef struct {
-  // Filename of the program to load in the ROM. See dlx_loader
-  char *program_file;
-  uint32_t freq_hz;
-  uint64_t max_cycles;
-} DLX_config;
 
 #endif // !DLX_DEFS_H

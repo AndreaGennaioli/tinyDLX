@@ -42,7 +42,7 @@ int dlx_state_init(DLX_state *state, DLX_config *config) {
   state->exec_state = DLX_RUNNING;
 
   state->cycles = 0;
-  state->max_cycles = config->max_cycles;
+  state->config = config;
   return 1;
 }
 
