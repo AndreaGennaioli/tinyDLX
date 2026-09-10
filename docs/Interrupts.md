@@ -10,3 +10,4 @@ There are three types of interrupts.
 | **0x80** | Software | SOFTWARE | System call invoked by program. |
 | **0xF0** | Debug | START_TIMER | Starts a timer managed by the emulator. |
 | **0xF1** | Debug | STOP_TIMER | Stops the emulator timer (started by 0xF0) and outputs the time. |
+| **0xF2** | Debug | HALT | Explicit debug halt (bypassing powermanager) |

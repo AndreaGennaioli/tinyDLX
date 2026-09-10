@@ -314,7 +314,7 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
   case I_INT:
     if (decoded_i->imm26 >= 0xF0) {
       // Debug interrupts
-      dlx_exec_debug_interrupt(decoded_i->imm26);
+      dlx_exec_debug_interrupt(decoded_i->imm26, state);
     } else {
       warn("EXECUTE: 0x%02X unknown interrupt", decoded_i->imm26);
     }
