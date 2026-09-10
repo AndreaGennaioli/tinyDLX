@@ -45,6 +45,13 @@ int dlx_state_init(DLX_state *state, DLX_config *config) {
 
   state->cycles = 0;
   state->config = config;
+
+  if(config->init_gpr_set == 1) {
+    for (size_t i = 1; i < DLX_GPR_COUNT; i++) {
+      state->gpr[i] = config->init_gpr;
+    }
+  }
+  
   return 1;
 }
 

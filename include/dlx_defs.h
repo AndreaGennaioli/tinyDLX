@@ -80,8 +80,11 @@ typedef enum {
 typedef struct {
   // Filename of the program to load in the ROM. See dlx_loader
   char *program_file;
-  uint32_t freq_hz;
   uint64_t max_cycles;
+  uint32_t freq_hz;
+  // TODO: better way to know if a config is set
+  uint32_t init_gpr;
+  uint8_t init_gpr_set;
 } DLX_config;
 
 typedef struct {
