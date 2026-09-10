@@ -8,6 +8,8 @@
 int dlx_state_init(DLX_state *state, DLX_config *config) {
   if (state == NULL)
     return 0;
+  if (config == NULL)
+    return 0;
 
   // Allocate and set to 0 the ROM
   state->rom = calloc(DLX_ROM_SIZE, sizeof(uint8_t));
