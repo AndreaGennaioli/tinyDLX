@@ -105,7 +105,7 @@ static int check_config(const char *program_name, DLX_config *config) {
       return 0;
     }
 
-    FILE *f = fopen(config->dump_state, "w");
+    FILE *f = fopen(config->dump_state, "a");
     if(f == NULL){
       fprintf(stderr, "Cannot open dump file '%s': %s", config->dump_state, strerror(errno));
       return 0;
