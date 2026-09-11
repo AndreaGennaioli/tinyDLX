@@ -17,7 +17,7 @@ BEQZ R27, HANDLE_INTERRUPT
 HANDLE_STARTUP:
   ; I will use R29 as the Stack Pointer
   LHI R29, 0x401F
-  ADDI R29, R29, 0xFFFC
+  ADDUI R29, R29, 0xFFFC
 
   LHI R26, 0xC000
   SB  R0, 0x0000(R26)        ; Dummy write to set SC to 0

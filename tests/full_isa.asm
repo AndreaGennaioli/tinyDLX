@@ -97,7 +97,7 @@ ADDUI R1, R0, 0x800A
 ADDI R5, R0, 0x00CF
 
 ; Store tests
-SW R1, 0(R10)                ; Writes 0x0000000A at 0x40000000
+SW R1, 0(R10)                ; Writes 0x0000800A at 0x40000000
 SH R1, 4(R10)                ; Writes 0x000A at 0x40000004
 SB R5, 8(R10)                ; Writes 0xCF at 0x40000008
 
