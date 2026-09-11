@@ -31,6 +31,8 @@ int dlx_state_init(DLX_state *state, DLX_config *config) {
   // Set pc to 0 (pc <- 0)
   state->pc = 0;
 
+  state->cr = 0;
+
   // Random values for GPRs are expected, except for R0
   state->gpr[0] = 0;
 

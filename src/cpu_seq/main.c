@@ -41,7 +41,7 @@ static int setup_devices(DLX_state *state);
 int main(int argc, char *argv[]) {
   DLX_config config = { .program_file = "\0", .freq_hz = 0, .max_cycles = 0,
                         .init_gpr_set = 0, .init_gpr = 0, .dump_state = NULL };
-  DLX_state state;
+  DLX_state state = {0};
 
   signal(SIGINT, handle_exit_signal);
   signal(SIGTERM, handle_exit_signal);
