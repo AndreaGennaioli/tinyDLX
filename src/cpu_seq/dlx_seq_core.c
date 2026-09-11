@@ -171,6 +171,8 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
         state->gpr[decoded_i->rd] = 0;
       }
       break;
+    default:
+      warn("EXECUTE: 0x%02X not implemented R type function", decoded_i->func);
     }
     break;
   case I_ADDI:
