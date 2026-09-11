@@ -98,6 +98,7 @@ void dlx_state_free(DLX_state *state) {
   for (uint32_t i = 0; i < state->device_count; i++) {
     dlx_device_destroy(state->devices[i]);
   }
+  state->device_count = 0;
 }
 
 void dlx_assert_interrupt(void *state) {
