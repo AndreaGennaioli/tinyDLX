@@ -92,7 +92,7 @@ static int parse_u32(const char *str, uint32_t *out) {
 }
 
 static int check_config(const char *program_name, DLX_config *config) {
-  if (config->program_file && strlen(config->program_file) == 0) {
+  if (config->program_file == NULL || strlen(config->program_file) == 0) {
     fprintf(stderr, "An input binary file is needed.\n");
     print_help(program_name, stderr);
     return 0;
