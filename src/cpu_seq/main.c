@@ -134,6 +134,7 @@ int main(int argc, char *argv[]) {
 
   if(config.dump_state) {
     if(dlx_snapshot_write(&state, &config) == 0) {
+      dlx_state_free(&state);
       return 3;
     }
     info("Snapshot saved into %s", config.dump_state);
