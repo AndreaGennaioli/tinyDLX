@@ -237,5 +237,5 @@ void dlx_dump_decoded_instruction(decoded_instruction *decoded_i) {
   fprintf(stderr, "\nImm16: %02X", decoded_i->imm16);
   fprintf(stderr, "\nImm26: %02X", decoded_i->imm26);
   fprintf(stderr, "\nImm16 SignExt: %02X", decoded_i->imm16_sext);
-  fprintf(stderr, "\nImm16 SignExt: %02X", decoded_i->imm26_sext);
+  fprintf(stderr, "\nImm26 SignExt: %02X", decoded_i->imm26_sext);
 }
