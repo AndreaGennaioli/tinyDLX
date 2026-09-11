@@ -1,6 +1,5 @@
 #include "dlx_cli.h"
-#include "getopt.h"
-#include <bits/getopt_ext.h>
+#include <getopt.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <errno.h>
