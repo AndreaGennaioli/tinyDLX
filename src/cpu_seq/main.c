@@ -8,6 +8,7 @@
 #include "dlx_defs.h"
 #include "dlx_loader.h"
 #include "dlx_seq_core.h"
+#include "dlx_snapshot.h"
 #include "dlx_state.h"
 #include "dlx_terminal.h"
 #include <stdint.h>
@@ -38,7 +39,8 @@ static int add_device(DLX_state *state, const char *name, DLX_device *dev);
 static int setup_devices(DLX_state *state);
 
 int main(int argc, char *argv[]) {
-  DLX_config config = {.program_file = "\0", .freq_hz = 0, .max_cycles = 0, .init_gpr_set = 0, .init_gpr = 0};
+  DLX_config config = { .program_file = "\0", .freq_hz = 0, .max_cycles = 0,
+                        .init_gpr_set = 0, .init_gpr = 0, .dump_state = NULL };
   DLX_state state;
 
   signal(SIGINT, handle_exit_signal);
@@ -129,6 +131,13 @@ int main(int argc, char *argv[]) {
 
   fputc('\n', stderr);
   info("Execution terminated");
+
+  if(config.dump_state) {
+    if(dlx_snapshot_write(&state, &config) == 0) {
+      return 3;
+    }
+    info("Snapshot saved into %s", config.dump_state);
+  }
 
   dlx_state_free(&state);
 

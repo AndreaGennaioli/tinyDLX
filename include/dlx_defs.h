@@ -84,6 +84,7 @@ typedef struct {
   uint32_t freq_hz;
   // TODO: better way to know if a config is set
   uint32_t init_gpr;
+  const char *dump_state;
   uint8_t init_gpr_set;
 } DLX_config;
 

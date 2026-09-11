@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 static void print_help(const char *program_name, FILE *output);
 static int check_config(const char *program_name, DLX_config *config);
@@ -22,10 +23,11 @@ int parse_arguments(int argc, char **argv, DLX_config *config) {
       {"freq", required_argument, NULL, 'f'},
       {"max-cycles", required_argument, NULL, 'C'},
       {"init-gpr", required_argument, NULL, 'G'},
+      {"dump-state", required_argument, NULL, 'd'},
       {0, 0, 0, 0},
   };
 
-  while ((opt = getopt_long(argc, argv, "b:f:C:G:h", longopts, NULL)) != -1) {
+  while ((opt = getopt_long(argc, argv, "b:f:C:G:d:h", longopts, NULL)) != -1) {
     switch (opt) {
     case 'b':
       config->program_file = optarg;
@@ -48,6 +50,9 @@ int parse_arguments(int argc, char **argv, DLX_config *config) {
         exit(EXIT_FAILURE);
       }
       config->init_gpr_set = 1;
+      break;
+    case 'd':
+      config->dump_state = optarg;
       break;
     case 'h':
       print_help(argv[0], stdout);
@@ -94,6 +99,21 @@ static int check_config(const char *program_name, DLX_config *config) {
     return 0;
   }
 
+  if (config->dump_state){
+    if(strlen(config->dump_state) == 0) {
+      fprintf(stderr, "Please specify a valid dump filename.\n");
+      print_help(program_name, stderr);
+      return 0;
+    }
+
+    FILE *f = fopen(config->dump_state, "w");
+    if(f == NULL){
+      fprintf(stderr, "Cannot open dump file '%s': %s", config->dump_state, strerror(errno));
+      return 0;
+    }
+    fclose(f);
+  }
+
   return 1;
 }
 
@@ -106,6 +126,7 @@ static void print_help(const char *program_name, FILE *output) {
   fprintf(output, "  -f, --freq FREQUENCY      Target frequency of execution, if not specified or 0, full use of host CPU (core) is expected\n");
   fprintf(output, "  -C, --max-cycles CYCLES   Maximum number of execution cycles\n");
   fprintf(output, "  -G, --init-gpr VALUE      Init value for GPRs, only absolute values. (by default GPRs values are non-deterministic!)\n");
+  fprintf(output, "  -d, --dump-state PATH     Writes a JSON snapshot of the state of DLX at the end of execution\n");
   fprintf(output,
           "  -h, --help                Shows this help comand and exits\n");
 }
