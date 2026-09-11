@@ -16,3 +16,4 @@ INT 0xF1
 
 ADDI R1, R0, 42
 
+INT 0XF2

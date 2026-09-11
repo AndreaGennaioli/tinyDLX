@@ -15,3 +15,5 @@ SB R3, 0x0000(R1)
 
 ; Check if the FFD is updated
 LB R2, 0x0000(R1) ; Should be 0
+
+INT 0XF2

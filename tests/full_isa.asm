@@ -126,3 +126,4 @@ JR R31                       ; Return to the caller
 
 END_TEST:
 ADDI R30, R0, 0xABC          ; Final instruction
+INT 0XF2
