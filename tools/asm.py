@@ -111,7 +111,7 @@ def assemble_instr(instr, labels):
     parts = instr[0].replace(',', ' ').replace(
         '(', ' ').replace(')', ' ').split()
 
-    if parts[0] not in OPCODES:
+    if parts[0].upper() not in OPCODES:
         raise ParseException(parts[0] + " is not a recognised instruction")
         return 0
 
