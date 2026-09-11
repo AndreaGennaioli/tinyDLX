@@ -174,7 +174,7 @@ def assemble_instr(instr, labels):
         else:
             imm26 = get_address_value(parts[1], labels, instr[1])
 
-        if imm26 > 0xFFFF:
+        if imm26 > 0x3FFFFFF:
             raise ParseException("Value of '" + hex(imm26) + "' overflows imm26")
 
         return (opcode << 26) | (imm26 & 0x3FFFFFF)
