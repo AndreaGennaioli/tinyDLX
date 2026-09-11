@@ -16,20 +16,7 @@ typedef struct {
 // Follows all the instructions of the ISA.
 // R-type instructions are identified by their function (func) code
 
-#define I_SLL 0x00
-#define I_SRL 0x00
-#define I_SRA 0x00
-#define I_ADD 0x00
-#define I_SUB 0x00
-#define I_AND 0x00
-#define I_OR 0x00
-#define I_XOR 0x00
-#define I_SGT 0x00
-#define I_SEQ 0x00
-#define I_SGE 0x00
-#define I_SLT 0x00
-#define I_SNE 0x00
-#define I_SLE 0x00
+#define I_RTYPE 0x00
 #define I_BEQZ 0x04
 #define I_BNEZ 0x05
 #define I_ADDI 0x08

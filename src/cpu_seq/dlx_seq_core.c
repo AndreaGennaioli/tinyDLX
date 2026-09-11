@@ -88,7 +88,7 @@ static void decode(uint32_t raw_i, decoded_instruction *decoded_i) {
 
 static void execute(DLX_state *state, decoded_instruction *decoded_i) {
   switch (decoded_i->opcode) {
-  case 0:
+  case I_RTYPE:
     switch (decoded_i->func) {
     case I_ADD_FUNC:
       state->gpr[decoded_i->rd] =

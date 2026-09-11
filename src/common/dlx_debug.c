@@ -66,7 +66,7 @@ void dlx_dump_decoded_instruction(decoded_instruction *decoded_i) {
 
   fprintf(stderr, "\nOP: ");
   switch (decoded_i->opcode) {
-  case 0:
+  case I_RTYPE:
     switch (decoded_i->func) {
     case I_SLL_FUNC:
       fprintf(stderr, "SLL");
