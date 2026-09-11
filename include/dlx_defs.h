@@ -107,12 +107,11 @@ typedef struct {
   // handling.
   uint32_t iar;
   // Cause Register:
-  // contains the interrupt code of the last interrupt asserted.
-  // Since the DLX is not capable of identifying the source of an hardware
-  // interrupt, for HW interrupts the Cause Register is set to 0 (the program
-  // has the task to comunicate with the Interrupt Controller), instead, for
-  // SW interrupts (asserted using INT) the interrupt code is set into the
-  // Cause Register.
+  // cause of the current trap, 0 for hardware interrupts (the handler must
+  // query the Interrupt Controller), or the INT immediate for software
+  // interrupts.
+  // Note that CR alone can't distinguish a hardware interrupt from the
+  // initial state, since both read as 0.
   uint32_t cr;
 
   // Array containing all the devices. Every device contained in the array
