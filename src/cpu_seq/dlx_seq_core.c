@@ -261,7 +261,7 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
     }
     break;
   case I_LHI:
-    state->gpr[decoded_i->rs2] = decoded_i->imm16 << 16;
+    state->gpr[decoded_i->rs2] = (uint32_t) decoded_i->imm16 << 16;
     break;
   case I_SW:
     dlx_memory_write_word(state,
