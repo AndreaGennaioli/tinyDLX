@@ -19,6 +19,7 @@ int parse_arguments(int argc, char **argv, DLX_config *config) {
   const struct option longopts[] = {
       {"binary-file", required_argument, NULL, 'b'},
       {"help", no_argument, NULL, 'h'},
+      {"strict", no_argument, NULL, 's'},
       {"freq", required_argument, NULL, 'f'},
       {"max-cycles", required_argument, NULL, 'C'},
       {"init-gpr", required_argument, NULL, 'G'},
@@ -26,7 +27,7 @@ int parse_arguments(int argc, char **argv, DLX_config *config) {
       {0, 0, 0, 0},
   };
 
-  while ((opt = getopt_long(argc, argv, "b:f:C:G:d:h", longopts, NULL)) != -1) {
+  while ((opt = getopt_long(argc, argv, "b:f:C:G:d:sh", longopts, NULL)) != -1) {
     switch (opt) {
     case 'b':
       config->program_file = optarg;
@@ -52,6 +53,9 @@ int parse_arguments(int argc, char **argv, DLX_config *config) {
       break;
     case 'd':
       config->dump_state = optarg;
+      break;
+    case 's':
+      config->strict_mode = 1;
       break;
     case 'h':
       print_help(argv[0], stdout);
@@ -126,6 +130,7 @@ static void print_help(const char *program_name, FILE *output) {
   fprintf(output, "  -C, --max-cycles CYCLES   Maximum number of execution cycles\n");
   fprintf(output, "  -G, --init-gpr VALUE      Init value for GPRs, only absolute values. (by default GPRs values are non-deterministic!)\n");
   fprintf(output, "  -d, --dump-state PATH     Writes a JSON snapshot of the state of DLX at the end of execution\n");
+  fprintf(output, "  -s, --strict              Run emulation in strict mode: warns are now faults\n");
   fprintf(output,
           "  -h, --help                Shows this help comand and exits\n");
 }

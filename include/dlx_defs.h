@@ -86,6 +86,7 @@ typedef struct {
   uint32_t init_gpr;
   const char *dump_state;
   uint8_t init_gpr_set;
+  uint8_t strict_mode;
 } DLX_config;
 
 typedef struct {

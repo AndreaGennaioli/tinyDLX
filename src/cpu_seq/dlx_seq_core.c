@@ -172,7 +172,12 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
       }
       break;
     default:
-      warn("EXECUTE: 0x%02X not implemented R type function", decoded_i->func);
+      if(state->config->strict_mode) {
+        error("EXECUTE: 0x%02X not implemented R type function", decoded_i->func);
+        state->exec_state = DLX_FAULT;
+      } else {
+        warn("EXECUTE: 0x%02X not implemented R type function", decoded_i->func);
+      }
     }
     break;
   case I_ADDI:
@@ -319,7 +324,12 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
       // Debug interrupts
       dlx_exec_debug_interrupt(decoded_i->imm26, state);
     } else {
-      warn("EXECUTE: 0x%02X unknown interrupt", decoded_i->imm26);
+      if(state->config->strict_mode) {
+        error("EXECUTE: 0x%02X unknown interrupt", decoded_i->imm26);
+        state->exec_state = DLX_FAULT;
+      } else {
+        warn("EXECUTE: 0x%02X unknown interrupt", decoded_i->imm26);
+      }
     }
     break;
   case I_RFE:
@@ -327,7 +337,12 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
     state->pc = state->iar;
     break;
   default:
-    warn("EXECUTE: 0x%02X not implemented instruction", decoded_i->opcode);
+    if(state->config->strict_mode) {
+      error("EXECUTE: 0x%02X not implemented instruction", decoded_i->opcode);
+      state->exec_state = DLX_FAULT;
+    } else {
+      warn("EXECUTE: 0x%02X not implemented instruction", decoded_i->opcode);
+    }
   }
 
   // R0 is wired to 0

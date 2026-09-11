@@ -36,7 +36,12 @@ uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address) {
     return 0;
 
   if (address % 4 != 0) {
-    warn("Unaligned read at 0x%08X", address);
+    if(state->config->strict_mode) {
+      error("Unaligned read at 0x%08X", address);
+      state->exec_state = DLX_FAULT;
+    } else {
+      warn("Unaligned read at 0x%08X", address);
+    }
     return 0;
   }
 
@@ -49,7 +54,12 @@ uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address) {
   // Getting the real pointer
   uint8_t *ptr = get_phys_ptr(state, address);
   if (ptr == NULL) {
-    warn("Read at unmapped address 0x%08X", address);
+    if(state->config->strict_mode) {
+      error("Read at unmapped address 0x%08X", address);
+      state->exec_state = DLX_FAULT;
+    } else {
+      warn("Read at unmapped address 0x%08X", address);
+    }
     return 0;
   }
 
@@ -63,7 +73,12 @@ uint32_t dlx_memory_read_half_word(DLX_state *state, uint32_t address) {
     return 0;
 
   if (address % 2 != 0) {
-    warn("Unaligned read at 0x%08X", address);
+    if(state->config->strict_mode) {
+      error("Unaligned read at 0x%08X", address);
+      state->exec_state = DLX_FAULT;
+    } else {
+      warn("Unaligned read at 0x%08X", address);
+    }
     return 0;
   }
 
@@ -76,7 +91,12 @@ uint32_t dlx_memory_read_half_word(DLX_state *state, uint32_t address) {
   // Getting the real pointer
   uint8_t *ptr = get_phys_ptr(state, address);
   if (ptr == NULL) {
-    warn("Read at unmapped address 0x%08X", address);
+    if(state->config->strict_mode) {
+      error("Read at unmapped address 0x%08X", address);
+      state->exec_state = DLX_FAULT;
+    } else {
+      warn("Read at unmapped address 0x%08X", address);
+    }
     return 0;
   }
 
@@ -97,7 +117,12 @@ uint32_t dlx_memory_read_byte(DLX_state *state, uint32_t address) {
   // Getting the real pointer
   uint8_t *ptr = get_phys_ptr(state, address);
   if (ptr == NULL) {
-    warn("Read at unmapped address 0x%08X", address);
+    if(state->config->strict_mode) {
+      error("Read at unmapped address 0x%08X", address);
+      state->exec_state = DLX_FAULT;
+    } else {
+      warn("Read at unmapped address 0x%08X", address);
+    }
     return 0;
   }
 
@@ -109,13 +134,23 @@ void dlx_memory_write_word(DLX_state *state, uint32_t address, uint32_t data) {
     return;
 
   if (address % 4 != 0) {
-    warn("Unaligned write at 0x%08X", address);
+    if(state->config->strict_mode) {
+      error("Unaligned write at 0x%08X", address);
+      state->exec_state = DLX_FAULT;
+    } else {
+      warn("Unaligned write at 0x%08X", address);
+    }
     return;
   }
 
   // ROM is read only
   if (address >= DLX_ROM_BASE && address < (DLX_ROM_BASE + DLX_ROM_SIZE)) {
-    warn("Write attempt to ROM at 0x%08X", address);
+    if(state->config->strict_mode) {
+      error("Write attempt to ROM at 0x%08X", address);
+      state->exec_state = DLX_FAULT;
+    } else {
+      warn("Write attempt to ROM at 0x%08X", address);
+    }
     return;
   }
 
@@ -129,7 +164,12 @@ void dlx_memory_write_word(DLX_state *state, uint32_t address, uint32_t data) {
   // Getting real physic pointer
   uint8_t *ptr = get_phys_ptr(state, address);
   if (ptr == NULL) {
-    warn("Write at unmapped address 0x%08X", address);
+    if(state->config->strict_mode) {
+      error("Write at unmapped address 0x%08X", address);
+      state->exec_state = DLX_FAULT;
+    } else {
+      warn("Write at unmapped address 0x%08X", address);
+    }
     return;
   }
 
@@ -146,13 +186,23 @@ void dlx_memory_write_half_word(DLX_state *state, uint32_t address,
     return;
 
   if (address % 2 != 0) {
-    warn("Unaligned write at 0x%08X", address);
+    if(state->config->strict_mode) {
+      error("Unaligned write at 0x%08X", address);
+      state->exec_state = DLX_FAULT;
+    } else {
+      warn("Unaligned write at 0x%08X", address);
+    }
     return;
   }
 
   // ROM is read only
   if (address >= DLX_ROM_BASE && address < (DLX_ROM_BASE + DLX_ROM_SIZE)) {
-    warn("Write attempt to ROM at 0x%08X", address);
+    if(state->config->strict_mode) {
+      error("Write attempt to ROM at 0x%08X", address);
+      state->exec_state = DLX_FAULT;
+    } else {
+      warn("Write attempt to ROM at 0x%08X", address);
+    }
     return;
   }
 
@@ -166,7 +216,12 @@ void dlx_memory_write_half_word(DLX_state *state, uint32_t address,
   // Getting real physic pointer
   uint8_t *ptr = get_phys_ptr(state, address);
   if (ptr == NULL) {
-    warn("Write at unmapped address 0x%08X", address);
+    if(state->config->strict_mode) {
+      error("Write at unmapped address 0x%08X", address);
+      state->exec_state = DLX_FAULT;
+    } else {
+      warn("Write at unmapped address 0x%08X", address);
+    }
     return;
   }
 
@@ -181,7 +236,12 @@ void dlx_memory_write_byte(DLX_state *state, uint32_t address, uint8_t data) {
 
   // ROM is read only
   if (address >= DLX_ROM_BASE && address < (DLX_ROM_BASE + DLX_ROM_SIZE)) {
-    warn("Write attempt to ROM at 0x%08X", address);
+    if(state->config->strict_mode) {
+      error("Write attempt to ROM at 0x%08X", address);
+      state->exec_state = DLX_FAULT;
+    } else {
+      warn("Write attempt to ROM at 0x%08X", address);
+    }
     return;
   }
 
@@ -195,7 +255,12 @@ void dlx_memory_write_byte(DLX_state *state, uint32_t address, uint8_t data) {
   // Getting real physic pointer
   uint8_t *ptr = get_phys_ptr(state, address);
   if (ptr == NULL) {
-    warn("Write at unmapped address 0x%08X", address);
+    if(state->config->strict_mode) {
+      error("Write attempt to ROM at 0x%08X", address);
+      state->exec_state = DLX_FAULT;
+    } else {
+      warn("Write at unmapped address 0x%08X", address);
+    }
     return;
   }
 
