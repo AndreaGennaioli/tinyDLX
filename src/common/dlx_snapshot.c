@@ -26,16 +26,18 @@ int dlx_snapshot_write(DLX_state *state, DLX_config *config) {
   fprintf(dump_file, "{\n");
   fprintf(dump_file, "  \"version\": 1,\n");
   fprintf(dump_file, "  \"state\": {\n");
-  fprintf(dump_file, "    \"exit_reason\": \"%s\"\n", exec_state_name(state->exec_state));
-  fprintf(dump_file, "    \"cycles\": \"%" PRIu64 "\"\n", state->cycles);
-  fprintf(dump_file, "    \"pc\": \"0x%08X\"\n", state->pc);
-  fprintf(dump_file, "    \"sr\": \"0x%08X\"\n", state->sr);
-  fprintf(dump_file, "    \"iar\": \"0x%08X\"\n", state->iar);
-  fprintf(dump_file, "    \"cr\": \"0x%08X\"\n", state->cr);
-
-  for (size_t i = 0; i < DLX_GPR_COUNT; i++) {
-    fprintf(dump_file, "    \"R%d\": \"0x%08X\"\n", (int) i, state->gpr[i]);
+  fprintf(dump_file, "    \"exit_reason\": \"%s\",\n", exec_state_name(state->exec_state));
+  fprintf(dump_file, "    \"cycles\": \"%" PRIu64 "\",\n", state->cycles);
+  fprintf(dump_file, "    \"pc\": \"0x%08X\",\n", state->pc);
+  fprintf(dump_file, "    \"sr\": \"0x%08X\",\n", state->sr);
+  fprintf(dump_file, "    \"iar\": \"0x%08X\",\n", state->iar);
+  fprintf(dump_file, "    \"cr\": \"0x%08X\",\n", state->cr);
+  
+  size_t i;
+  for (i = 0; i < DLX_GPR_COUNT-1; i++) {
+    fprintf(dump_file, "    \"R%d\": \"0x%08X\",\n", (int) i, state->gpr[i]);
   }
+  fprintf(dump_file, "    \"R%d\": \"0x%08X\"\n", (int) i, state->gpr[i]);
   fprintf(dump_file, "  }\n");
   fprintf(dump_file, "}\n");
 
