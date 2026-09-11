@@ -256,7 +256,7 @@ void dlx_memory_write_byte(DLX_state *state, uint32_t address, uint8_t data) {
   uint8_t *ptr = get_phys_ptr(state, address);
   if (ptr == NULL) {
     if(state->config->strict_mode) {
-      error("Write attempt to ROM at 0x%08X", address);
+      error("Write at unmapped address 0x%08X", address);
       state->exec_state = DLX_FAULT;
     } else {
       warn("Write at unmapped address 0x%08X", address);
