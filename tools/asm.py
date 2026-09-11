@@ -150,12 +150,18 @@ def assemble_instr(instr, labels):
             rs1 = register_to_int(parts[2])
             imm16 = get_address_value(parts[3], labels, None)
 
+        if imm16 > 0xFFFF:
+            raise ParseException("Value of '" + hex(imm16) + "' overflows imm16")
+
         return (opcode << 26) | (rd << 21) | (rs1 << 16) | (imm16 & 0xFFFF)
     elif op['type'] == "M":
         # Format    OP RS1, Imm16(RS2)
         rs1 = register_to_int(parts[1])
         imm16 = int(parts[2], 0)
         rd = register_to_int(parts[3])
+
+        if imm16 > 0xFFFF:
+            raise ParseException("Value of '" + hex(imm16) + "' overflows imm16")
 
         return (opcode << 26) | (rd << 21) | (rs1 << 16) | (imm16 & 0xFFFF)
     elif op['type'] == "J":
@@ -167,6 +173,9 @@ def assemble_instr(instr, labels):
             imm26 = int(parts[1], 0)
         else:
             imm26 = get_address_value(parts[1], labels, instr[1])
+
+        if imm26 > 0xFFFF:
+            raise ParseException("Value of '" + hex(imm26) + "' overflows imm26")
 
         return (opcode << 26) | (imm26 & 0x3FFFFFF)
 
