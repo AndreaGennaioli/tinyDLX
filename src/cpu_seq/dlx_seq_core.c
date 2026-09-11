@@ -1,5 +1,6 @@
 #include "dlx_seq_core.h"
 #include "debug.h"
+#include "dlx_defs.h"
 #include "dlx_interrupts.h"
 #include "dlx_isa.h"
 #include "dlx_memory_bus.h"
@@ -301,14 +302,14 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
     state->pc = state->gpr[decoded_i->rs1];
     break;
   case I_JALR:
-    state->gpr[31] = state->pc;
+    state->gpr[DLX_REG_LINK] = state->pc;
     state->pc = state->gpr[decoded_i->rs1];
     break;
   case I_J:
     state->pc = state->pc + decoded_i->imm26_sext;
     break;
   case I_JAL:
-    state->gpr[31] = state->pc;
+    state->gpr[DLX_REG_LINK] = state->pc;
     state->pc = state->pc + decoded_i->imm26_sext;
     break;
   case I_INT:
