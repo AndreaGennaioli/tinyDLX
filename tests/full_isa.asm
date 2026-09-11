@@ -2,7 +2,6 @@
 ; Full ISA test file
 ; ============================================================================
 ; This program aims to test all the ISA instructions.
-; 42 out of 43 instruction are present, RFE is the one missing.
 ; The code assumes that:
 ; - RAM Base address: 0x40000000
 ; ============================================================================

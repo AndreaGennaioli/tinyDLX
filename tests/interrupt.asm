@@ -2,7 +2,6 @@
 ; Interrupt test file
 ; ============================================================================
 ; This program aims to test devices and interrupts.
-; 42 out of 43 instruction are present, RFE is the one missing.
 ; The code assumes that:
 ; - see docs/Mappings.md
 ; - R26 and R27 are reserved by the "kernel"
