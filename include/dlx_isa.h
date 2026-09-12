@@ -10,7 +10,7 @@ typedef struct {
   uint16_t imm16;
   uint8_t opcode;
   uint8_t func;
-  uint8_t rs1, rs2, rd;
+  uint8_t ra, rb, rc;
 } decoded_instruction;
 
 // Follows all the instructions of the ISA.

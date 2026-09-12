@@ -217,22 +217,22 @@ void dlx_dump_decoded_instruction(decoded_instruction *decoded_i) {
     fprintf(stderr, "NOT_IMPLEMENTED");
   }
 
-  if (decoded_i->rs2 < 32) {
-    fprintf(stderr, "\nRS2: R%d", decoded_i->rs2);
+  if (decoded_i->ra < 32) {
+    fprintf(stderr, "\nRA: R%d", decoded_i->ra);
   } else {
-    fprintf(stderr, "\nRS2: -");
+    fprintf(stderr, "\nRA: -");
   }
 
-  if (decoded_i->rs1 < 32) {
-    fprintf(stderr, "\nRS1: R%d", decoded_i->rs1);
+  if (decoded_i->rb < 32) {
+    fprintf(stderr, "\nRB: R%d", decoded_i->rb);
   } else {
-    fprintf(stderr, "\nRS1: -");
+    fprintf(stderr, "\nRB: -");
   }
 
-  if (decoded_i->rd < 32) {
-    fprintf(stderr, "\nRD: R%d", decoded_i->rd);
+  if (decoded_i->rc < 32) {
+    fprintf(stderr, "\nRC: R%d", decoded_i->rc);
   } else {
-    fprintf(stderr, "\nRD: -");
+    fprintf(stderr, "\nRC: -");
   }
   fprintf(stderr, "\nImm16: %02X", decoded_i->imm16);
   fprintf(stderr, "\nImm26: %02X", decoded_i->imm26);

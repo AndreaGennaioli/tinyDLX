@@ -104,6 +104,70 @@ def get_address_value(token, labels, instr_address=None):
         raise ParseException(f"Invalid immediate or label: {token}")
 
 
+# Limits of the immediate fields:
+#   min         most negative value accepted
+#   signed_max  biggest value that survives the sign extension, see resolve_disp
+#   mask        biggest raw bit pattern accepted, also the encoding mask
+IMM_LIMITS = {
+    16: {"min": -0x8000, "signed_max": 0x7FFF, "mask": 0xFFFF},
+    26: {"min": -0x2000000, "signed_max": 0x1FFFFFF, "mask": 0x3FFFFFF},
+}
+
+
+def check_imm(value, width, maximum):
+    """
+    Range checks a resolved immediate and returns it masked to the field width.
+
+    The floor and the ceiling are checked separately because neither accepted
+    range is symmetric, so no single limit on the absolute value can express
+    them: a data immediate spans -0x8000..0xFFFF, since -1 and 0xFFFF are two
+    spellings of the same field, and a displacement spans -0x8000..0x7FFF,
+    because in two's complement the negative side holds one value more.
+    """
+    limits = IMM_LIMITS[width]
+
+    if value < limits["min"] or value > maximum:
+        raise ParseException(
+            f"Value of '{hex(value)}' overflows imm{width}"
+            f" (accepted range {limits['min']}..{maximum})")
+
+    return value & limits["mask"]
+
+
+def resolve_imm(token, labels, width):
+    """
+    Resolves a data immediate: an ALU operand, a memory offset, an interrupt
+    code. It is taken as a raw bit pattern, so -1 and 0xFFFF describe the same
+    16 bit field.
+    """
+    return check_imm(get_address_value(token, labels), width,
+                     IMM_LIMITS[width]["mask"])
+
+
+def resolve_disp(token, labels, width, instr_address):
+    """
+    Resolves a PC relative displacement for a branch or a jump. The hardware
+    always sign extends this field, so a positive displacement cannot go past
+    signed_max: the bit patterns above it read back as negative numbers and the
+    jump would silently go the other way.
+    """
+    return check_imm(get_address_value(token, labels, instr_address), width,
+                     IMM_LIMITS[width]["signed_max"])
+
+
+# See the Notation section of docs/ISA.md
+def encode_r(opcode, ra, rb, rc, func):
+    return (opcode << 26) | (ra << 21) | (rb << 16) | (rc << 11) | func
+
+
+def encode_i(opcode, ra, rb, imm16):
+    return (opcode << 26) | (ra << 21) | (rb << 16) | (imm16 & 0xFFFF)
+
+
+def encode_j(opcode, imm26):
+    return (opcode << 26) | (imm26 & 0x3FFFFFF)
+
+
 def assemble_instr(instr, labels):
     """
     Assembles the instruction.
@@ -120,64 +184,58 @@ def assemble_instr(instr, labels):
     opcode = op['op']
 
     if op['type'] == "R":
-        # Format    OP RD, RS1, RS2
-        # Encoding  [OP] [RS2] [RS1] [RD] [...] [FUNC]
-        rd = register_to_int(parts[1])
-        rs1 = register_to_int(parts[2])
-        rs2 = register_to_int(parts[3])
-        func = op['func']
+        # Syntax    OP rc, ra, rb
+        # Encoding  [OP] [RA] [RB] [RC] [unused] [FUNC]
+        rc = register_to_int(parts[1])      # destination
+        ra = register_to_int(parts[2])      # first operand
+        rb = register_to_int(parts[3])      # second operand
 
-        return (opcode << 26) | (rs2 << 21) | (rs1 << 16) | (rd << 11) | func
+        return encode_r(opcode, ra, rb, rc, op['func'])
     elif op['type'] == "I":
-        # Format                OP RD, RS1, Imm16
-        # Branch format         OP RS1, Imm16
-        # Jump register format  OP RS1
-        # Encoding              [OP] [RS2/RD] [RS1] [Imm16]
+        # Syntax    ALU / set / shift   OP rb, ra, Imm16
+        #           Load high           OP rb, Imm16        (RA unused)
+        #           Branch              OP ra, Imm16        (RB unused)
+        #           Jump register       OP ra               (RB, Imm16 unused)
+        # Encoding  [OP] [RA] [RB] [Imm16]
         if mnemonic in ["BNEZ", "BEQZ"]:
-            rd = 0
-            rs1 = register_to_int(parts[1])
-            imm16 = get_address_value(parts[2], labels, instr[1])
+            ra = register_to_int(parts[1])  # tested register
+            rb = 0
+            imm16 = resolve_disp(parts[2], labels, 16, instr[1])
         elif mnemonic in ["JR", "JALR"]:
-            rd = 0
-            rs1 = register_to_int(parts[1])
+            ra = register_to_int(parts[1])  # target register
+            rb = 0
             imm16 = 0
         elif mnemonic == "LHI":
-            rd = register_to_int(parts[1])
-            rs1 = 0
-            imm16 = get_address_value(parts[2], labels, None)
+            ra = 0
+            rb = register_to_int(parts[1])  # destination
+            imm16 = resolve_imm(parts[2], labels, 16)
         else:
-            rd = register_to_int(parts[1])
-            rs1 = register_to_int(parts[2])
-            imm16 = get_address_value(parts[3], labels, None)
+            rb = register_to_int(parts[1])  # destination
+            ra = register_to_int(parts[2])  # source
+            imm16 = resolve_imm(parts[3], labels, 16)
 
-        if imm16 > 0xFFFF:
-            raise ParseException("Value of '" + hex(imm16) + "' overflows imm16")
-
-        return (opcode << 26) | (rd << 21) | (rs1 << 16) | (imm16 & 0xFFFF)
+        return encode_i(opcode, ra, rb, imm16)
     elif op['type'] == "M":
-        # Format    OP RS1, Imm16(RS2)
-        rs1 = register_to_int(parts[1])
-        imm16 = int(parts[2], 0)
-        rd = register_to_int(parts[3])
+        # I-Type with the memory syntax
+        # Syntax    OP rb, Imm16(ra)
+        # Encoding  [OP] [RA] [RB] [Imm16]
+        rb = register_to_int(parts[1])      # loaded / stored register
+        imm16 = resolve_imm(parts[2], labels, 16)
+        ra = register_to_int(parts[3])      # base address register
 
-        if imm16 > 0xFFFF:
-            raise ParseException("Value of '" + hex(imm16) + "' overflows imm16")
-
-        return (opcode << 26) | (rd << 21) | (rs1 << 16) | (imm16 & 0xFFFF)
+        return encode_i(opcode, ra, rb, imm16)
     elif op['type'] == "J":
-        # Format    OP Imm26
+        # Syntax    OP Imm26, RFE takes no operand
         # Encoding  [OP] [Imm26]
         if mnemonic in ["RFE"]:
             imm26 = 0
         elif mnemonic in ["INT"]:
-            imm26 = int(parts[1], 0)
+            # An interrupt code, not an address: never PC relative
+            imm26 = resolve_imm(parts[1], labels, 26)
         else:
-            imm26 = get_address_value(parts[1], labels, instr[1])
+            imm26 = resolve_disp(parts[1], labels, 26, instr[1])
 
-        if imm26 > 0x3FFFFFF:
-            raise ParseException("Value of '" + hex(imm26) + "' overflows imm26")
-
-        return (opcode << 26) | (imm26 & 0x3FFFFFF)
+        return encode_j(opcode, imm26)
 
     return 0
 
