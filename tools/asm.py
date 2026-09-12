@@ -50,7 +50,7 @@ OPCODES = {
     "JALR": {"type": "I", "op": 0x13},
     # Shift
     "SLLI": {"type": "I", "op": 0x14},  # SHIFT LEFT LOGICAL IMMEDIATE
-    "SRLI": {"type": "I", "op": 0x15},  # SHIFT RIGHT LOGICAL IMMEDIATE
+    "SRLI": {"type": "I", "op": 0x16},  # SHIFT RIGHT LOGICAL IMMEDIATE
     "SRAI": {"type": "I", "op": 0x17},  # SHIFT RIGHT ARITHMETIC IMMEDIATE
     # Set if condition
     "SGTI": {"type": "I", "op": 0x19},  # SET GREATER THAN IMMEDIATE

@@ -30,7 +30,7 @@ typedef struct {
 #define I_JR 0x12
 #define I_JALR 0x13
 #define I_SLLI 0x14
-#define I_SRLI 0x15
+#define I_SRLI 0x16
 #define I_SRAI 0x17
 #define I_SGTI 0x19
 #define I_SEQI 0x1A

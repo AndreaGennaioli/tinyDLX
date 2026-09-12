@@ -63,7 +63,7 @@ The J-Type instructions perform unconditional jumps to relative offset. RFE and 
 | **JR**    | I | 0x12 | -    | JR ra | PC <- R[ra] |
 | **JALR**  | I | 0x13 | -    | JALR ra | R[31] <- PC + 4; PC <- R[ra] |
 | **SLLI**  | I | 0x14 | -    | SLLI rb, ra, Imm16 | R[rb] <- R[ra] << (Imm16 & 0x1F)|
-| **SRLI**  | I | 0x15 | -    | SRLI rb, ra, Imm16 | R[rb] <- R[ra] >> (Imm16 & 0x1F) |
+| **SRLI**  | I | 0x16 | -    | SRLI rb, ra, Imm16 | R[rb] <- R[ra] >> (Imm16 & 0x1F) |
 | **SRAI**  | I | 0x17 | -    | SRAI rb, ra, Imm16 | R[rb] <- R[ra] >>> (Imm16 & 0x1F) |
 | **SGTI**  | I | 0x19 | -    | SGTI rb, ra, Imm16 | R[rb] <- 0x01 if R[ra] > SignExt(Imm16) else 0x00 |
 | **SEQI**  | I | 0x1A | -    | SEQI rb, ra, Imm16 | R[rb] <- 0x01 if R[ra] = SignExt(Imm16) else 0x00 |
