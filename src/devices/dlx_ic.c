@@ -1,4 +1,5 @@
 #include "devices/dlx_ic.h"
+#include "dlx_defs.h"
 #include <stdlib.h>
 
 static void assert_interrupt(struct DLX_ic_base *ic, uint8_t index);
@@ -10,6 +11,8 @@ static uint32_t d_read(void *state, uint32_t offset, uint8_t bytes);
 DLX_device *dlx_ic_create(uint32_t base_address, uint32_t devices_size,
                           void (*controller_assert_interrupt)(void *state),
                           void *controller_state) {
+  if(devices_size > DLX_MAX_DEVICES) return NULL;
+
   DLX_device *dev = (DLX_device *)malloc(sizeof(DLX_device));
   if(dev == NULL) return NULL;
 
