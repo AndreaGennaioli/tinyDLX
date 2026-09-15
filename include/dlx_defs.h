@@ -13,7 +13,8 @@
 #define DLX_RAM_SIZE (1024 * 1024 * 2) // 2 MB
 
 // MMIO Devices
-#define DLX_MAX_DEVICES 16
+// 16 is reserved to 'no interrupt asserted'
+#define DLX_MAX_DEVICES 15
 
 // Address space:
 // 0 ___________ 0x40000000___________ 0xC0000000 _________ 0xFFFFFFFF
