@@ -78,5 +78,5 @@ static uint32_t d_read(void *state, uint32_t offset, uint8_t bytes) {
     }
   }
 
-  return 0xFF;
+  return 0xF;
 }
