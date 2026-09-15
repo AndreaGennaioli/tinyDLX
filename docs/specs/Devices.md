@@ -24,7 +24,7 @@ For now only the Input Port can assert an interrupt, so it is the only device wi
 
 The circuit scheme is as follows.
 
-![Interrupt Controller scheme](assets/Interrupt_Controller.svg)
+![Interrupt Controller scheme](../assets/Interrupt_Controller.svg)
 
 *RESET is asynchronous and is asserted on system startup. CS_INTERRUPT_CONTROLLER is from the first-level decoder*
 
@@ -34,6 +34,6 @@ The startup circuit consists of a single DFF which is asserted on emulator start
 
 The circuit scheme is as follows.
 
-![Startup Circuit scheme](assets/Startup_Circuit.svg)
+![Startup Circuit scheme](../assets/Startup_Circuit.svg)
 
 *RESET is asynchronous and is asserted on system startup. CS_STARTUP_CIRCUIT is from the first-level decoder*
