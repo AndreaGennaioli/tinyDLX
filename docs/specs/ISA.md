@@ -1,6 +1,7 @@
 # tinyDLX Instruction Set Architecture
 
 ## General information
+
 All instructions are 32 bits long and there are 3 instruction types: R-Type, I-Type and J-Type.
 The instructions can use wired immediate values and all the General Purpose Registers (R0..R31). The R0 register is hardwired to 0 and the R31 register is used to store the link address when using Jump-And-Link instructions.
 
