@@ -1,6 +1,6 @@
 # I/O devices in tinyDLX
 
-Input and output devices are managed as memory-mapped devices (MMIO). This means that the emulated program can interact with a device using store and load instructions at the addresses where it is mapped. The effect of read and write operations differs from device to device.
+Input and output devices are managed as memory-mapped devices (MMIO). This means that the emulated program can interact with a device using store and load instructions at the addresses where it is mapped. The effect of read and write operations differs from device to device. The address of every device is listed in [Mappings.md](../Mappings.md).
 
 ## Interrupts
 
@@ -37,3 +37,27 @@ The circuit scheme is as follows.
 ![Startup Circuit scheme](../assets/Startup_Circuit.svg)
 
 *RESET is asynchronous and is asserted on system startup. CS_STARTUP_CIRCUIT is from the first-level decoder*
+
+## Input Port
+
+The Input Port is the device used to standardize external input units. It exposes one byte of input at a time and is wired to interrupt line 0 of the IC.
+
+The port holds a single byte latch. When the external unit presents a byte and the latch is free, the byte is latched and the port asserts its interrupt line. The port does not buffer more than one byte: while the latch is full no further byte is accepted, and the external unit has to hold the next one until the port is free again.
+
+The port's interrupt output is level-triggered and stays asserted for as long as the latch holds an unread byte. Reading the IC clears the line inside the IC, but the Input Port keeps reasserting it until the port itself is read, so the handler must always service the port and not just acknowledge the IC.
+
+A read returns the latched byte, empties the latch and deasserts the interrupt line, which frees the port to latch the next byte. A read performed when no byte is pending returns the last byte that was latched, so software must not use the data value alone to decide whether input has arrived. The port has no write port.
+
+## Output Port
+
+The Output Port is the device used to standardize external output units. It accepts one byte at a time and exposes a status flag; it has no interrupt line, so it is driven by polling only.
+
+A read returns the port status: `1` when the port is ready to accept a byte, `0` while it is busy transferring the previous one.
+
+A write sends the least significant byte of the written value to the external unit; the remaining bits are ignored. The port then goes busy for a fixed number of clock cycles, during which the status reads `0`. A write performed while the port is busy is discarded: the byte is lost and no error is signalled. Software must therefore read the status and wait for it to be `1` before every write, and must not rely on a fixed number of cycles between two writes.
+
+## Power Manager
+
+The Power Manager is the device used to turn off the system. It has neither an interrupt line nor a read port: the only supported operation is a write.
+
+A write turns the system off, regardless of the value written. The shutdown is a normal one: the system stops after the instruction that performed the write, and no further instruction is executed.
