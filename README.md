@@ -1,4 +1,4 @@
->> !ATTENTION: The documentation is being rewrite.
+> ATTENTION: The documentation is being rewrite.
 
 # tinyDLX - DLX Processor Emulator
 
