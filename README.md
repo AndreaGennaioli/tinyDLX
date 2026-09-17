@@ -1,3 +1,5 @@
+>> !ATTENTION: The documentation is being rewrite.
+
 # tinyDLX - DLX Processor Emulator
 
 A didactic emulator for the DLX architecture (Hennessy & Patterson) written in C.
