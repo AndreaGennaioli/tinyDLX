@@ -12,6 +12,21 @@ When DLX receives an interrupt the PC is saved into IAR and is set to 0. Since b
 
 Interrupts are disabled (SR[IEN]=0) on entry and re-enabled (SR[IEN]=1) by RFE (see [ISA.md](./ISA.md)), so IAR is never overwritten while a handler is running. Nested interrupts are not supported.
 
+At reset IAR and CR are `0` and SR[IEN] is `1`: interrupts are enabled from the first instruction, so an interrupt can be taken before the startup code at address 0 has run.
+
+## Cause Register
+
+The Cause Register is a special register used to identify the nature of the asserted interrupt. It is set to the interrupt code of the asserted software interrupt, or to 0 in the case of hardware interrupts. Its goal is to understand if the current asserted interrupt is from hardware or software, and in the latter case, read its code in the same operation. Even if the only current software interrupt code available is `0x80`, it has been created to make the distinction between SW and HW interrupts strict and not dependent on the IC. It is never cleared, but only overwritten.
+
+No instruction can read CR yet: until one is added to the [ISA](./ISA.md), a program has no access to it.
+
+After reset CR is `0`, the same value a hardware interrupt writes, so CR cannot tell reset from a hardware interrupt: that is the job of the Startup Circuit.
+
+## Software interrupts
+
+Software interrupts can be invoked by the program using `INT` and right now the only supported code is `0x80`. The invocation sets IAR to the address of the instruction following `INT`, SR[IEN] to 0, CR to the interrupt code and PC to 0, so `RFE` resumes execution right after the `INT`. From the program perspective, a software interrupt behaves as a hardware one, except for the different code written into the Cause Register (as explained above).
+
+Executing `INT` while interrupts are disabled (SR[IEN]=0), for instance inside a handler, has an undefined effect, since nested interrupts are not supported.
 ## Interrupts table
 | Code | Type | Name | Description |
 |:----|:----|:----|:----|
