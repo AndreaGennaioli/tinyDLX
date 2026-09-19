@@ -1,14 +1,6 @@
 # I/O devices in tinyDLX
 
-Input and output devices are managed as memory-mapped devices (MMIO). This means that the emulated program can interact with a device using store and load instructions at the addresses where it is mapped. The effect of read and write operations differs from device to device. The address of every device is listed in [Mappings.md](../Mappings.md).
-
-## Interrupts
-
-Devices can assert an interrupt to the Interrupt Controller (IC), which is a special device used to buffer interrupts. This is necessary because the DLX has only one interrupt line. The trigger mode is level-triggered or edge-triggered depending on the device and not every device needs to assert an interrupt.
-
-When DLX receives an interrupt the PC is saved into IAR and is set to 0. Since both startup and interrupt entry land at address 0, the handler must be able to tell them apart. This can be done with the Startup Circuit device: the code at address 0 must read the Startup Circuit first to determine whether it was entered at reset or on an interrupt.
-
-Interrupts are disabled (SR[IEN]=0) on entry and re-enabled (SR[IEN]=1) by RFE (see [ISA.md](./ISA.md)), so IAR is never overwritten while a handler is running. Nested interrupts are not supported.
+Input and output devices are managed as memory-mapped devices (MMIO). This means that the emulated program can interact with a device using store and load instructions at the addresses where it is mapped. The effect of read and write operations differs from device to device. The address of every device is listed in [Memory.md](./Memory.md), and the way devices signal the CPU is described in [Interrupts.md](./Interrupts.md).
 
 ## Interrupt Controller
 

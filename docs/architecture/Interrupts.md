@@ -4,6 +4,14 @@ There are three types of interrupts.
  - Software: invoked by using `INT 0x80`;
  - Debug: starting from 0xF0, invoked by using `INT <code>`.
 
+## Interrupt model
+
+Devices can assert an interrupt to the Interrupt Controller (IC), which is a special device used to buffer interrupts. This is necessary because the DLX has only one interrupt line. The trigger mode is level-triggered or edge-triggered depending on the device and not every device needs to assert an interrupt. Every device, the IC included, is described in [Devices.md](./Devices.md).
+
+When DLX receives an interrupt the PC is saved into IAR and is set to 0. Since both startup and interrupt entry land at address 0, the handler must be able to tell them apart. This can be done with the Startup Circuit device: the code at address 0 must read the Startup Circuit first to determine whether it was entered at reset or on an interrupt.
+
+Interrupts are disabled (SR[IEN]=0) on entry and re-enabled (SR[IEN]=1) by RFE (see [ISA.md](./ISA.md)), so IAR is never overwritten while a handler is running. Nested interrupts are not supported.
+
 ## Interrupts table
 | Code | Type | Name | Description |
 |:----|:----|:----|:----|
