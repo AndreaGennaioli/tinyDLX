@@ -1,4 +1,14 @@
-# Memory mappings
+# Memory
+
+## Program loading
+
+The program executed by tinyDLX is a **flat binary**: there is no loader, no operating system and no dynamic linking. The program is placed in ROM starting at address `0x00000000` and execution begins at `PC = 0`.
+
+## Endianness
+
+Memory is big-endian: the byte at the lowest address is the most significant one. Half words and words are composed and decomposed accordingly.
+
+## MMIO mappings
 
 | Device name | Memory Address/Range | Read action | Write action |
 |:------------|:---------------|:------------|:-------------|
@@ -9,3 +19,5 @@
 | **Output Port** | 0xC0080000 | Read port status (0 = busy, 1 = ready) | Write byte to stdout buffer |
 | **Interrupt Controller** | 0xC00C0000 | Read code of the active interrupt | - |
 | **Power Manager** | 0xC0100000 | - | Exit emulator |
+
+Every device is described in [Devices.md](./Devices.md).
