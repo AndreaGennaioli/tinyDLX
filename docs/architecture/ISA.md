@@ -11,7 +11,7 @@ To avoid confusion I've decided to name the register placeholders by their posit
 
 ### Labels
 
-Every immediate used in any instruction can be set as a label. A label is a keyword in your code that points at a specific address in your code. All the labels are replaced with ad immediate by the assembler. To know more see the dedicated assembler page.
+Every immediate used in any instruction can be set as a label. A label is a keyword in your code that points at a specific address in your code. All the labels are replaced with ad immediate by the assembler. To know more see [Assembler.md](../guide/Assembler.md).
 
 ### R-Type
 | 31..26 (6) | 25..21 (5) | 20..16 (5) | 15..11 (5) | 10..6 (5) | 5..0 (6) |
