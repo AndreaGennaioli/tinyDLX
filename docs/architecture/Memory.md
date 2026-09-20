@@ -8,6 +8,21 @@ The program executed by tinyDLX is a **flat binary**: there is no loader, no ope
 
 Memory is big-endian: the byte at the lowest address is the most significant one. Half words and words are composed and decomposed accordingly.
 
+## Alignment
+
+A half word access must be at an even address, and a word access at an address multiple of 4. Byte accesses have no constraint. An unaligned access is invalid.
+
+## Invalid access
+
+The following accesses are invalid:
+
+- a read or a write at an address that is not mapped;
+- an operation the addressed device does not support, such as a write to the Input Port or a read from the Power Manager;
+- a write to ROM;
+- an unaligned access.
+
+Their effect is undefined: the architecture guarantees neither the value returned by a read, nor the state of memory and devices after a write, nor that execution continues. No exception is defined for them, so a program can neither detect an invalid access nor recover from one: a correct program never performs any.
+
 ## MMIO mappings
 
 | Device name | Memory Address/Range | Read action | Write action |
