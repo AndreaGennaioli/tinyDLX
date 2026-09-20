@@ -4,6 +4,14 @@ This implementation of tinyDLX consists in a sequential core that executes one i
 
 How a program is loaded and how memory is addressed is a property of the machine: see [Memory.md](../architecture/Memory.md).
 
+## Source layout
+
+The source code is distributed between 3 directories, with the matching headers under `include/`:
+
+- `src/cpu_seq/`: the sequential core and the emulator's entry point. It is the only code that depends on how instructions are executed.
+- `src/common/`: the modules shared by every core: machine state, memory bus, program loader, command line, snapshots.
+- `src/devices/`: the memory-mapped devices, one file per device.
+
 ## Execution model
 
 The core exposes a single function, `dlx_seq_step()` (`src/cpu_seq/dlx_seq_core.c`), which advances the machine by one cycle. The driver around it is the main loop of `src/cpu_seq/main.c`:
