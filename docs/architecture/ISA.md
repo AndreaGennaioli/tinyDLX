@@ -83,4 +83,4 @@ The J-Type instructions perform unconditional jumps to relative offset. RFE and 
 | **J**     | J | 0x02 | -    | J Imm26 | PC <- PC + 4 + SignExt(Imm26) |
 | **JAL**   | J | 0x03 | -    | JAL Imm26 | R[31] <- PC + 4; PC <- PC + 4 + SignExt(Imm26) |
 | **INT**   | J | 0x39 | -    | INT Imm26 | Invoke interrupt handler with code Imm26 |
-| **RFE**   | J | 0x3F | -    | RFE | PC <- IAR |
+| **RFE**   | J | 0x3F | -    | RFE | PC <- IAR; SR[IEN]=1 |
