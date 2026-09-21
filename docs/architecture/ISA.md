@@ -5,6 +5,18 @@
 All instructions are 32 bits long and there are 3 instruction types: R-Type, I-Type and J-Type.
 The instructions can use wired immediate values and all the General Purpose Registers (R0..R31). The R0 register is hardwired to 0 and the R31 register is used to store the link address when using Jump-And-Link instructions.
 
+### Special registers
+
+Besides the general purpose registers, the machine has three 32-bit special registers:
+
+| Register | Content |
+|:--|:--|
+| **SR** | Status Register. Bit 0 is IEN, the interrupt enable flag; the other bits are reserved. |
+| **IAR** | Interrupt Address Register: the address at which execution resumes after an interrupt. |
+| **CR** | Cause Register: the cause of the last interrupt. |
+
+No instruction can read or write them: they change only on interrupt entry and with `RFE`, as described in [Interrupts.md](./Interrupts.md).
+
 ### Notation
 
 To avoid confusion I've decided to name the register placeholders by their position: RA always lives in the bits 25..21, RB is always in 20..16, RC is always in 15..11 and replaces the canonical RD. It's only a naming convention used in the instruction decoding/execution.
@@ -25,7 +37,7 @@ The R-Type instructions perform operations between registers. The **Opcode** is 
 |:----------:|:-----------:|:----------:|:----------:|
 | **Opcode** | **RA** | **RB** | **Immediate (Imm16)** |
 
-The I-Type instructions perform operations between registers and immediate. **RA** is never written; in memory operations it holds the base address. **RB** is the destination register for ALU, set, shift, and load instructions, and holds the value to be stored in store instructions.
+The I-Type instructions perform operations between registers and immediate. **RA** is never written; in memory operations it holds the base address. **RB** is the destination register for ALU, set, shift, and load instructions, and holds the value to be stored in store instructions. Loads and stores are subject to the alignment rules and to the invalid accesses described in [Memory.md](./Memory.md).
 
 ### J-Type
 | 31..26 (6) | 25..0 (26) |
@@ -84,3 +96,7 @@ The J-Type instructions perform unconditional jumps to relative offset. RFE and 
 | **JAL**   | J | 0x03 | -    | JAL Imm26 | R[31] <- PC + 4; PC <- PC + 4 + SignExt(Imm26) |
 | **INT**   | J | 0x39 | -    | INT Imm26 | Invoke interrupt handler with code Imm26 |
 | **RFE**   | J | 0x3F | -    | RFE | PC <- IAR; SR[IEN]=1 |
+
+## Reserved encodings
+
+Opcodes that do not appear in the table above, function codes that do not appear among the R-Type instructions and `INT` codes not assigned in [Interrupts.md](./Interrupts.md) are reserved. Executing an instruction with a reserved encoding has an undefined effect.
