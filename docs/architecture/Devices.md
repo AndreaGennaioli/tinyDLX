@@ -1,14 +1,14 @@
 # I/O devices in tinyDLX
 
-Input and output devices are managed as memory-mapped devices (MMIO). This means that the emulated program can interact with a device using store and load instructions at the addresses where it is mapped. The effect of read and write operations differs from device to device. The address of every device is listed in [Memory.md](./Memory.md), and the way devices signal the CPU is described in [Interrupts.md](./Interrupts.md).
+Input and output devices are managed as memory-mapped devices (MMIO). This means that a program can interact with a device using store and load instructions at the addresses where it is mapped. The effect of read and write operations differs from device to device. The address of every device is listed in [Memory.md](./Memory.md), and the way devices signal the CPU is described in [Interrupts.md](./Interrupts.md).
 
 ## Interrupt Controller
 
-The Interrupt Controller is the only device wired to the DLX interrupt line. In fact, it serves as a buffer for devices' interrupt lines: each device that can assert an interrupt is wired to an interrupt line of the IC. When at least one of its interrupt lines is asserted (by a device) it propagates the interrupt into the DLX's interrupt line. The IC's interrupt output is level-triggered.
+The Interrupt Controller is the only device wired to the CPU's interrupt line. In fact, it serves as a buffer for devices' interrupt lines: each device that can assert an interrupt is wired to an interrupt line of the IC. When at least one of its interrupt lines is asserted (by a device) it propagates the interrupt into the CPU's interrupt line. The IC's interrupt output is level-triggered.
 
-Interrupt lines are numbered from 0 to DLX_MAX_DEVICES-1 (0 to 14 currently, since DLX_MAX_DEVICES is 15 and index 15 is reserved). If more than one interrupt line is asserted, the lowest interrupt line index has the highest priority. If no interrupt is asserted, a read operation returns the reserved code `0xF` and so it is never a valid interrupt code.
+Interrupt lines are numbered from 0 to 14. If more than one is asserted, the lowest index has the highest priority. If none is asserted, a read returns the reserved code `0xF`, which is never a valid line index.
 
-When the DLX interrupt line is asserted, the handler identifies the source by reading the IC, which returns the index of the highest-priority asserted line. Since the mapping between devices and line indices is fixed, the handler can determine which device generated the interrupt. Reading the IC asserts its CLEAR port, which deasserts that line (see figure below). The IC keeps its output asserted until all pending interrupts have been read.
+When the CPU's interrupt line is asserted, the handler identifies the source by reading the IC, which returns the index of the highest-priority asserted line. Since the mapping between devices and line indices is fixed, the handler can determine which device generated the interrupt. Reading the IC asserts its CLEAR port, which deasserts that line (see figure below). The IC keeps its output asserted until all pending interrupts have been read.
 
 Note that the deassertion works only inside the IC: the IC does not communicate to the devices that their interrupt has been read. This means that the software must service the device, otherwise it could continue to assert the interrupt if it is level-triggered.
 
@@ -22,7 +22,7 @@ The circuit scheme is as follows.
 
 ## Startup Circuit
 
-The startup circuit consists of a single DFF which is asserted on emulator startup. A read operation will return the value of the DFF. The DFF value can be set to 0 by a dummy write. On startup the handler at address 0 reads the Startup Circuit, finds it asserted, clears it with a dummy write, and proceeds with initialization. Every later entry at address 0 reads 0 and is therefore an interrupt.
+The Startup Circuit consists of a single DFF, which is set at reset. A read operation will return the value of the DFF. The DFF value can be set to 0 by a dummy write. On startup the handler at address 0 reads the Startup Circuit, finds it asserted, clears it with a dummy write, and proceeds with initialization. Every later entry at address 0 reads 0 and is therefore an interrupt.
 
 The circuit scheme is as follows.
 

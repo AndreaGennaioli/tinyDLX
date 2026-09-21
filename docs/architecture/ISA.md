@@ -3,7 +3,7 @@
 ## General information
 
 All instructions are 32 bits long and there are 3 instruction types: R-Type, I-Type and J-Type.
-The instructions can use wired immediate values and all the General Purpose Registers (R0..R31). The R0 register is hardwired to 0 and the R31 register is used to store the link address when using Jump-And-Link instructions.
+The instructions can use immediate values and all the General Purpose Registers (R0..R31). The R0 register is hardwired to 0 and the R31 register is used to store the link address when using Jump-And-Link instructions.
 
 ### Special registers
 
@@ -19,11 +19,7 @@ No instruction can read or write them: they change only on interrupt entry and w
 
 ### Notation
 
-To avoid confusion I've decided to name the register placeholders by their position: RA always lives in the bits 25..21, RB is always in 20..16, RC is always in 15..11 and replaces the canonical RD. It's only a naming convention used in the instruction decoding/execution.
-
-### Labels
-
-Every immediate used in any instruction can be set as a label. A label is a keyword in your code that points at a specific address in your code. All the labels are replaced with ad immediate by the assembler. To know more see [Assembler.md](../guide/Assembler.md).
+Register fields are named by their position: RA is always in bits 25..21, RB in bits 20..16 and RC in bits 15..11. The names say where a field is, not what it is used for: RC takes the place of the usual RD.
 
 ### R-Type
 | 31..26 (6) | 25..21 (5) | 20..16 (5) | 15..11 (5) | 10..6 (5) | 5..0 (6) |
@@ -44,7 +40,7 @@ The I-Type instructions perform operations between registers and immediate. **RA
 |:----------:|:----------:|
 | **Opcode** | **Immediate (Imm26)** |
 
-The J-Type instructions perform unconditional jumps to relative offset. RFE and INT instruction are also included here.
+The J-Type instructions perform unconditional jumps to relative offset. RFE and INT instructions are also included here.
 
 ## Instruction Set
 | Mnemonic | Type | Opcode | Func | Syntax | Explanation |
@@ -96,6 +92,8 @@ The J-Type instructions perform unconditional jumps to relative offset. RFE and 
 | **JAL**   | J | 0x03 | -    | JAL Imm26 | R[31] <- PC + 4; PC <- PC + 4 + SignExt(Imm26) |
 | **INT**   | J | 0x39 | -    | INT Imm26 | Invoke interrupt handler with code Imm26 |
 | **RFE**   | J | 0x3F | -    | RFE | PC <- IAR; SR[IEN]=1 |
+
+In the Explanation column, `>>` is a logical shift and `>>>` an arithmetic one, `##` concatenates bit strings and x<sup>n</sup> repeats the bit x n times. The Syntax column is the one accepted by the assembler, where every immediate can also be written as a label: see [Assembler.md](../guide/Assembler.md).
 
 ## Reserved encodings
 
