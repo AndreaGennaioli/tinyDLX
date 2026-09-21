@@ -24,7 +24,7 @@ while (state.exec_state == DLX_RUNNING) {
 }
 ```
 
-The loop runs until something changes `exec_state`: a write to the Power Manager or a debug halt (`DLX_HALT`), a fatal error in strict mode (`DLX_FAULT`), SIGINT or SIGTERM (`DLX_SIGNAL`), or the limit set by `--max-cycles` (`DLX_TIMEOUT`). There is no implicit exit at the end of the program: ROM is zero-filled, so a program that runs past its last instruction keeps fetching words that decode to no instruction.
+The loop runs until something changes `exec_state`: a write to the Power Manager or a debug halt (`DLX_HALT`), a fault (`DLX_FAULT`), SIGINT or SIGTERM (`DLX_SIGNAL`), or the limit set by `--max-cycles` (`DLX_TIMEOUT`). There is no implicit exit at the end of the program: ROM is zero-filled, so a program that runs past its last instruction keeps fetching words that decode to no instruction.
 
 Each call to `dlx_seq_step` performs the following operations:
 
