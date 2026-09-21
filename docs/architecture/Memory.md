@@ -1,5 +1,15 @@
 # Memory
 
+## Address space
+
+The address space is 32 bits wide and is divided into three regions:
+
+- **ROM**, 64 KB from `0x00000000`: it holds the program and is read-only.
+- **RAM**, 2 MB from `0x40000000`: its content at reset is undefined, so a program must write a location before reading it.
+- **MMIO**, from `0xC0000000` to `0xFFFFFFFF`: the memory-mapped devices, each at its own address.
+
+Any other address, including an MMIO address not assigned to a device, is unmapped, and accessing it is an [invalid access](#invalid-access). The table at the end of this page lists every mapped range.
+
 ## Program loading
 
 The program executed by tinyDLX is a **flat binary**: there is no loader, no operating system and no dynamic linking. The program is placed in ROM starting at address `0x00000000` and execution begins at `PC = 0`.
@@ -23,7 +33,7 @@ The following accesses are invalid:
 
 Their effect is undefined: the architecture guarantees neither the value returned by a read, nor the state of memory and devices after a write, nor that execution continues. No exception is defined for them, so a program can neither detect an invalid access nor recover from one: a correct program never performs any.
 
-## MMIO mappings
+## Address map
 
 | Device name | Memory Address/Range | Read action | Write action |
 |:------------|:---------------|:------------|:-------------|
