@@ -3,7 +3,7 @@
 ; ============================================================================
 ; This program aims to test devices and interrupts.
 ; The code assumes that:
-; - see docs/Mappings.md
+; - see docs/architecture/Memory.md
 ; - R26 and R27 are reserved by the "kernel"
 ; ============================================================================
 

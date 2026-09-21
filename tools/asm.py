@@ -155,7 +155,7 @@ def resolve_disp(token, labels, width, instr_address):
                      IMM_LIMITS[width]["signed_max"])
 
 
-# See the Notation section of docs/ISA.md
+# See the Notation section of docs/architecture/ISA.md
 def encode_r(opcode, ra, rb, rc, func):
     return (opcode << 26) | (ra << 21) | (rb << 16) | (rc << 11) | func
 
