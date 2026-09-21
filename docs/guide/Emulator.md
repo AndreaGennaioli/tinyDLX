@@ -24,7 +24,7 @@ While the emulator runs, the terminal is put in raw mode, so every key pressed r
 | `-s, --strict` | Runs in strict mode, see below. |
 | `-h, --help` | Prints the options and exits. |
 
-Numeric values are decimal or hexadecimal with `0x`; negative values are rejected.
+Numeric values are decimal, hexadecimal with `0x` or octal with a leading `0`; signs are rejected.
 
 ## Cycles
 
@@ -34,7 +34,7 @@ A frequency is also the rate at which devices are updated, so it changes how fas
 
 ## Strict mode
 
-Some conditions are errors the machine leaves undefined, described in [Memory.md](../architecture/Memory.md) and [Interrupts.md](../architecture/Interrupts.md). The emulator handles them in one of two ways:
+Some conditions are errors the machine leaves undefined, described in [Memory.md](../architecture/Memory.md), [ISA.md](../architecture/ISA.md) and [Interrupts.md](../architecture/Interrupts.md). The emulator handles them in one of two ways:
 
 - **normal mode**: a warning is printed on standard error and execution continues. A faulty read returns 0 and a faulty write has no effect.
 - **strict mode** (`--strict`): the same condition stops execution with a fault.
@@ -81,11 +81,11 @@ Strict mode is the way to catch a program that relies on undefined behaviour. On
 }
 ```
 
-Together with `--init-gpr`, which removes the only source of non-determinism in the initial state, and `--max-cycles`, which stops a run at a known point, the snapshot makes two runs of the same program comparable.
+Together with `--init-gpr`, which fixes the initial value of the registers, and `--max-cycles`, which stops a run at a known point, the snapshot makes two runs of the same program comparable. RAM is not initialised, so this holds only for programs that write a location before reading it.
 
 ## Debug interrupts
 
-Debug interrupts are not implemented in the DLX core but only by the emulator, and they are meant to help the programmer. They use the interrupt codes from `0xF0` up, which the architecture reserves to the development environment. Debug interrupts are handled even if SR[IEN]=0 and do not set any register or flag.
+Debug interrupts are not part of the machine: the emulator implements them to help the programmer. They use the interrupt codes from `0xF0` up, which the architecture reserves to the development environment. Debug interrupts are handled even if SR[IEN]=0 and do not set any register or flag.
 
 | Code | Name | Description |
 |:----|:----|:----|
