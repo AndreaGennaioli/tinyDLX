@@ -27,10 +27,12 @@ After reset CR is `0`, the same value a hardware interrupt writes, so CR cannot 
 Software interrupts can be invoked by the program using `INT` and right now the only supported code is `0x80`. The invocation sets IAR to the address of the instruction following `INT`, SR[IEN] to 0, CR to the interrupt code and PC to 0, so `RFE` resumes execution right after the `INT`. From the program perspective, a software interrupt behaves as a hardware one, except for the different code written into the Cause Register (as explained above).
 
 Executing `INT` while interrupts are disabled (SR[IEN]=0), for instance inside a handler, has an undefined effect, since nested interrupts are not supported.
+
+## Debug interrupts
+
+Codes from `0xF0` up are reserved to the development environment: they are not part of the machine and are described in [Emulator.md](../guide/Emulator.md).
+
 ## Interrupts table
 | Code | Type | Name | Description |
 |:----|:----|:----|:----|
 | **0x80** | Software | SOFTWARE | System call invoked by program. |
-| **0xF0** | Debug | START_TIMER | Starts a timer managed by the emulator. |
-| **0xF1** | Debug | STOP_TIMER | Stops the emulator timer (started by 0xF0) and outputs the time. |
-| **0xF2** | Debug | HALT | Explicit debug halt (bypassing powermanager) |
