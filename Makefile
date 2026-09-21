@@ -9,7 +9,7 @@ OBJ_COMMON := $(patsubst src/common/%.c, obj/common/%.o, $(SRC_COMMON))
 OBJ_SEQ := $(patsubst src/cpu_seq/%.c, obj/cpu_seq/%.o, $(SRC_SEQ))
 OBJ_DEVICES := $(patsubst src/devices/%.c, obj/devices/%.o, $(SRC_DEVICES))
 
-.PHONY: all clean
+.PHONY: all clean make_dirs
 
 all: $(BIN_DIR)/cpu_seq
 
