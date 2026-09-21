@@ -1,42 +1,49 @@
-> ATTENTION: The documentation is being rewrite.
+# tinyDLX
 
-# tinyDLX - DLX Processor Emulator
+A didactic emulator, written in C, of tinyDLX: a 32-bit RISC machine derived from the DLX architecture of Hennessy & Patterson.
 
-A didactic emulator for the DLX architecture (Hennessy & Patterson) written in C.
+tinyDLX is small enough to be read end to end: an instruction set close to the textbook one, a flat memory with memory-mapped devices, a single interrupt line behind an interrupt controller. The project comes with its own assembler, and aims at making every step of a program's execution observable, from the instruction encoding down to the core that runs it.
 
-The current implementation is a **sequential core** (CPI = 5). A **pipelined core** implementation with hazard handling is planned.
+## Features
 
-## Project structure
+- A DLX-derived instruction set: arithmetic, logic, set, shift, load/store, branch and jump instructions, plus software interrupts.
+- A sequential core that executes one instruction per cycle; a pipelined core is planned.
+- Memory-mapped devices: interrupt controller, startup circuit, input and output ports, power manager.
+- An assembler with labels, written in Python.
+- Reproducible runs: cycle limit, register initialisation, a strict mode that turns warnings into faults, and a JSON snapshot of the final state.
+- Execution at full speed or at a chosen frequency.
 
-- `bin/`: compiled files
-- `docs/`: documentation (ISA reference, I/O, interrupts ...)
-- `include/`: shared headers
-- `obj/`: object files
-- `src/common/`: common code (state, memory bus, loader ...)
-- `src/cpu_seq/`: sequential core
-- `src/devices/`: MMIO device implementations
-- `tests/`: assembly test programs
-- `tools/`: assembler (`asm.py`)
+## Quick start
 
-## Build
+Requirements: a C compiler, `make`, Python 3.
 
 ```bash
 make
+python3 tools/asm.py tests/interrupt.asm tests/interrupt.bin
+./bin/cpu_seq -b tests/interrupt.bin --freq 1000
 ```
 
-## Run
-```bash
-# Assemble a test program
-python tools/asm.py tests/interrupt.asm tests/interrupt.bin
-
-# Run it
-./bin/cpu_seq -b tests/interrupt.bin
-```
+The program prints the printable ASCII characters in a loop and echoes what you type; `q` turns the machine off, `Ctrl+C` stops the emulator. Run `./bin/cpu_seq --help` for all the options.
 
 ## Documentation
 
-- [ISA reference](docs/ISA.md)
-- [I/O and devices](docs/IO.md)
-- [Interrupt system](docs/Interrupts.md)
-- [Memory mappings](docs/Mappings.md)
-- [Sequential core architecture](docs/seq/Architecture.md)
+Start from the [documentation index](docs/README.md), or go straight to what you need:
+
+- **Learn the machine**: [architecture overview](docs/architecture/Overview.md)
+- **Write a program**: [your first program](docs/guide/First-Program.md)
+- **Work on the emulator**: [the sequential core](docs/internals/Sequential-Core.md)
+
+## Status
+
+- Sequential core: working.
+- Pipelined core with hazard handling: planned.
+
+## Repository layout
+
+- `src/common/`: machine state, memory bus, loader, command line, snapshots
+- `src/cpu_seq/`: the sequential core and the emulator entry point
+- `src/devices/`: MMIO devices
+- `include/`: headers
+- `tools/`: the assembler
+- `tests/`: assembly test programs
+- `docs/`: documentation
