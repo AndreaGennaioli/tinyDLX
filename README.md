@@ -7,7 +7,7 @@ tinyDLX is small enough to be read end to end: an instruction set close to the t
 ## Features
 
 - A DLX-derived instruction set: arithmetic, logic, set, shift, load/store, branch and jump instructions, plus software interrupts.
-- A sequential core that executes one instruction per cycle; a pipelined core is planned.
+- A sequential core that executes one instruction per cycle.
 - Memory-mapped devices: interrupt controller, startup circuit, input and output ports, power manager.
 - An assembler with labels, written in Python.
 - Reproducible runs: cycle limit, register initialisation, a strict mode that turns warnings into faults, and a JSON snapshot of the final state.
@@ -32,11 +32,6 @@ Start from the [documentation index](docs/README.md), or go straight to what you
 - **Learn the machine**: [architecture overview](docs/architecture/Overview.md)
 - **Write a program**: [your first program](docs/guide/First-Program.md)
 - **Work on the emulator**: [the sequential core](docs/internals/Sequential-Core.md)
-
-## Status
-
-- Sequential core: working.
-- Pipelined core with hazard handling: planned.
 
 ## Repository layout
 

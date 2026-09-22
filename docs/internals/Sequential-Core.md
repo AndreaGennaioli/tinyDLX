@@ -1,6 +1,6 @@
 # Sequential Core
 
-This implementation of tinyDLX consists in a sequential core that executes one instruction per cycle. The classic IF-ID-EX-MEM-WB stages are logical steps performed in order within a single call to `dlx_seq_step`, and every instruction is completed before the next one is fetched, so there are no hazards to handle. As a consequence, the `cycles` counter, the `--max-cycles` limit and the `--freq` target all count executed instructions.
+tinyDLX is emulated by a sequential core that executes one instruction per cycle. The classic IF-ID-EX-MEM-WB stages are logical steps performed in order within a single call to `dlx_seq_step`, and every instruction is completed before the next one is fetched. As a consequence, the `cycles` counter, the `--max-cycles` limit and the `--freq` target all count executed instructions.
 
 How a program is loaded and how memory is addressed is a property of the machine: see [Memory.md](../architecture/Memory.md).
 
@@ -8,8 +8,8 @@ How a program is loaded and how memory is addressed is a property of the machine
 
 The source code is distributed between 3 directories, with the matching headers under `include/`:
 
-- `src/cpu_seq/`: the sequential core and the emulator's entry point. It is the only code that depends on how instructions are executed.
-- `src/common/`: the modules shared by every core: machine state, memory bus, program loader, command line, snapshots.
+- `src/cpu_seq/`: the sequential core, which decodes and executes every instruction, and the emulator's entry point.
+- `src/common/`: the modules the core builds on: machine state, memory bus, program loader, command line, snapshots.
 - `src/devices/`: the memory-mapped devices, one file per device.
 
 ## Execution model
