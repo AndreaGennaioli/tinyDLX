@@ -38,7 +38,8 @@ int dlx_state_init(DLX_state *state, DLX_config *config) {
 
   state->device_count = 0;
 
-  state->spr[DLX_SPR_SR] = SR_IEN;
+  // Interrupts are disabled at startup: see docs/architecture/Interrupts.md
+  state->spr[DLX_SPR_SR] = 0;
   state->spr[DLX_SPR_IAR] = 0;
   state->interrupt_line = 0;
   state->assert_interrupt = dlx_assert_interrupt;

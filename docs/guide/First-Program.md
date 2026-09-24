@@ -10,13 +10,15 @@ Save it as `hello.asm`:
 ; hello.asm: prints "Hello" and turns the machine off
 
 ; ---- address 0: reset and every interrupt start here
-LHI   R26, 0xC000         ; Startup Circuit
-LB    R27, 0(R26)
-BEQZ  R27, HANDLER        ; 0: entered on an interrupt
-SB    R0, 0(R26)          ; 1: reset, clear the Startup Circuit
-LHI   R29, 0x401F         ; stack pointer: last word of RAM
-ORI   R29, R29, 0xFFFC
-J     MAIN
+LHI    R26, 0xC000        ; Startup Circuit
+LB     R27, 0(R26)
+BEQZ   R27, HANDLER       ; 0: entered on an interrupt
+SB     R0, 0(R26)         ; 1: reset, clear the Startup Circuit
+LHI    R29, 0x401F        ; stack pointer: last word of RAM
+ORI    R29, R29, 0xFFFC
+ADDI   R27, R0, 1
+MOVI2S SR, R27            ; interrupts on: a key pressed is now serviced
+J      MAIN
 
 ; ---- interrupts: the only source is the Input Port, and its input is discarded
 HANDLER:
@@ -58,9 +60,9 @@ MAIN:
 
 ## How it works
 
-**Address 0.** Execution starts at address 0 on reset, and every interrupt jumps there as well. The first three instructions read the Startup Circuit to tell the two cases apart. On reset the program clears it, points the stack pointer R29 at the last word of RAM and jumps to `MAIN`.
+**Address 0.** Execution starts at address 0 on reset, and every interrupt jumps there as well. The first three instructions read the Startup Circuit to tell the two cases apart. On reset the program clears it, points the stack pointer R29 at the last word of RAM, enables interrupts and jumps to `MAIN`.
 
-**The handler.** The program never reads input, but a key pressed while it runs still raises an interrupt. The Input Port keeps requesting it until it is read, so the handler reads the byte and discards it before returning with `RFE`. It only uses R26 and R27, the registers reserved to the handler, so it has nothing to save.
+**The handler.** Interrupts are off at reset, and the two instructions before `J MAIN` are what turns them on: without them a key pressed while the program runs would wait in the Input Port forever and the handler would never run. The program has no use for the input, but the Input Port keeps requesting until it is read, so the handler reads the byte and discards it before returning with `RFE`. It only uses R26 and R27, the registers reserved to the handler, so it has nothing to save.
 
 **`PUTCHAR`.** Before writing a byte, the procedure waits for the Output Port to be ready: a byte written while the port is busy is lost. It restores every register it modifies and leaves R1 untouched, which is why `MAIN` can print the second `l` without loading R1 again.
 

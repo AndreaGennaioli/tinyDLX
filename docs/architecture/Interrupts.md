@@ -8,11 +8,11 @@ There are two types of interrupts.
 
 Devices can assert an interrupt to the Interrupt Controller (IC), which is a special device used to buffer interrupts. This is necessary because the CPU has only one interrupt line. The trigger mode is level-triggered or edge-triggered depending on the device and not every device needs to assert an interrupt. Every device, the IC included, is described in [Devices.md](./Devices.md).
 
-When the CPU receives an interrupt the PC is saved into IAR and is set to 0. Since both startup and interrupt entry land at address 0, the handler must be able to tell them apart. This can be done with the Startup Circuit device: the code at address 0 must read the Startup Circuit first to determine whether it was entered at reset or on an interrupt.
+When the CPU receives an interrupt the PC is saved into IAR and is set to 0. Since both startup and interrupt entry land at address 0, the handler must be able to tell them apart. This can be done with the Startup Circuit device: the code at address 0 must read the Startup Circuit first to determine whether it was entered at reset or on an interrupt. A program that never enables interrupts is only ever entered at reset, and has no need for the check.
 
 Interrupts are disabled (SR[IEN]=0) on entry and re-enabled (SR[IEN]=1) by RFE (see [ISA.md](./ISA.md)), so IAR is never overwritten while a handler is running, as long as the handler does not re-enable them itself with `MOVI2S`. Nested interrupts are not supported.
 
-At reset IAR and CR are `0` and SR[IEN] is `1`: interrupts are enabled from the first instruction, so an interrupt can be taken before the startup code at address 0 has run.
+At reset IAR and CR are `0` and SR[IEN] is `0`: interrupts are disabled, and the program enables them with `MOVI2S` once it is ready to take one. Nothing can be taken before the startup code at address 0 has run.
 
 ## Cause Register
 

@@ -20,6 +20,11 @@ HANDLE_STARTUP:
 
   LHI R26, 0xC000
   SB  R0, 0x0000(R26)        ; Dummy write to set SC to 0
+
+  ; Enable interrupts
+  ADDI   R27, R0, 1
+  MOVI2S SR, R27
+
   J MAIN
 
 HANDLE_INTERRUPT:

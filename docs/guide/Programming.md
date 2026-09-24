@@ -51,16 +51,18 @@ The loop on the status is required: a byte written while the Output Port is busy
 Reset and every interrupt start at address 0. The first instructions read the Startup Circuit to tell them apart. On reset they clear it, set up the stack pointer and jump to the program:
 
 ```asm
-LHI   R26, 0xC000         ; Startup Circuit
-LB    R27, 0(R26)
-BEQZ  R27, HANDLER        ; 0: entered on an interrupt
-SB    R0, 0(R26)          ; 1: reset, clear the Startup Circuit
-LHI   R29, 0x401F         ; stack pointer: last word of RAM
-ORI   R29, R29, 0xFFFC
-J     MAIN
+LHI    R26, 0xC000        ; Startup Circuit
+LB     R27, 0(R26)
+BEQZ   R27, HANDLER       ; 0: entered on an interrupt
+SB     R0, 0(R26)         ; 1: reset, clear the Startup Circuit
+LHI    R29, 0x401F        ; stack pointer: last word of RAM
+ORI    R29, R29, 0xFFFC
+ADDI   R27, R0, 1
+MOVI2S SR, R27            ; interrupts on, now that the stack exists
+J      MAIN
 ```
 
-Interrupts are enabled from the first instruction: an interrupt already pending at reset is taken before the Startup Circuit is cleared, is mistaken for reset, and leaves interrupts disabled. See [Interrupts.md](../architecture/Interrupts.md).
+Interrupts are disabled at reset, so the order of those instructions is a choice: a program takes its first interrupt only after writing SR, and until then a request waits in its device. Enabling them before the stack pointer exists would let a handler push onto an address nobody set. See [Interrupts.md](../architecture/Interrupts.md).
 
 ## Interrupt handlers
 

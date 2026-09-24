@@ -111,7 +111,7 @@ LB  R26, 8(R10)              ; R26 = 0xFFFFFFCF (Sign extended byte)
 ; SPECIAL REGISTERS
 ; ============================================================================
 ADDI   R28, R0, 1            ; R28 = 1 (IEN set)
-MOVI2S SR, R28               ; SR = 0x00000001, interrupts stay enabled
+MOVI2S SR, R28               ; SR = 0x00000001, interrupts enabled
 MOVS2I R29, SR               ; R29 = 0x00000001
 
 ; ============================================================================
