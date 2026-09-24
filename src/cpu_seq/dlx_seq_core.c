@@ -90,6 +90,7 @@ static void decode(uint32_t raw_i, decoded_instruction *decoded_i) {
 }
 
 static void execute(DLX_state *state, decoded_instruction *decoded_i) {
+  uint32_t temp_ra;
   switch (decoded_i->opcode) {
   case I_RTYPE:
     switch (decoded_i->func) {
@@ -311,8 +312,10 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
     state->pc = state->gpr[decoded_i->ra];
     break;
   case I_JALR:
+    // Saving gpr[ra] prevents it to be overwrited in the link save (e.g. with JALR R31)
+    temp_ra = state->gpr[decoded_i->ra];
     state->gpr[DLX_REG_LINK] = state->pc;
-    state->pc = state->gpr[decoded_i->ra];
+    state->pc = temp_ra;
     break;
   case I_J:
     state->pc = state->pc + decoded_i->imm26_sext;
