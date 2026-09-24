@@ -33,6 +33,6 @@ For working on the emulator itself.
 |:--|:--|
 | [Sequential-Core.md](./internals/Sequential-Core.md) | The sequential core and its execution loop |
 | [Device-Model.md](./internals/Device-Model.md) | How devices are implemented, and how to add one |
-| [Testing.md](./internals/Testing.md) | The test programs and how to check them |
+| [Testing.md](./internals/Testing.md) | The testing suite |
 
 Circuit schemes and other figures live in [assets/](./assets).

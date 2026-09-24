@@ -10,7 +10,7 @@
 __pycache__/
 
 # Binaries
-tests/*.bin
+tests/**/*.bin
 
 # Libraries
 *.lib

@@ -9,7 +9,7 @@ OBJ_COMMON := $(patsubst src/common/%.c, obj/common/%.o, $(SRC_COMMON))
 OBJ_SEQ := $(patsubst src/cpu_seq/%.c, obj/cpu_seq/%.o, $(SRC_SEQ))
 OBJ_DEVICES := $(patsubst src/devices/%.c, obj/devices/%.o, $(SRC_DEVICES))
 
-.PHONY: all clean make_dirs
+.PHONY: all clean make_dirs test
 
 all: $(BIN_DIR)/cpu_seq
 
@@ -31,6 +31,10 @@ $(OBJ_DIR)/cpu_seq/%.o: src/cpu_seq/%.c | make_dirs
 
 $(OBJ_DIR)/devices/%.o: src/devices/%.c | make_dirs
 	$(CC) $(CFLAGS) -c $< -o $@
+
+# Test suite, see docs/internals/Testing.md.
+test: $(BIN_DIR)/cpu_seq
+	./tools/run_tests.sh
 
 clean:
 	rm -rf bin/* obj/*

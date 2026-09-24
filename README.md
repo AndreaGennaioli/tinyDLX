@@ -12,6 +12,7 @@ tinyDLX is small enough to be read end to end: an instruction set close to the t
 - An assembler with labels, written in Python.
 - Reproducible runs: cycle limit, register initialisation, a strict mode that turns warnings into faults, and a JSON snapshot of the final state.
 - Execution at full speed or at a chosen frequency.
+- A test suite: `make test` runs every test program and compares its final state with a frozen snapshot.
 
 ## Quick start
 
@@ -39,6 +40,6 @@ Start from the [documentation index](docs/README.md), or go straight to what you
 - `src/cpu_seq/`: the sequential core and the emulator entry point
 - `src/devices/`: MMIO devices
 - `include/`: headers
-- `tools/`: the assembler
-- `tests/`: assembly test programs
+- `tools/`: the assembler and the test suite runner
+- `tests/`: assembly test programs and the snapshots the test suite compares them with
 - `docs/`: documentation
