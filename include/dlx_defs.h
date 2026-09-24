@@ -95,7 +95,7 @@ typedef enum {
   //  INDEX - DESC
   //    0   - IEN: 1 = interrupts enabled, 0 = interrupts disabled
   DLX_SPR_SR,
-  // Instruction Address Register:
+  // Interrupt Address Register:
   // the register where the return address is stored before a interrupt
   // handling.
   DLX_SPR_IAR,
