@@ -279,22 +279,23 @@ def parse(lines):
     labels = {}
     i_address = 0
 
-    for line_num, line in enumerate(lines):
+    for [line, line_num] in lines:
         if line.endswith(':'):
             label_name = line[:-1]
 
             if not label_name:
                 raise ParseException(
-                    f"Label name cannot be blank at line {line_num}")
+                    f"Label name cannot be blank at line {line_num + 1}")
             if ' ' in label_name:
                 raise ParseException(
-                    f"Label name cannot include spaces at line {line_num}")
+                    f"Label name cannot include spaces at line {line_num + 1}")
 
             label_name = line.split(':')[0].strip().upper()
 
             if label_name in labels:
                 raise ParseException(
-                    f"Label {label_name} declared more than one time")
+                    f"Label {label_name} declared more than one time"
+                    f" at line {line_num + 1}")
 
             labels[label_name] = i_address
         else:
@@ -315,11 +316,11 @@ def main():
 
     clean_lines = []
     # Remove comments and blank lines
-    for line in input_lines:
+    for line_num, line in enumerate(input_lines):
         clean_line = line.split(';')[0].strip()
         if not clean_line:
             continue
-        clean_lines.append(clean_line)
+        clean_lines.append((clean_line, line_num))
 
     try:
         instructions, labels = parse(clean_lines)
@@ -332,12 +333,12 @@ def main():
             try:
                 val = assemble_instr(instr, labels)
             except ParseException as e:
-                print(f"ASSEMBLER ERROR at line {instr[2] + 1}:")
+                print(f"ASSEMBLER ERROR at line {instr[2]+1}:")
                 print(f"    {instr[0]}")
                 print(f"    -> {e}")
                 exit(1)
             except Exception as e:
-                print(f"CRITICAL ERROR at line {instr[2] + 1}:")
+                print(f"CRITICAL ERROR at line {instr[2]+1}:")
                 print(f"    {instr[0]}")
                 print(f"    -> {e}")
                 exit(1)
