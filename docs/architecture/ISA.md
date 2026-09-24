@@ -15,8 +15,9 @@ Besides the general purpose registers, the machine has three 32-bit special regi
 | 1 | **IAR** | Interrupt Address Register: the address at which execution resumes after an interrupt. |
 | 2 | **CR** | Cause Register: the cause of the last interrupt. |
 
-The SPR can be referred as directly by name or by their number (e.g. SPR[0] is SR).
-No instruction can read or write them: they change only on interrupt entry and with `RFE`, as described in [Interrupts.md](./Interrupts.md).
+SPRs can be read and written using `MOVS2I` and `MOVI2S`, see below.
+
+A read returns the whole register, a write goes through a mask: of SR only IEN is writable and the rest is kept as it is, and CR is read-only.
 
 ### Notation
 
@@ -27,7 +28,7 @@ Register fields are named by their position: RA is always in bits 25..21, RB in 
 |:----------:|:----------:|:----------:|:----------:|:----------:|:----------:|
 | **Opcode** | **RA** | **RB** | **RC** | **Unused** | **Func** |
 
-The R-Type instructions perform operations between registers. The **Opcode** is always zero and **Func** is used instead. **RA** is the first operand and **RB** is the second, **RC** is the destination. **RA**, **RB** and **RC** are the numeric representation of any General Purpose Register.
+The R-Type instructions perform operations between registers. The **Opcode** is always zero and **Func** is used instead. **RA** is the first operand and **RB** is the second, **RC** is the destination. **RA**, **RB** and **RC** are the numeric representation of any General Purpose Register, with the exception of `MOVI2S` and `MOVS2I`, where one of the fields carries the SPR's numeric representation.
 
 ### I-Type
 | 31..26 (6) | 25..21 (5) | 20..16 (5) | 15..0 (16) |
@@ -60,6 +61,8 @@ The J-Type instructions perform unconditional jumps to relative offset. RFE and 
 | **SLT**   | R | 0x00 | 0x2C | SLT rc, ra, rb | R[rc] <- 0x01 if R[ra] < R[rb] else 0x00 |
 | **SNE**   | R | 0x00 | 0x2D | SNE rc, ra, rb | R[rc] <- 0x01 if R[ra] != R[rb] else 0x00 |
 | **SLE**   | R | 0x00 | 0x2E | SLE rc, ra, rb | R[rc] <- 0x01 if R[ra] <= R[rb] else 0x00 |
+| **MOVI2S**   | R | 0x00 | 0x30 | MOVI2S rc, ra | SPR[rc] <- R[ra] |
+| **MOVS2I**   | R | 0x00 | 0x31 | MOVS2I rc, ra | R[rc] <- SPR[ra] |
 | **BEQZ**  | I | 0x04 | -    | BEQZ ra, Imm16 | if R[ra] = 0 then PC <- PC + 4 + SignExt(Imm16) |
 | **BNEZ**  | I | 0x05 | -    | BNEZ ra, Imm16 | if R[ra] != 0 then PC <- PC + 4 + SignExt(Imm16) |
 | **ADDI**  | I | 0x08 | -    | ADDI rb, ra, Imm16 | R[rb] <- R[ra] + SignExt(Imm16) |
@@ -98,4 +101,4 @@ In the Explanation column, `>>` is a logical shift and `>>>` an arithmetic one, 
 
 ## Reserved encodings
 
-Opcodes that do not appear in the table above, function codes that do not appear among the R-Type instructions and `INT` codes not assigned in [Interrupts.md](./Interrupts.md) are reserved. Executing an instruction with a reserved encoding has an undefined effect.
+Opcodes that do not appear in the table above, function codes that do not appear among the R-Type instructions, special register numbers above 2 and `INT` codes not assigned in [Interrupts.md](./Interrupts.md) are reserved. Executing an instruction with a reserved encoding has an undefined effect.

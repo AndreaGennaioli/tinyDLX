@@ -29,3 +29,7 @@ An immediate can be written in decimal, including negative values, in hexadecima
 An immediate used as plain data is taken as a raw bit pattern, so in the 16 bit field of an I-Type instruction it spans from `-0x8000` to `0xFFFF`, and `-1` and `0xFFFF` describe the same field. A displacement stops at `0x7FFF` instead, because the hardware sign extends it: every larger pattern would read back as a negative number and send the jump the other way, so the assembler rejects it rather than encoding it. The same distinction applies to the 26 bit fields: data spans from `-0x2000000` to `0x3FFFFFF`, while a displacement stops at `0x1FFFFFF`.
 
 `INT` takes an interrupt code, never a PC relative label.
+
+### Special registers
+
+`MOVI2S` and `MOVS2I` take their special register by name: `SR`, `IAR` or `CR`, case insensitive.

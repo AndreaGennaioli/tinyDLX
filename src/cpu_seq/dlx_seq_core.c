@@ -174,6 +174,32 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
         state->gpr[decoded_i->rc] = 0;
       }
       break;
+    case I_MOVI2S_FUNC:
+      if(decoded_i->rc >= DLX_SPR_COUNT) {
+        if(state->config->strict_mode) {
+          error("EXECUTE: 0x%02X is not a Special Purpose Register", decoded_i->rc);
+          state->exec_state = DLX_FAULT;
+        } else {
+          warn("EXECUTE: 0x%02X is not a Special Purpose Register", decoded_i->rc);
+        }
+      } else {
+        // Write into SPR using its proper mask.
+        state->spr[decoded_i->rc] = (state->gpr[decoded_i->ra] & dlx_spr_wmask[decoded_i->rc])
+              | (state->spr[decoded_i->rc] & ~dlx_spr_wmask[decoded_i->rc]);
+      }
+      break;
+    case I_MOVS2I_FUNC:
+      if(decoded_i->ra >= DLX_SPR_COUNT) {
+        if(state->config->strict_mode) {
+          error("EXECUTE: 0x%02X is not a Special Purpose Register", decoded_i->ra);
+          state->exec_state = DLX_FAULT;
+        } else {
+          warn("EXECUTE: 0x%02X is not a Special Purpose Register", decoded_i->ra);
+        }
+      } else {
+        state->gpr[decoded_i->rc] = state->spr[decoded_i->ra];
+      }
+      break;
     default:
       if(state->config->strict_mode) {
         error("EXECUTE: 0x%02X not implemented R type function", decoded_i->func);

@@ -21,6 +21,9 @@ OPCODES = {
     "SLT": {"type": "R", "op": 0x00, "func": 0x2C},  # SET LESS THAN
     "SNE": {"type": "R", "op": 0x00, "func": 0x2D},  # SET NOT EQUAL
     "SLE": {"type": "R", "op": 0x00, "func": 0x2E},  # SET LESS EQUAL
+    # Special register operations
+    "MOVI2S": {"type": "S", "op": 0x00, "func": 0x30},  # MOVE INTEGER (register) TO SPECIAL (register)
+    "MOVS2I": {"type": "S", "op": 0x00, "func": 0x31},  # MOVE SPECIAL (register) TO INTEGER (register)
 
     # ---- J-Type
     # Jumps
@@ -85,6 +88,23 @@ def register_to_int(register):
         raise ParseException("Invalid register " + register)
 
     return register_int
+
+
+# Special Purpose Registers, used by MOVI2S and MOVS2I instructions.
+# (see include/dlx_defs.h)
+SPR_NAMES = {"SR": 0, "IAR": 1, "CR": 2}
+
+
+def spr_to_int(register):
+    """
+    Converts 'SR' -> 0, 'IAR' -> 1, 'CR' -> 2
+    """
+    if register.upper() not in SPR_NAMES:
+        raise ParseException(
+            f"Invalid special register '{register}'"
+            f" (accepted names {', '.join(SPR_NAMES)})")
+
+    return SPR_NAMES[register.upper()]
 
 
 def get_address_value(token, labels, instr_address=None):
@@ -189,6 +209,20 @@ def assemble_instr(instr, labels):
         rc = register_to_int(parts[1])      # destination
         ra = register_to_int(parts[2])      # first operand
         rb = register_to_int(parts[3])      # second operand
+
+        return encode_r(opcode, ra, rb, rc, op['func'])
+    elif op['type'] == "S":
+        # Syntax    Move to special     MOVI2S spr, ra
+        #           Move from special   MOVS2I rc, spr
+        # Encoding  [OP] [RA] [RB] [RC] [unused] [FUNC]
+        rb = 0
+
+        if mnemonic == "MOVI2S":
+            rc = spr_to_int(parts[1])       # destination
+            ra = register_to_int(parts[2])  # source
+        else:
+            rc = register_to_int(parts[1])  # destination
+            ra = spr_to_int(parts[2])       # source
 
         return encode_r(opcode, ra, rb, rc, op['func'])
     elif op['type'] == "I":

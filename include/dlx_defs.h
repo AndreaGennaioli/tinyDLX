@@ -109,11 +109,21 @@ typedef enum {
   DLX_SPR_COUNT
 } DLX_spr;
 
+// Write masks for Special Purpose Registers.
+static const uint32_t dlx_spr_wmask[DLX_SPR_COUNT] = {
+  // Only IEN is writeble
+  [DLX_SPR_SR]  = SR_IEN,
+  // Full IAR is writable
+  [DLX_SPR_IAR] = 0xFFFFFFFFu,
+  // Cause Register is read-only
+  [DLX_SPR_CR]  = 0,
+};
 
 typedef struct {
   uint8_t *rom;
   uint8_t *ram;
   uint64_t cycles;
+
   // General Purpose Registers
   uint32_t gpr[DLX_GPR_COUNT];
   uint32_t spr[DLX_SPR_COUNT];

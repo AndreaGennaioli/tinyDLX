@@ -64,5 +64,7 @@ typedef struct {
 #define I_SLT_FUNC 0x2C
 #define I_SNE_FUNC 0x2D
 #define I_SLE_FUNC 0x2E
+#define I_MOVI2S_FUNC 0x30
+#define I_MOVS2I_FUNC 0x31
 
 #endif // !DLX_ISA_H

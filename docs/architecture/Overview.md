@@ -22,7 +22,6 @@ tinyDLX keeps the DLX programming model but is not a complete DLX:
 
 - **No floating point**: no floating point registers, loads, stores, arithmetic or branches.
 - **No multiply and divide**, which DLX performs in its floating point unit, and no unsigned register-register `ADDU` and `SUBU`.
-- **No access to special registers**: DLX's `MOVI2S` and `MOVS2I` have no counterpart yet.
 - **`INT` instead of `TRAP`**: hardware and software interrupts share the entry point at address 0, and the Cause Register records which one occurred.
 - **Its own encoding**: the sources that describe DLX do not agree on its opcodes; tinyDLX defines its own in [ISA.md](./ISA.md) and is not binary compatible with other DLX tools.
 - **A system around the ISA**: DLX does not define a memory map or devices. The address map, the devices, the interrupt controller and the startup circuit are specific to tinyDLX.

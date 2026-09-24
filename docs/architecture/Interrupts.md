@@ -10,7 +10,7 @@ Devices can assert an interrupt to the Interrupt Controller (IC), which is a spe
 
 When the CPU receives an interrupt the PC is saved into IAR and is set to 0. Since both startup and interrupt entry land at address 0, the handler must be able to tell them apart. This can be done with the Startup Circuit device: the code at address 0 must read the Startup Circuit first to determine whether it was entered at reset or on an interrupt.
 
-Interrupts are disabled (SR[IEN]=0) on entry and re-enabled (SR[IEN]=1) by RFE (see [ISA.md](./ISA.md)), so IAR is never overwritten while a handler is running. Nested interrupts are not supported.
+Interrupts are disabled (SR[IEN]=0) on entry and re-enabled (SR[IEN]=1) by RFE (see [ISA.md](./ISA.md)), so IAR is never overwritten while a handler is running, as long as the handler does not re-enable them itself with `MOVI2S`. Nested interrupts are not supported.
 
 At reset IAR and CR are `0` and SR[IEN] is `1`: interrupts are enabled from the first instruction, so an interrupt can be taken before the startup code at address 0 has run.
 
@@ -18,7 +18,7 @@ At reset IAR and CR are `0` and SR[IEN] is `1`: interrupts are enabled from the 
 
 The Cause Register is a special register used to identify the nature of the asserted interrupt. It is set to the interrupt code of the asserted software interrupt, or to 0 in the case of hardware interrupts. Its goal is to understand if the current asserted interrupt is from hardware or software, and in the latter case, read its code in the same operation. Even if the only current software interrupt code available is `0x80`, it has been created to make the distinction between SW and HW interrupts strict and not dependent on the IC. It is never cleared, but only overwritten.
 
-No instruction can read CR yet: until one is added to the [ISA](./ISA.md), a program has no access to it.
+A handler reads CR with `MOVS2I` (see [ISA.md](./ISA.md)), so it can tell a software interrupt from a hardware one without asking the IC.
 
 Since CR is `0` both at reset and after a hardware interrupt, it cannot tell the two apart: that is the job of the Startup Circuit.
 

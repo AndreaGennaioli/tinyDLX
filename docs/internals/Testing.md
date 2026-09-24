@@ -13,6 +13,7 @@ python3 tools/asm.py tests/full_isa.asm tests/full_isa.bin
 | Program | What it exercises |
 |:--|:--|
 | `full_isa.asm` | Every instruction of the ISA |
+| `mov_special.asm` | Reading and writing the special registers, write masks included |
 | `startup_circuit.asm` | Reading and clearing the Startup Circuit |
 | `interrupt.asm` | Input and Output Port, Interrupt Controller and Power Manager |
 | `stress.asm` | The speed of the emulator, timed with the debug timer |
