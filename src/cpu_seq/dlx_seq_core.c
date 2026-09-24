@@ -30,10 +30,10 @@ void dlx_seq_step(DLX_state *state) {
   // Check if DLX interrupt line is asserted.
   // If so, disable interrupts (IEN = 0), set IAR to current pc,
   // set Cause Register to 0 (HW interrupt) and jump to address 0
-  if(state->interrupt_line && (state->sr & SR_IEN)) {
-    state->sr &= ~SR_IEN;
-    state->iar = state->pc;
-    state->cr = 0;
+  if(state->interrupt_line && (state->spr[DLX_SPR_SR] & SR_IEN)) {
+    state->spr[DLX_SPR_SR] &= ~SR_IEN;
+    state->spr[DLX_SPR_IAR] = state->pc;
+    state->spr[DLX_SPR_CR] = 0;
     state->pc = 0;
   }
 
@@ -328,11 +328,11 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
     if (decoded_i->imm26 >= 0xF0) {
       // Debug interrupts
       dlx_exec_debug_interrupt(decoded_i->imm26, state);
-    } else if((state->sr & SR_IEN) && decoded_i->imm26 == 0x80) {
-      state->sr &= ~SR_IEN;
+    } else if((state->spr[DLX_SPR_SR] & SR_IEN) && decoded_i->imm26 == 0x80) {
+      state->spr[DLX_SPR_SR] &= ~SR_IEN;
       // the PC points to the next instruction
-      state->iar = state->pc;
-      state->cr = 0x80;
+      state->spr[DLX_SPR_IAR] = state->pc;
+      state->spr[DLX_SPR_CR] = 0x80;
       state->pc = 0;
     } else if (decoded_i->imm26 == 0x80) {
       error("EXECUTE: INT 0x80 with interrupts disabled; nested traps unsupported");
@@ -347,8 +347,8 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
     }
     break;
   case I_RFE:
-    state->sr |= SR_IEN;
-    state->pc = state->iar;
+    state->spr[DLX_SPR_SR] |= SR_IEN;
+    state->pc = state->spr[DLX_SPR_IAR];
     break;
   default:
     if(state->config->strict_mode) {

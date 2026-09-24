@@ -29,9 +29,9 @@ int dlx_snapshot_write(DLX_state *state, DLX_config *config) {
   fprintf(dump_file, "    \"exit_reason\": \"%s\",\n", exec_state_name(state->exec_state));
   fprintf(dump_file, "    \"cycles\": %" PRIu64 ",\n", state->cycles);
   fprintf(dump_file, "    \"pc\": \"0x%08X\",\n", state->pc);
-  fprintf(dump_file, "    \"sr\": \"0x%08X\",\n", state->sr);
-  fprintf(dump_file, "    \"iar\": \"0x%08X\",\n", state->iar);
-  fprintf(dump_file, "    \"cr\": \"0x%08X\",\n", state->cr);
+  fprintf(dump_file, "    \"sr\": \"0x%08X\",\n", state->spr[DLX_SPR_SR]);
+  fprintf(dump_file, "    \"iar\": \"0x%08X\",\n", state->spr[DLX_SPR_IAR]);
+  fprintf(dump_file, "    \"cr\": \"0x%08X\",\n", state->spr[DLX_SPR_CR]);
   
   size_t i;
   for (i = 0; i < DLX_GPR_COUNT-1; i++) {

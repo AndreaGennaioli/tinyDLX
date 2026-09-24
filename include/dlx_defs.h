@@ -90,30 +90,35 @@ typedef struct {
   uint8_t strict_mode;
 } DLX_config;
 
-typedef struct {
-  uint8_t *rom;
-  uint8_t *ram;
-  uint64_t cycles;
-
-  // General Purpose Registers
-  uint32_t gpr[DLX_GPR_COUNT];
-  // Program Counter
-  uint32_t pc;
+typedef enum {
   // Status Register:
   //  INDEX - DESC
   //    0   - IEN: 1 = interrupts enabled, 0 = interrupts disabled
-  uint32_t sr;
+  DLX_SPR_SR,
   // Instruction Address Register:
   // the register where the return address is stored before a interrupt
   // handling.
-  uint32_t iar;
+  DLX_SPR_IAR,
   // Cause Register:
   // cause of the current trap, 0 for hardware interrupts (the handler must
   // query the Interrupt Controller), or the INT immediate for software
   // interrupts.
   // Note that CR alone can't distinguish a hardware interrupt from the
   // initial state, since both read as 0.
-  uint32_t cr;
+  DLX_SPR_CR,
+  DLX_SPR_COUNT
+} DLX_spr;
+
+
+typedef struct {
+  uint8_t *rom;
+  uint8_t *ram;
+  uint64_t cycles;
+  // General Purpose Registers
+  uint32_t gpr[DLX_GPR_COUNT];
+  uint32_t spr[DLX_SPR_COUNT];
+  // Program Counter
+  uint32_t pc;
 
   // Array containing all the devices. Every device contained in the array
   // can be mapped in a specified range of addresses, can define handlers

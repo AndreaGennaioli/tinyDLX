@@ -31,15 +31,15 @@ int dlx_state_init(DLX_state *state, DLX_config *config) {
   // Set pc to 0 (pc <- 0)
   state->pc = 0;
 
-  state->cr = 0;
+  state->spr[DLX_SPR_CR] = 0;
 
   // Random values for GPRs are expected, except for R0
   state->gpr[0] = 0;
 
   state->device_count = 0;
 
-  state->sr = SR_IEN;
-  state->iar = 0;
+  state->spr[DLX_SPR_SR] = SR_IEN;
+  state->spr[DLX_SPR_IAR] = 0;
   state->interrupt_line = 0;
   state->assert_interrupt = dlx_assert_interrupt;
 

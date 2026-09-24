@@ -7,14 +7,15 @@ The instructions can use immediate values and all the General Purpose Registers 
 
 ### Special registers
 
-Besides the general purpose registers, the machine has three 32-bit special registers:
+Besides the general purpose registers, the machine has three 32-bit special registers (SPR, Special Purpose Registers):
 
-| Register | Content |
-|:--|:--|
-| **SR** | Status Register. Bit 0 is IEN, the interrupt enable flag; the other bits are reserved. |
-| **IAR** | Interrupt Address Register: the address at which execution resumes after an interrupt. |
-| **CR** | Cause Register: the cause of the last interrupt. |
+| Number | Register | Content |
+|:--|:--|:--|
+| 0 | **SR** | Status Register. Bit 0 is IEN, the interrupt enable flag; the other bits are reserved. |
+| 1 | **IAR** | Interrupt Address Register: the address at which execution resumes after an interrupt. |
+| 2 | **CR** | Cause Register: the cause of the last interrupt. |
 
+The SPR can be referred as directly by name or by their number (e.g. SPR[0] is SR).
 No instruction can read or write them: they change only on interrupt entry and with `RFE`, as described in [Interrupts.md](./Interrupts.md).
 
 ### Notation
