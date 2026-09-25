@@ -11,6 +11,7 @@
 #define DLX_ROM_SIZE (1024 * 64)       // 64 KB
 #define DLX_RAM_BASE 0x40000000        // After 1 GB
 #define DLX_RAM_SIZE (1024 * 1024 * 2) // 2 MB
+#define DLX_DEVICES_BASE 0xC0000000   // After 3 GB
 
 // MMIO Devices
 // 16 is reserved to 'no interrupt asserted'

@@ -46,9 +46,11 @@ uint32_t dlx_memory_read_word(DLX_state *state, uint32_t address) {
   }
 
   // MMIO
-  DLX_device *dev = get_device(state, address);
-  if (dev != NULL && dev->read != NULL) {
-    return dev->read(dev->state, address - dev->base_address, 4);
+  if(address >= DLX_DEVICES_BASE) {
+    DLX_device *dev = get_device(state, address);
+    if (dev != NULL && dev->read != NULL) {
+      return dev->read(dev->state, address - dev->base_address, 4);
+    }
   }
 
   // Getting the real pointer
@@ -83,9 +85,11 @@ uint32_t dlx_memory_read_half_word(DLX_state *state, uint32_t address) {
   }
 
   // MMIO
-  DLX_device *dev = get_device(state, address);
-  if (dev != NULL && dev->read != NULL) {
-    return dev->read(dev->state, address - dev->base_address, 2);
+  if(address >= DLX_DEVICES_BASE) {
+    DLX_device *dev = get_device(state, address);
+    if (dev != NULL && dev->read != NULL) {
+      return dev->read(dev->state, address - dev->base_address, 2);
+    }
   }
 
   // Getting the real pointer
@@ -109,9 +113,11 @@ uint32_t dlx_memory_read_byte(DLX_state *state, uint32_t address) {
     return 0;
 
   // MMIO
-  DLX_device *dev = get_device(state, address);
-  if (dev != NULL && dev->read != NULL) {
-    return dev->read(dev->state, address - dev->base_address, 1);
+  if(address >= DLX_DEVICES_BASE) {
+    DLX_device *dev = get_device(state, address);
+    if (dev != NULL && dev->read != NULL) {
+      return dev->read(dev->state, address - dev->base_address, 1);
+    }
   }
 
   // Getting the real pointer
@@ -155,10 +161,12 @@ void dlx_memory_write_word(DLX_state *state, uint32_t address, uint32_t data) {
   }
 
   // MMIO
-  DLX_device *dev = get_device(state, address);
-  if (dev != NULL && dev->write != NULL) {
-    dev->write(dev->state, address - dev->base_address, data, 4);
-    return;
+  if(address >= DLX_DEVICES_BASE) {
+    DLX_device *dev = get_device(state, address);
+    if (dev != NULL && dev->write != NULL) {
+      dev->write(dev->state, address - dev->base_address, data, 4);
+      return;
+    }
   }
 
   // Getting real physic pointer
@@ -207,10 +215,12 @@ void dlx_memory_write_half_word(DLX_state *state, uint32_t address,
   }
 
   // MMIO
-  DLX_device *dev = get_device(state, address);
-  if (dev != NULL && dev->write != NULL) {
-    dev->write(dev->state, address - dev->base_address, data, 2);
-    return;
+  if(address >= DLX_DEVICES_BASE) {
+    DLX_device *dev = get_device(state, address);
+    if (dev != NULL && dev->write != NULL) {
+      dev->write(dev->state, address - dev->base_address, data, 2);
+      return;
+    }
   }
 
   // Getting real physic pointer
@@ -246,10 +256,12 @@ void dlx_memory_write_byte(DLX_state *state, uint32_t address, uint8_t data) {
   }
 
   // MMIO
-  DLX_device *dev = get_device(state, address);
-  if (dev != NULL && dev->write != NULL) {
-    dev->write(dev->state, address - dev->base_address, data, 1);
-    return;
+  if(address >= DLX_DEVICES_BASE) {
+    DLX_device *dev = get_device(state, address);
+    if (dev != NULL && dev->write != NULL) {
+      dev->write(dev->state, address - dev->base_address, data, 1);
+      return;
+    }
   }
 
   // Getting real physic pointer
