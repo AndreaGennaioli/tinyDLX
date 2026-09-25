@@ -52,6 +52,7 @@ static const char *exec_state_name(DLX_exec_state s) {
     case DLX_FAULT:   return "fault";
     case DLX_SIGNAL:  return "signal";
     case DLX_TIMEOUT:  return "timeout";
+    case DLX_CRITICAL:  return "critical";
   }
   return "unknown";
 

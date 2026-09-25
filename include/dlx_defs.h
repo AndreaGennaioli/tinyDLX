@@ -74,7 +74,7 @@ typedef enum {
   // When state->cycle exceeds state->max_cycles
   DLX_TIMEOUT,
   // For emulator error during emulation
-  DLX_CRITIC
+  DLX_CRITICAL
 } DLX_exec_state;
 
 // Configuration struct for the emulator.
