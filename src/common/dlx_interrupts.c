@@ -1,20 +1,32 @@
 #include "dlx_interrupts.h"
 #include "dlx_defs.h"
 #include "debug.h"
+#include <errno.h>
+#include <stdint.h>
+#include <string.h>
 #include <time.h>
 
-static clock_t start_tick;
+#define NS_PER_SEC 1000000000ULL
 
-static void start_timer();
-static void stop_timer();
+static uint64_t start_time;
+
+// Returns current time in ns
+static uint64_t now_ns(void) {
+  struct timespec ts;
+  int ris = clock_gettime(CLOCK_MONOTONIC, &ts);
+return ris == 0 ? (uint64_t)ts.tv_sec * NS_PER_SEC + ts.tv_nsec : 0;
+}
+
+static void start_timer(DLX_state *state);
+static void stop_timer(DLX_state *state);
 
 void dlx_exec_debug_interrupt(uint32_t code, DLX_state *state) {
   switch (code) {
   case 0xF0:
-    start_timer();
+    start_timer(state);
     break;
   case 0xF1:
-    stop_timer();
+    stop_timer(state);
     break;
   case 0xF2:
     state->exec_state = DLX_HALT;
@@ -29,13 +41,20 @@ void dlx_exec_debug_interrupt(uint32_t code, DLX_state *state) {
   }
 }
 
-static void start_timer() {
-  start_tick = clock();
+static void start_timer(DLX_state *state) {
+  if((start_time = now_ns()) == 0) {
+    error("CRITICAL: %s", strerror(errno));
+    state->exec_state = DLX_CRITICAL;
+  }
   info("Timer started");
 }
 
-static void stop_timer() {
-  clock_t end_tick = clock();
-  double time_diff = (double)(end_tick - start_tick) / CLOCKS_PER_SEC;
+static void stop_timer(DLX_state *state) {
+  uint64_t end_time;
+  if((end_time = now_ns()) == 0) {
+    error("CRITICAL: %s", strerror(errno));
+    state->exec_state = DLX_CRITICAL;
+  }
+  double time_diff = (double)(end_time - start_time) / NS_PER_SEC;
   info("Timer stopped, elapsed time: %lf seconds", time_diff);
 }
