@@ -49,6 +49,7 @@ void dlx_seq_step(DLX_state *state) {
 
   // FETCH
   uint32_t raw_i = dlx_memory_read_word(state, state->pc);
+  if(state->exec_state != DLX_FAULT) return;
 
   // DECODE
   state->pc += 4;
@@ -325,8 +326,10 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
                           state->gpr[decoded_i->rb] & 0xFF);
     break;
   case I_LW:
-    state->gpr[decoded_i->rb] = dlx_memory_read_word(
-        state, state->gpr[decoded_i->ra] + decoded_i->imm16_sext);
+    temp_ra = dlx_memory_read_word(state, state->gpr[decoded_i->ra] + decoded_i->imm16_sext);
+    if(state->exec_state == DLX_RUNNING) {
+      state->gpr[decoded_i->rb] = temp_ra;
+    }
     break;
   case I_LHU:
     state->gpr[decoded_i->rb] = dlx_memory_read_half_word(
