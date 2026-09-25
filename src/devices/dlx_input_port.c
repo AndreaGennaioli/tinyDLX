@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+// TODO: make it a dynamic interval based on the current emulation frequecy
+#define INPUT_CHECK_INTERVAL 10
+
 static void d_tick(void *state);
 static void d_free(void *state);
 static uint32_t d_read(void *state, uint32_t offset, uint8_t bytes);
@@ -42,6 +45,9 @@ static void d_tick(void *state) {
     s->ic->assert_interrupt(s->ic, s->int_index);
     return;
   }
+
+  if ((++s->tick_count & INPUT_CHECK_INTERVAL) != 0)
+    return;                     /* caso comune: un incremento e un AND */
 
   struct pollfd pfd = {.fd = STDIN_FILENO, .events = POLLIN};
   if (poll(&pfd, 1, 0) > 0) {

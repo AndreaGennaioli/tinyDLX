@@ -5,6 +5,7 @@
 
 typedef struct {
   DLX_ic_base *ic;
+  uint32_t tick_count;
   uint8_t data;
   uint8_t ready;
   uint8_t int_index;
