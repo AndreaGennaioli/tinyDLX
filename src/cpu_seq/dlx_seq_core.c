@@ -49,7 +49,7 @@ void dlx_seq_step(DLX_state *state) {
 
   // FETCH
   uint32_t raw_i = dlx_memory_read_word(state, state->pc);
-  if(state->exec_state != DLX_FAULT) return;
+  if(state->exec_state != DLX_RUNNING) return;
 
   // DECODE
   state->pc += 4;
