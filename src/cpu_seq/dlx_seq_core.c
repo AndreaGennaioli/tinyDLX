@@ -17,6 +17,16 @@ static void decode(uint32_t raw_i, decoded_instruction *decoded_i);
 // Execute instruction
 static void execute(DLX_state *state, decoded_instruction *decoded_i);
 
+// Write masks for Special Purpose Registers.
+static const uint32_t dlx_spr_wmask[DLX_SPR_COUNT] = {
+  // Only IEN is writeble
+  [DLX_SPR_SR]  = SR_IEN,
+  // Full IAR is writable
+  [DLX_SPR_IAR] = 0xFFFFFFFFu,
+  // Cause Register is read-only
+  [DLX_SPR_CR]  = 0,
+};
+
 void dlx_seq_step(DLX_state *state) {
   if (state == NULL)
     return;
