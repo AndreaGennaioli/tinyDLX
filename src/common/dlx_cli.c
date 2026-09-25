@@ -35,19 +35,19 @@ int parse_arguments(int argc, char **argv, DLX_config *config) {
     case 'f':
       if(parse_u32(optarg, &config->freq_hz) == 0) {
         fprintf(stderr, "An error while parsing --freq value.");
-        exit(EXIT_FAILURE);
+        exit(DLX_EXIT_ERROR);
       }
       break;
     case 'C':
       if(parse_u64(optarg, &config->max_cycles) == 0) {
         fprintf(stderr, "An error while parsing --max-cycles value.");
-        exit(EXIT_FAILURE);
+        exit(DLX_EXIT_ERROR);
       }
       break;
     case 'G':
       if(parse_u32(optarg, &config->init_gpr) == 0) {
         fprintf(stderr, "An error while parsing --init-gpr value.");
-        exit(EXIT_FAILURE);
+        exit(DLX_EXIT_ERROR);
       }
       config->init_gpr_set = 1;
       break;
@@ -59,11 +59,11 @@ int parse_arguments(int argc, char **argv, DLX_config *config) {
       break;
     case 'h':
       print_help(argv[0], stdout);
-      exit(EXIT_SUCCESS);
+      exit(DLX_EXIT_SUCCESS);
     case '?':
     default:
       print_help(argv[0], stderr);
-      exit(EXIT_FAILURE);
+      exit(DLX_EXIT_ERROR);
     }
   }
 

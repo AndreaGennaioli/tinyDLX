@@ -13,7 +13,6 @@
 #include "dlx_state.h"
 #include "dlx_terminal.h"
 #include <stdint.h>
-#include <stdlib.h>
 #include <signal.h>
 #include <time.h>
 
@@ -38,7 +37,7 @@ int main(int argc, char *argv[]) {
   signal(SIGTERM, handle_exit_signal);
 
   if (parse_arguments(argc, argv, &config) == 0) {
-    return EXIT_FAILURE;
+    return DLX_EXIT_ERROR;
   }
 
   dlx_terminal_raw();
@@ -47,14 +46,14 @@ int main(int argc, char *argv[]) {
 
   // Initialize DLX state
   if (dlx_state_init(&state, &config) == 0)
-    return EXIT_FAILURE;
+    return DLX_EXIT_ERROR;
 
   info("DLX state initialized");
 
   // Initialize devices
   if (setup_devices(&state) == 0) {
     dlx_state_free(&state);
-    return EXIT_FAILURE;
+    return DLX_EXIT_ERROR;
   }
 
   info("DLX devices initialized");
@@ -63,7 +62,7 @@ int main(int argc, char *argv[]) {
   // The program file is a binary file containing the program
   if (dlx_load_program(&state, config.program_file) == 0) {
     dlx_state_free(&state);
-    return EXIT_FAILURE;
+    return DLX_EXIT_ERROR;
   }
 
   info("Executing program...");
@@ -72,7 +71,7 @@ int main(int argc, char *argv[]) {
   uint64_t start_ns;
   if((start_ns = now_ns()) == 0) {
     dlx_state_free(&state);
-    return EXIT_FAILURE;
+    return DLX_EXIT_ERROR;
   }
 
   // The sync interval is calculated from the frequency:
@@ -105,7 +104,7 @@ int main(int argc, char *argv[]) {
       uint64_t now;
       if((now = now_ns()) == 0) {
         dlx_state_free(&state);
-        return EXIT_FAILURE;
+        return DLX_EXIT_ERROR;
       }
       uint64_t elapsed_ns = now - start_ns;
 
@@ -121,13 +120,13 @@ int main(int argc, char *argv[]) {
 
   int code;
   switch(state.exec_state) {
-    case DLX_HALT:   code = 0; break;
-    case DLX_FAULT:  code = 1; break;
-    case DLX_SIGNAL: code = 2; break;
-    case DLX_TIMEOUT: code = 4; break;
+    case DLX_HALT:   code = DLX_EXIT_SUCCESS; break;
+    case DLX_FAULT:  code = DLX_EXIT_FAULT; break;
+    case DLX_SIGNAL: code = DLX_EXIT_SIGNAL; break;
+    case DLX_TIMEOUT: code = DLX_EXIT_TIMEOUT; break;
     // Internal emulator error
     case DLX_CRITICAL:
-    default:         code = 3; break;
+    default:         code = DLX_EXIT_ERROR; break;
   }
 
   fputc('\n', stderr);

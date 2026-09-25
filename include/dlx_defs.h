@@ -62,6 +62,15 @@ typedef enum {
   SR_IEN = 1 << 0,
 } StatusRegisterFlags;
 
+// Emulator exit codes
+typedef enum {
+  DLX_EXIT_SUCCESS = 0,
+  DLX_EXIT_FAULT = 1,
+  DLX_EXIT_SIGNAL = 2,
+  DLX_EXIT_ERROR = 3,
+  DLX_EXIT_TIMEOUT = 4
+} DLX_exit_codes;
+
 // Describes the DLX running state.
 typedef enum {
   DLX_RUNNING = 0,
