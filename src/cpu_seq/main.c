@@ -125,6 +125,7 @@ int main(int argc, char *argv[]) {
     case DLX_SIGNAL: code = 2; break;
     case DLX_TIMEOUT: code = 4; break;
     // Internal emulator error
+    case DLX_CRITIC:
     default:         code = 3; break;
   }
 
