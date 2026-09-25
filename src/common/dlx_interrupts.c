@@ -1,21 +1,13 @@
 #include "dlx_interrupts.h"
+#include "dlx_time_utils.h"
 #include "dlx_defs.h"
 #include "debug.h"
 #include <errno.h>
 #include <stdint.h>
 #include <string.h>
-#include <time.h>
 
-#define NS_PER_SEC 1000000000ULL
 
 static uint64_t start_time;
-
-// Returns current time in ns
-static uint64_t now_ns(void) {
-  struct timespec ts;
-  int ris = clock_gettime(CLOCK_MONOTONIC, &ts);
-return ris == 0 ? (uint64_t)ts.tv_sec * NS_PER_SEC + ts.tv_nsec : 0;
-}
 
 static void start_timer(DLX_state *state);
 static void stop_timer(DLX_state *state);

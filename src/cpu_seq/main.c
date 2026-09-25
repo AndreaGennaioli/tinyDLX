@@ -9,6 +9,7 @@
 #include "dlx_loader.h"
 #include "dlx_seq_core.h"
 #include "dlx_snapshot.h"
+#include "dlx_time_utils.h"
 #include "dlx_state.h"
 #include "dlx_terminal.h"
 #include <stdint.h>
@@ -18,15 +19,6 @@
 
 // Number of cycles between two synchronizations.
 #define THROTTLE_INTERVAL 1000
-// Nanoseconds in one second (used for conversions with frequency)
-#define NS_PER_SEC 1000000000ULL
-
-// Returns current time in ns
-static uint64_t now_ns(void) {
-  struct timespec ts;
-  clock_gettime(CLOCK_MONOTONIC, &ts);
-  return (uint64_t)ts.tv_sec * NS_PER_SEC + ts.tv_nsec;
-}
 
 volatile sig_atomic_t quit = 0;
 
@@ -77,7 +69,11 @@ int main(int argc, char *argv[]) {
   info("Executing program...");
 
   // Start timestamp
-  uint64_t start_ns = now_ns();
+  uint64_t start_ns;
+  if((start_ns = now_ns()) == 0) {
+    dlx_state_free(&state);
+    return EXIT_FAILURE;
+  }
 
   // The sync interval is calculated from the frequency:
   //    ~100 synchronizations per second of simulated time.
@@ -106,7 +102,12 @@ int main(int argc, char *argv[]) {
     // the emulator is running at max speed (100% use of core).
     if (config.freq_hz > 0 && state.cycles % sync_interval == 0) {
       uint64_t simulated_ns = (state.cycles * NS_PER_SEC) / config.freq_hz;
-      uint64_t elapsed_ns   = now_ns() - start_ns;
+      uint64_t now;
+      if((now = now_ns()) == 0) {
+        dlx_state_free(&state);
+        return EXIT_FAILURE;
+      }
+      uint64_t elapsed_ns = now - start_ns;
 
       if (simulated_ns > elapsed_ns) {
         struct timespec sleep_ts = {
