@@ -3,7 +3,7 @@
 ; ============================================================================
 ; This program aims to stress the emulator with lots of operations.
 ; ============================================================================
-LHI R1, 0xFFFF            ; Counter
+LHI R1, 0x0000            ; Counter
 ADDUI R1, R1, 0xFFFF
 
 INT 0xF0
