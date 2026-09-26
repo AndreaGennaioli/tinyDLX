@@ -87,6 +87,15 @@ typedef enum {
   DLX_CRITICAL
 } DLX_exec_state;
 
+static const char *const dlx_exec_state_str[] = {
+  [DLX_RUNNING] = "RUNNING",
+  [DLX_HALT] = "HALT",
+  [DLX_FAULT] = "FAULT",
+  [DLX_SIGNAL] = "SIGNAL",
+  [DLX_TIMEOUT] = "TIMEOUT",
+  [DLX_CRITICAL] = "CRITICAL"
+};
+
 // Configuration struct for the emulator.
 // All the configurations can be set by command line arguments.
 // The command line arguments are parsed by dlx_cli

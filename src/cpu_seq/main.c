@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
   }
 
   fputc('\n', stderr);
-  info("Execution terminated");
+  info("Execution terminated with state %s", dlx_exec_state_str[state.exec_state]);
 
   if(config.dump_state) {
     if(dlx_snapshot_write(&state, &config) == 0) {
