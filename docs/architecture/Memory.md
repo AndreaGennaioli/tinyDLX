@@ -16,7 +16,7 @@ The program executed by tinyDLX is a **flat binary**: there is no loader, no ope
 
 ## Endianness
 
-Memory is big-endian: the byte at the lowest address is the most significant one. Half words and words are composed and decomposed accordingly.
+Memory is big-endian: the byte at the lowest address is the most significant one. Half words and words are composed and decomposed accordingly. Consistently with this, on the 32 bit data bus, the byte at an address multiple of 4 travels on BD[24..31], the next one on BD[16..23], and so on.
 
 ## Alignment
 

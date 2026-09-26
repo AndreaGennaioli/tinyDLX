@@ -2,6 +2,8 @@
 
 Input and output devices are managed as memory-mapped devices (MMIO). This means that a program can interact with a device using store and load instructions at the addresses where it is mapped. The effect of read and write operations differs from device to device. The address of every device is listed in [Memory.md](./Memory.md), and the way devices signal the CPU is described in [Interrupts.md](./Interrupts.md).
 
+For now each device is an 8 bit register at its base address and must be accessed with byte loads and stores. It drives data on BD[24..31], accordingly with the gib-endian memory an bus layout described in [Memory.md](./Memory.md).
+
 ## Interrupt Controller
 
 The Interrupt Controller is the only device wired to the CPU's interrupt line. In fact, it serves as a buffer for devices' interrupt lines: each device that can assert an interrupt is wired to an interrupt line of the IC. When at least one of its interrupt lines is asserted (by a device) it propagates the interrupt into the CPU's interrupt line. The IC's interrupt output is level-triggered.
