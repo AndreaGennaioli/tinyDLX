@@ -30,6 +30,7 @@ DLX_device *dlx_input_port_create(uint32_t base_address, DLX_ic_base *ic,
   ((InputPortState *)dev->state)->ready = 0;
   ((InputPortState *)dev->state)->data = 0;
   ((InputPortState *)dev->state)->int_index = int_index;
+  ((InputPortState *)dev->state)->tick_count = 0;
 
   dev->tick = d_tick;
   dev->free = d_free;
@@ -46,9 +47,12 @@ static void d_tick(void *state) {
     return;
   }
 
-  if ((++s->tick_count & INPUT_CHECK_INTERVAL) != 0)
-    return;                     /* caso comune: un incremento e un AND */
+  if (s->tick_count < INPUT_CHECK_INTERVAL) {
+    s->tick_count++;
+    return;
+  }
 
+  s->tick_count = 0;
   struct pollfd pfd = {.fd = STDIN_FILENO, .events = POLLIN};
   if (poll(&pfd, 1, 0) > 0) {
     char c;
