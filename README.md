@@ -40,6 +40,8 @@ Start from the [documentation index](docs/README.md), or go straight to what you
 - **Write a program**: [your first program](docs/guide/First-Program.md)
 - **Work on the emulator**: [the sequential core](docs/internals/Sequential-Core.md)
 
+> See the transparency note on AI below.
+
 ## Repository layout
 
 - `src/common/`: machine state, memory bus, loader, command line, snapshots
@@ -49,3 +51,7 @@ Start from the [documentation index](docs/README.md), or go straight to what you
 - `tools/`: the assembler and the test suite runner
 - `tests/`: assembly test programs and the snapshots the test suite compares them with
 - `docs/`: documentation
+
+## Transparency note about the use of AI
+
+I used LLMs (mainly Claude) to discuss some design choices, to review the code, to help me design a minimal and useful test suite and (since English is not my first language) to draft and edit the documentation, which I checked against the code. The code of the emulator and the assembler is my own work.
