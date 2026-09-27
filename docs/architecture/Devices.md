@@ -2,7 +2,7 @@
 
 Input and output devices are managed as memory-mapped devices (MMIO). This means that a program can interact with a device using store and load instructions at the addresses where it is mapped. The effect of read and write operations differs from device to device. The address of every device is listed in [Memory.md](./Memory.md), and the way devices signal the CPU is described in [Interrupts.md](./Interrupts.md).
 
-For now each device is an 8 bit register at its base address and must be accessed with byte loads and stores. It drives data on BD[24..31], accordingly with the gib-endian memory an bus layout described in [Memory.md](./Memory.md).
+For now each device is an 8 bit register at its base address and must be accessed with byte loads and stores. It drives data on BD[24..31], accordingly with the big-endian memory and bus layout described in [Memory.md](./Memory.md).
 
 ## Interrupt Controller
 
