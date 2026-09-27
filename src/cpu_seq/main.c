@@ -31,7 +31,7 @@ static int setup_devices(DLX_state *state);
 
 int main(int argc, char *argv[]) {
   DLX_config config = {0};
-  DLX_state state = {0};
+  DLX_state state;
 
   signal(SIGINT, handle_exit_signal);
   signal(SIGTERM, handle_exit_signal);
