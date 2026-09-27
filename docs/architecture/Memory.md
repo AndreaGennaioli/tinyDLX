@@ -12,7 +12,7 @@ Any other address, including an MMIO address not assigned to a device, is unmapp
 
 ## Program loading
 
-The program executed by tinyDLX is a **flat binary**: there is no loader, no operating system and no dynamic linking. The program is placed in ROM starting at address `0x00000000` and execution begins at `PC = 0`.
+The program executed by tinyDLX is a **flat binary**: the emulator copies the program file byte by byte into ROM with no parsing, there isn't an operating system. The program is placed in ROM starting at address `0x00000000` and execution begins at `PC = 0`.
 
 ## Endianness
 
