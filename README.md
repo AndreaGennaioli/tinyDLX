@@ -64,7 +64,8 @@ Start from the [documentation index](docs/README.md), or go straight to what you
 - **Write a program**: [your first program](docs/guide/First-Program.md)
 - **Work on the emulator**: [the sequential core](docs/internals/Sequential-Core.md)
 
-> See the transparency note on AI below.
+If you prefer jumping straight to the code, the key files for understanding the emulator are [`main.c`](./src/cpu_seq/main.c), [`dlx_seq_core.c`](./src/cpu_seq/dlx_seq_core.c), [`dlx_ic.c`](./src/devices/dlx_ic.c).
+
 > The documentation was written with the help of AI, [see below](#transparency-note-about-the-use-of-ai).
 
 ## Repository layout
