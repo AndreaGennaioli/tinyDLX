@@ -6,9 +6,11 @@ tinyDLX is a small machine: an instruction set close to the textbook one, a flat
 
 ## Motivation
 
-I got motivated to write this emulator while I was attending a course about computer architecture (Calcolatori Elettronici T) at the University of Bologna.
+I got motivated to write this emulator while I was attending a course about computer architecture (Calcolatori Elettronici T) at the University of Bologna. I saw this project as an opportunity to learn more about emulation, architectures, and system programming.
 
-I see this project as an opportunity for understanding more about emulation, architectures, and system programming. It started with the simple goal of achieving the emulation of a small set of instructions, and now I use this project as an experiment for my creativity.
+I really enjoyed creating a coherent system that includes the emulator, the interrupt distribution system, the devices and the assembler.
+
+It started with the simple goal of achieving the emulation of a small set of instructions. Now I see this project as a playground for my creativity.
 
 ## Features
 
