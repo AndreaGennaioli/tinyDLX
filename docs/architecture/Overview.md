@@ -1,6 +1,6 @@
 # tinyDLX Overview
 
-tinyDLX is a 32-bit RISC machine derived from the DLX of Hennessy & Patterson. Around its instruction set it defines a complete bare-metal system: a flat memory holding ROM, RAM and memory-mapped devices, and a single interrupt line driven by an interrupt controller.
+tinyDLX is a 32-bit RISC machine derived from the DLX of Hennessy & Patterson. Around its instruction set it defines a minimal bare-metal system: a flat memory holding ROM, RAM and memory-mapped devices, and a single interrupt line driven by an interrupt controller.
 
 ## Programmer-visible state
 

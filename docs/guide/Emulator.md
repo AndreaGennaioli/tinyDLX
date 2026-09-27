@@ -46,6 +46,7 @@ The conditions are:
 - a write to ROM;
 - an unknown opcode, or an unknown function code in an R-Type instruction;
 - `INT` with a code that is neither `0x80` nor a debug one, and an unknown debug code.
+- `MOVI2S`/`MOVS2I` instructions with a register number above 2.
 
 Strict mode is the way to catch a program that relies on undefined behaviour. One case does not depend on it: `INT 0x80` executed while interrupts are disabled always stops the emulator with a fault.
 
@@ -61,7 +62,7 @@ Strict mode is the way to catch a program that relies on undefined behaviour. On
 
 ## State snapshot
 
-`--dump-state PATH` writes the final state as JSON, overwriting the file. It holds the cycle count, the reason execution ended (`halt`, `fault`, `signal` or `timeout`), the special registers and all the general purpose ones:
+`--dump-state PATH` writes the final state as JSON, overwriting the file. It holds the cycle count, the reason execution ended (`halt`, `fault`, `signal`, `timeout` of `critical`), the special registers and all the general purpose ones:
 
 ```json
 {
@@ -70,7 +71,7 @@ Strict mode is the way to catch a program that relies on undefined behaviour. On
     "exit_reason": "halt",
     "cycles": 6,
     "pc": "0x00000018",
-    "sr": "0x00000001",
+    "sr": "0x00000000",
     "iar": "0x00000000",
     "cr": "0x00000000",
     "R0": "0x00000000",

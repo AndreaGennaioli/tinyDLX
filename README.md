@@ -2,7 +2,7 @@
 
 A didactic emulator, written in C, of tinyDLX: a 32-bit RISC machine derived from the DLX architecture of Hennessy & Patterson.
 
-tinyDLX codebase is small: an instruction set close to the textbook one, a flat memory with memory-mapped devices, a single interrupt line behind an interrupt controller. The project comes with its own assembler and a small test suite.
+tinyDLX is a small machine: an instruction set close to the textbook one, a flat memory with memory-mapped devices, a single interrupt line behind an interrupt controller. The project comes with its own assembler and a small test suite.
 
 ## Features
 
@@ -10,13 +10,13 @@ tinyDLX codebase is small: an instruction set close to the textbook one, a flat 
 - A sequential core that executes one instruction per cycle.
 - Memory-mapped devices: interrupt controller, startup circuit, input and output ports, power manager.
 - An assembler with labels, written in Python.
-- Some useful options: cycle limit, register initialisation, a strict mode that turns warnings into faults, and a JSON snapshot of the final state.
+- Options to control and inspect a run: cycle limit, register initialisation, a strict mode that turns warnings into faults, and a JSON snapshot of the final state.
 - Execution at full speed or at a chosen frequency.
-- A test suite: `make test` runs (almost) every test program and compares its final state with a frozen "golden" snapshot.
+- A test suite: `make test` runs every test program (except the `stress.asm` benchmark) and compares its final state with a frozen "golden" snapshot.
 
 ## Quick start
 
-Requirements: Linux, a C compiler, `make`, Python 3.
+Requirements: Linux, `gcc`, `make`, Python 3.
 
 ```bash
 make
