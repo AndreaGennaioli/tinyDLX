@@ -94,9 +94,10 @@ The J-Type instructions perform unconditional jumps to relative offset. RFE and 
 | **SW**    | I | 0x2B | -    | SW rb, Imm16(ra) | MEM32[R[ra] + SignExt(Imm16)] <- R[rb] |
 | **J**     | J | 0x02 | -    | J Imm26 | PC <- PC + 4 + SignExt(Imm26) |
 | **JAL**   | J | 0x03 | -    | JAL Imm26 | R[31] <- PC + 4; PC <- PC + 4 + SignExt(Imm26) |
-| **INT**   | J | 0x39 | -    | INT Imm26 | Invoke interrupt handler with code Imm26 |
+| **INT**   | J | 0x39 | -    | INT Imm26 | Invoke interrupts, see [Interrups.md](./Interrupts.md) |
 | **RFE**   | J | 0x3F | -    | RFE | PC <- IAR; SR[IEN]=1 |
 
+All set instructions compare their operands as signed 32 bit values.
 In the Explanation column, `>>` is a logical shift and `>>>` an arithmetic one, `##` concatenates bit strings and x<sup>n</sup> repeats the bit x n times. The Syntax column is the one accepted by the assembler, where every immediate can also be written as a label: see [Assembler.md](../guide/Assembler.md).
 
 ## Reserved encodings
