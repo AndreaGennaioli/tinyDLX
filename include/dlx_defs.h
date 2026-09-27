@@ -14,7 +14,7 @@
 #define DLX_DEVICES_BASE 0xC0000000   // After 3 GB
 
 // MMIO Devices
-// 16 is reserved to 'no interrupt asserted'
+// Code 0xF is reserved to 'no interrupt asserted'
 #define DLX_MAX_DEVICES 15
 
 // Address space:
