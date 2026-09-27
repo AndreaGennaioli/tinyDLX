@@ -22,6 +22,28 @@ It started with the simple goal of achieving the emulation of a small set of ins
 - Execution at full speed or at a chosen frequency.
 - A test suite: `make test` runs every test program (except the `stress.asm` benchmark) and compares its final state with a frozen "golden" snapshot.
 
+## Limitations
+
+These are the biggest limitations of the current design:
+
+- Currently the whole system is driven by a sequential loop that ticks every device at every cycle. It does not implement any asynchronous event, in fact in the code there are some workarounds like tick timeouts to simulate this.
+- The current test suite is small and only checks the final state of each program (see [Testing.md](./docs/internals/Testing.md)).
+
+## Next steps
+
+These are the next features I would like to implement, from the closest to the most distant in time:
+
+- A timer device.
+- Add `.word`, `.half`, `.byte` and `.string` directives to the assembler.
+- Add an artificial random initialization of GPRs and RAM.
+- Add the possibility to assemble a program file as a library object (with its minimal symbol table) and have the possibility to include libraries into a program.
+- `--input-tape <input string>` or `--input` to submit an input string to the input port and disable input from the terminal.
+- Rewrite `dlx_memory_bus.c` to make it more readable and remove duplicated code.
+- Privilege bit in the status register (0 = kernel, 1 = user).
+- A system configuration file with the possibility of specifying devices in use and the memory mapping.
+- A better test suite: it should be able to check the execution at every cycle.
+- Possibly, make the emulator event-driven.
+
 ## Quick start
 
 Requirements: Linux, `gcc`, `make`, Python 3.
