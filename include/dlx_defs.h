@@ -46,8 +46,6 @@ typedef struct {
   uint32_t range_size;
   // Custom device state
   void *state;
-  // Interrupt Controller pointer, can be NULL
-  DLX_ic_base *ic;
   // Executed at the start of each cycle
   void (*tick)(void *state);
   // Must free the state of the device
