@@ -2,6 +2,8 @@
 
 tinyDLX is a 32-bit RISC machine derived from the DLX of Hennessy & Patterson. Around its instruction set it defines a minimal bare-metal system: a flat memory holding ROM, RAM and memory-mapped devices, and a single interrupt line driven by an interrupt controller.
 
+As said in the Motivation section in the [README.md](../../README.md), the architecture has also been influenced by a course I attended during Computer Engineering at the University of Bologna named Calcolatori Elettronici T.
+
 ## Programmer-visible state
 
 - **General purpose registers**: 32 registers of 32 bits, R0..R31. R0 always reads as zero and ignores writes; R31 receives the return address of `JAL` and `JALR`.

@@ -4,6 +4,12 @@ A didactic emulator, written in C, of tinyDLX: a 32-bit RISC machine derived fro
 
 tinyDLX is a small machine: an instruction set close to the textbook one, a flat memory with memory-mapped devices, a single interrupt line behind an interrupt controller. The project comes with its own assembler and a small test suite.
 
+## Motivation
+
+I got motivated to write this emulator while I was attending a course about computer architecture (Calcolatori Elettronici T) at the University of Bologna.
+
+I see this project as an opportunity for understanding more about emulation, architectures, and system programming. It started with the simple goal of achieving the emulation of a small set of instructions, and now I use this project as an experiment for my creativity.
+
 ## Features
 
 - A DLX-derived instruction set: arithmetic, logic, set, shift, load/store, branch and jump instructions, plus software interrupts.
