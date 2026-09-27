@@ -65,6 +65,7 @@ Start from the [documentation index](docs/README.md), or go straight to what you
 - **Work on the emulator**: [the sequential core](docs/internals/Sequential-Core.md)
 
 > See the transparency note on AI below.
+> The documentation was written with the help of AI, [see below](#transparency-note-about-the-use-of-ai).
 
 ## Repository layout
 
@@ -78,4 +79,4 @@ Start from the [documentation index](docs/README.md), or go straight to what you
 
 ## Transparency note about the use of AI
 
-I used LLMs (mainly Claude) to discuss some design choices, to review the code, to help me design a minimal and useful test suite and (since English is not my first language) to draft and edit the documentation, which I checked against the code. The code of the emulator and the assembler is my own work.
+I used LLMs (mainly Claude) to discuss some design choices, to review the code, to help me design and draft the test suite. Since English is not my first language, I also used them to draft and edit the documentation and some comments, which I checked against the code. The code of the emulator and the assembler is my own work.
