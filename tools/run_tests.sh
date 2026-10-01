@@ -21,6 +21,7 @@ CASES=(
   "startup_circuit    tests/startup_circuit.asm               0  1000"
   "mov_special        tests/mov_special.asm                   0  1000"
   "interrupt          tests/interrupt.asm                     0  1000"
+  "timer              tests/timer.asm                         0  1000"
   # Programs that must fault
   "unaligned          tests/faults/unaligned.asm              1   100"
   "rom_write          tests/faults/rom_write.asm              1   100"

@@ -41,6 +41,7 @@ python3 tools/asm.py tests/full_isa.asm tests/full_isa.bin
 | `startup_circuit.asm` | Reading and clearing the Startup Circuit |
 | `faults/*.asm` | One fault condition each: unaligned access, write to ROM, unmapped address, unknown interrupt code, `INT 0x80` with interrupts disabled, unknown debug code |
 | `interrupt.asm` | Input and Output Port, Interrupt Controller and Power Manager, driven by the two bytes in `interrupt.in`. The characters written to the Output Port are not compared |
+| `timer.asm` | Periodic interrupts of the Timer  and their ack by a read of the status |
 | `stress.asm` | The speed of the emulator, timed with the debug timer |
 
 Three cases have no source at all: an unassigned opcode, an unassigned R-Type function code and a special register number above 2. They are reserved encodings the assembler refuses to emit, so the runner builds each one as a single 32 bit word.
