@@ -16,7 +16,7 @@ It started with the simple goal of achieving the emulation of a small set of ins
 
 - A DLX-derived instruction set: arithmetic, logic, set, shift, load/store, branch and jump instructions, plus software interrupts.
 - A sequential core that executes one instruction per cycle.
-- Memory-mapped devices: interrupt controller, startup circuit, input and output ports, power manager.
+- Memory-mapped devices: interrupt controller, startup circuit, input and output ports, power manager, programmable 32 bit timer.
 - An assembler with labels, written in Python.
 - Options to control and inspect a run: cycle limit, register initialisation, a strict mode that turns warnings into faults, and a JSON snapshot of the final state.
 - Execution at full speed or at a chosen frequency.
@@ -33,7 +33,6 @@ These are the biggest limitations of the current design:
 
 These are the next features I would like to implement, from the closest to the most distant in time:
 
-- A timer device.
 - Add `.word`, `.half`, `.byte` and `.string` directives to the assembler.
 - Add an artificial random initialization of GPRs and RAM.
 - Add the possibility to assemble a program file as a library object (with its minimal symbol table) and have the possibility to include libraries into a program.

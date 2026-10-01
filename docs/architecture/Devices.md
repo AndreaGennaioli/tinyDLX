@@ -14,8 +14,6 @@ When the CPU's interrupt line is asserted, the handler identifies the source by 
 
 Note that the deassertion works only inside the IC: the IC does not communicate to the devices that their interrupt has been read. This means that the software must service the device, otherwise it could continue to assert the interrupt if it is level-triggered.
 
-For now only the Input Port can assert an interrupt, so it is the only device wired to the Interrupt Controller (as in figure).
-
 The circuit scheme is as follows.
 
 ![Interrupt Controller scheme](../assets/Interrupt_Controller.svg)
@@ -55,3 +53,15 @@ A write sends the least significant byte of the written value to the external un
 The Power Manager is the device used to turn off the system. It has neither an interrupt line nor a read port: the only supported operation is a write.
 
 A write turns the system off, regardless of the value written. The shutdown is a normal one: the system stops after the instruction that performed the write, and no further instruction is executed.
+
+## Timer
+
+The Timer is a programmable 32 bit timer that asserts an interrupt each `P` clock cycles. It consists of 3 parts: a 32 bit period register used to store the `P` value; a 32 bit counter; a single DFF used to store its internal status (0 = idle, 1 = interrupt asserted). Its interrupt line in the IC is 1.
+
+On reset `P` is set to 0, which means the timer is disabled. If `P > 0` the counter starts incrementing its value. Once the counter value is equal to the period (`P`) it is set to zero, the status DFF is set to 1 and the interrupt line is asserted. The counter continues to increment. The interrupt is level-triggered until an ack is received. The ack consists of a read on the status register, which returns its value, clears it and deasserts the interrupt.
+
+The period register is writable and readable only by a word access operation on the first 4 bytes of the device address range, any other access size is an invalid access. An overwrite of the period sets the counter to 0, the status to 0 (idle) and deasserts the interrupt line. The status register can be read by a word read at offset 0x4 or a half-word read at offset 0x6 or a single byte read at offset 0x7; any other access to the second 4 bytes, writes included, is an invalid access.
+
+The handler must read the IC before acknowledging the Timer. The ack also deasserts the Timer's line inside the IC, so if the status is read first the IC no longer reports line 1 and returns the next pending line, or `0xF` if there is none.
+
+Given `H` as the execution clocks of the timer interrupt's handler, it is very important that `H << P`. The counter keeps counting while the handler runs, so only `P - H` cycles out of every `P` are left to the rest of the program. If `H >= P` a new interrupt is already pending when the handler returns with `RFE`: the CPU enters the handler again immediately and the rest of the program makes no progress. Moreover the status DFF cannot count expirations, so an expiration that occurs before the previous one has been acknowledged is lost.

@@ -44,5 +44,6 @@ Their effect is undefined: the architecture guarantees neither the value returne
 | **Output Port** | 0xC0080000 | Read port status (0 = busy, 1 = ready) | Send a byte to the external output unit |
 | **Interrupt Controller** | 0xC00C0000 | Read the index of the highest-priority pending line | - |
 | **Power Manager** | 0xC0100000 | - | Turn the system off |
+| **Timer** | 0xC0140000:0xC0140007 | Read the current period on the first 4 bytes, read and clear the current status on the second 4 bytes | Set the period writing in the first 4 bytes |
 
 Every device is described in [Devices.md](./Devices.md).

@@ -4,6 +4,7 @@
 #include "devices/dlx_output_port.h"
 #include "devices/dlx_power_manager.h"
 #include "devices/dlx_startup_circuit.h"
+#include "devices/dlx_timer.h"
 #include "dlx_cli.h"
 #include "dlx_defs.h"
 #include "dlx_loader.h"
@@ -171,6 +172,7 @@ static int setup_devices(DLX_state *state) {
     || !add_device(state, "Input Port", (ic ? dlx_input_port_create(0xC0040000, ic->state, 0) : NULL))
     || !add_device(state, "Output Port", dlx_output_port_create(0xC0080000))
     || !add_device(state, "Power Manager", dlx_power_manager_create(0xC0100000, state))
+    || !add_device(state, "Timer", (ic ? dlx_timer_create(0xC0140000, ic->state, 1) : NULL))
   ) {
     return 0;
   }

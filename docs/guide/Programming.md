@@ -75,7 +75,7 @@ HANDLER:
   SW    R31, 4(R29)
   LHI   R26, 0xC00C       ; Interrupt Controller
   LB    R27, 0(R26)       ; index of the pending line, 0xF if none
-  BNEZ  R27, HANDLER_END  ; only line 0, the Input Port, is wired
+  BNEZ  R27, HANDLER_END  ; checking only for the input port (interrupt index 0)
   LHI   R26, 0xC004       ; Input Port
   LBU   R1, 0(R26)        ; reading the port withdraws its request
   JAL   PUTCHAR           ; echo the byte
