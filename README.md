@@ -34,6 +34,7 @@ These are the biggest limitations of the current design:
 These are the next features I would like to implement, from the closest to the most distant in time:
 
 - Add `.word`, `.half`, `.byte` and `.string` directives to the assembler.
+- Add some example programs into an `examples/` directory (e.g. a time clock using the timer, Echo, Mini scheduler)
 - Add an artificial random initialization of GPRs and RAM.
 - Add the possibility to assemble a program file as a library object (with its minimal symbol table) and have the possibility to include libraries into a program.
 - `--input-tape <input string>` or `--input` to submit an input string to the input port and disable input from the terminal.
