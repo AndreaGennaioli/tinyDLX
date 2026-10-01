@@ -28,12 +28,12 @@ The loop runs until something changes `exec_state`: a write to the Power Manager
 
 Each call to `dlx_seq_step` performs the following operations:
 
-1. **Tick all devices**: each registered device gets a `tick()` call, allowing it to update internal state and assert interrupt lines if needed.
+1. **Tick all devices**: each registered device gets a `tick()` call, allowing it to update internal state and assert interrupt lines if needed. An interrupt asserted here reaches the CPU in the same cycle.
 2. **Check the interrupt line**: if the interrupt line is asserted and interrupts are enabled (`SR[IEN] == 1`), the CPU saves `PC` into `IAR`, sets `SR[IEN] = 0`, sets `CR` to 0 and jumps to address `0x00000000`.
 3. **Fetch**: reads the 32-bit instruction at `PC` from the memory bus.
 4. **Decode**: increments `PC` by 4, then decodes the raw instruction.
 5. **Execute/Memory/Write-back**: all collapsed into a single function `execute()`. Memory accesses use the memory bus, which handles address decoding, endianness conversion and MMIO dispatch.
-6. **Reset the interrupt line**: it will be asserted again by the Interrupt Controller on the next tick if a request is still pending.
+6. **Reset the interrupt line**: it will be asserted again by the Interrupt Controller on the next tick if a request is still pending. An interrupt asserted during execute (e.g. by an MMIO write) is therefore taken in the next cycle.
 
 ## Frequency synchronisation
 

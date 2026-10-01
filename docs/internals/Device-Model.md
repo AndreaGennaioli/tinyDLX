@@ -26,7 +26,7 @@ Every device is a `DLX_device` (`include/dlx_defs.h`):
 
 ## Interrupts
 
-A device that asserts interrupts receives the Interrupt Controller as a `DLX_ic_base *` in its constructor and keeps it in its own state, together with its line index. It then calls `assert_interrupt` and `deassert_interrupt` on it. The trigger mode is up to the device: the Input Port is level-triggered, so it asserts its line again at every tick while its byte is unread.
+A device that asserts interrupts receives the Interrupt Controller as a `DLX_ic_base *` in its constructor and keeps it in its own state, together with its line index. It then calls `assert_interrupt` and `deassert_interrupt` on it. The IC forwards an assertion to the CPU immediately, so a line asserted during a tick is seen by the CPU in the same cycle; the IC's own tick keeps the CPU line asserted while any line stays pending. The trigger mode is up to the device: the Input Port is level-triggered, so it asserts its line again at every tick while its byte is unread.
 
 ## Adding a device
 

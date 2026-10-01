@@ -49,6 +49,8 @@ static void deassert_interrupt(struct DLX_ic_base *ic, uint8_t index) {
 
 static void assert_interrupt(struct DLX_ic_base *ic, uint8_t index) {
   ic->lines[index] = 1;
+  // Propagate immediately so the CPU sees the request in the same cycle.
+  ic->controller_assert_interrupt(((ICState *)ic)->controller_state);
 }
 
 static void d_tick(void *state) {
