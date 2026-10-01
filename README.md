@@ -40,6 +40,7 @@ These are the next features I would like to implement, from the closest to the m
 - `--input-tape <input string>` or `--input` to submit an input string to the input port and disable input from the terminal.
 - Rewrite `dlx_memory_bus.c` to make it more readable and remove duplicated code.
 - Privilege bit in the status register (0 = kernel, 1 = user).
+- Dynamic component loading from shared libraries.
 - A system configuration file with the possibility of specifying devices in use and the memory mapping.
 - A better test suite: it should be able to check the execution at every cycle.
 - Possibly, make the emulator event-driven.
