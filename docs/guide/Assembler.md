@@ -18,9 +18,13 @@ Mnemonics and register names are case insensitive.
 
 There are no directives: no `.data`, no `.org`, no way to reserve or initialise memory. Data has to be built at runtime.
 
+### Costants
+
+Constants are symbols that represent a static value. They are used only by the assembler. Currently the only way to declare a constant is declaring a label.
+
 ### Labels
 
-A label is written as `NAME:` on a line of its own. Names are case insensitive, cannot contain spaces and cannot be declared twice. A label used by a branch or a jump resolves to a PC relative displacement, a label used anywhere else resolves to its absolute address.
+A label is a constant, it is written as `NAME:` on a line of its own. Names are case insensitive, cannot contain spaces and cannot be declared twice. A label used by a branch or a jump resolves to a PC relative displacement, a label used anywhere else resolves to its absolute address.
 
 ### Immediates
 

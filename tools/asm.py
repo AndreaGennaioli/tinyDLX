@@ -107,21 +107,21 @@ def spr_to_int(register):
     return SPR_NAMES[register.upper()]
 
 
-def get_address_value(token, labels, instr_address=None):
+def get_address_value(token, costants, instr_address=None):
     """
     Get the relative or absolute address value from a token.
-    The token can be an immediate or a label.
+    The token can be an immediate or a costant.
     """
-    if token.upper() in labels:
+    if token.upper() in costants:
         if instr_address is not None:
-            return labels[token.upper()] - instr_address - 4
+            return costants[token.upper()] - instr_address - 4
 
-        return labels[token.upper()]
+        return costants[token.upper()]
     try:
         # Automatically parses 0xff, 0b10
         return int(token, 0)
     except ValueError:
-        raise ParseException(f"Invalid immediate or label: {token}")
+        raise ParseException(f"Invalid immediate or costant: {token}")
 
 
 # Limits of the immediate fields:
@@ -154,24 +154,24 @@ def check_imm(value, width, maximum):
     return value & limits["mask"]
 
 
-def resolve_imm(token, labels, width):
+def resolve_imm(token, costants, width):
     """
     Resolves a data immediate: an ALU operand, a memory offset, an interrupt
     code. It is taken as a raw bit pattern, so -1 and 0xFFFF describe the same
     16 bit field.
     """
-    return check_imm(get_address_value(token, labels), width,
+    return check_imm(get_address_value(token, costants), width,
                      IMM_LIMITS[width]["mask"])
 
 
-def resolve_disp(token, labels, width, instr_address):
+def resolve_disp(token, costants, width, instr_address):
     """
     Resolves a PC relative displacement for a branch or a jump. The hardware
     always sign extends this field, so a positive displacement cannot go past
     signed_max: the bit patterns above it read back as negative numbers and the
     jump would silently go the other way.
     """
-    return check_imm(get_address_value(token, labels, instr_address), width,
+    return check_imm(get_address_value(token, costants, instr_address), width,
                      IMM_LIMITS[width]["signed_max"])
 
 
@@ -188,7 +188,7 @@ def encode_j(opcode, imm26):
     return (opcode << 26) | (imm26 & 0x3FFFFFF)
 
 
-def assemble_instr(instr, labels):
+def assemble_instr(instr, costants):
     """
     Assembles the instruction.
     """
@@ -234,7 +234,7 @@ def assemble_instr(instr, labels):
         if mnemonic in ["BNEZ", "BEQZ"]:
             ra = register_to_int(parts[1])  # tested register
             rb = 0
-            imm16 = resolve_disp(parts[2], labels, 16, instr[1])
+            imm16 = resolve_disp(parts[2], costants, 16, instr[1])
         elif mnemonic in ["JR", "JALR"]:
             ra = register_to_int(parts[1])  # target register
             rb = 0
@@ -242,11 +242,11 @@ def assemble_instr(instr, labels):
         elif mnemonic == "LHI":
             ra = 0
             rb = register_to_int(parts[1])  # destination
-            imm16 = resolve_imm(parts[2], labels, 16)
+            imm16 = resolve_imm(parts[2], costants, 16)
         else:
             rb = register_to_int(parts[1])  # destination
             ra = register_to_int(parts[2])  # source
-            imm16 = resolve_imm(parts[3], labels, 16)
+            imm16 = resolve_imm(parts[3], costants, 16)
 
         return encode_i(opcode, ra, rb, imm16)
     elif op['type'] == "M":
@@ -254,7 +254,7 @@ def assemble_instr(instr, labels):
         # Syntax    OP rb, Imm16(ra)
         # Encoding  [OP] [RA] [RB] [Imm16]
         rb = register_to_int(parts[1])      # loaded / stored register
-        imm16 = resolve_imm(parts[2], labels, 16)
+        imm16 = resolve_imm(parts[2], costants, 16)
         ra = register_to_int(parts[3])      # base address register
 
         return encode_i(opcode, ra, rb, imm16)
@@ -265,9 +265,9 @@ def assemble_instr(instr, labels):
             imm26 = 0
         elif mnemonic in ["INT"]:
             # An interrupt code, not an address: never PC relative
-            imm26 = resolve_imm(parts[1], labels, 26)
+            imm26 = resolve_imm(parts[1], costants, 26)
         else:
-            imm26 = resolve_disp(parts[1], labels, 26, instr[1])
+            imm26 = resolve_disp(parts[1], costants, 26, instr[1])
 
         return encode_j(opcode, imm26)
 
@@ -276,33 +276,33 @@ def assemble_instr(instr, labels):
 
 def parse(lines):
     instructions = []
-    labels = {}
+    costants = {}
     i_address = 0
 
     for [line, line_num] in lines:
         if line.endswith(':'):
-            label_name = line[:-1]
+            costant_name = line[:-1]
 
-            if not label_name:
+            if not costant_name:
                 raise ParseException(
-                    f"Label name cannot be blank at line {line_num + 1}")
-            if ' ' in label_name:
+                    f"Costant name cannot be blank at line {line_num + 1}")
+            if ' ' in costant_name:
                 raise ParseException(
-                    f"Label name cannot include spaces at line {line_num + 1}")
+                    f"Costant name cannot include spaces at line {line_num + 1}")
 
-            label_name = line.split(':')[0].strip().upper()
+            costant_name = line.split(':')[0].strip().upper()
 
-            if label_name in labels:
+            if costant_name in costants:
                 raise ParseException(
-                    f"Label {label_name} declared more than one time"
+                    f"Costant {costant_name} declared more than one time"
                     f" at line {line_num + 1}")
 
-            labels[label_name] = i_address
+            costants[costant_name] = i_address
         else:
             instructions.append((line, i_address, line_num))
             i_address += 4
 
-    return instructions, labels
+    return instructions, costants
 
 
 def main():
@@ -323,7 +323,7 @@ def main():
         clean_lines.append((clean_line, line_num))
 
     try:
-        instructions, labels = parse(clean_lines)
+        instructions, costants = parse(clean_lines)
     except ParseException as e:
         print(f"ASSEMBLER ERROR: {e}")
         exit(1)
@@ -331,7 +331,7 @@ def main():
     with open(sys.argv[2], 'wb') as f:
         for instr in instructions:
             try:
-                val = assemble_instr(instr, labels)
+                val = assemble_instr(instr, costants)
             except ParseException as e:
                 print(f"ASSEMBLER ERROR at line {instr[2]+1}:")
                 print(f"    {instr[0]}")
