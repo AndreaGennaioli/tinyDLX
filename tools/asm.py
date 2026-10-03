@@ -280,8 +280,9 @@ def parse(lines):
     i_address = 0
 
     for [line, line_num] in lines:
-        if line.endswith(':'):
-            costant_name = line[:-1]
+        parts = line.split(':', 1)
+        if len(parts) > 1:
+            costant_name = parts[0]
 
             if not costant_name:
                 raise ParseException(
@@ -290,7 +291,7 @@ def parse(lines):
                 raise ParseException(
                     f"Costant name cannot include spaces at line {line_num + 1}")
 
-            costant_name = line.split(':')[0].strip().upper()
+            costant_name = parts[0].upper()
 
             if costant_name in costants:
                 raise ParseException(
@@ -298,6 +299,11 @@ def parse(lines):
                     f" at line {line_num + 1}")
 
             costants[costant_name] = i_address
+
+            if parts[1].strip():
+                instructions.append((parts[1].strip(), i_address, line_num))
+                i_address += 4
+
         else:
             instructions.append((line, i_address, line_num))
             i_address += 4
