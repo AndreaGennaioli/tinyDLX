@@ -300,13 +300,12 @@ def parse(lines):
 
             costants[costant_name] = i_address
 
-            if parts[1].strip():
-                instructions.append((parts[1].strip(), i_address, line_num))
-                i_address += 4
+            if not parts[1].strip():
+                continue
+            line = parts[1].strip()
 
-        else:
-            instructions.append((line, i_address, line_num))
-            i_address += 4
+        instructions.append((line, i_address, line_num))
+        i_address += 4
 
     return instructions, costants
 
