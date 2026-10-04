@@ -1,5 +1,7 @@
 # tinyDLX
 
+[![CI](https://github.com/AndreaGennaioli/tinyDLX/actions/workflows/ci.yml/badge.svg)](https://github.com/AndreaGennaioli/tinyDLX/actions/workflows/ci.yml)
+
 A didactic emulator, written in C, of tinyDLX: a 32-bit RISC machine derived from the DLX architecture of Hennessy & Patterson.
 
 tinyDLX is a small machine: an instruction set close to the textbook one, a flat memory with memory-mapped devices, a single interrupt line behind an interrupt controller. The project comes with its own assembler and a small test suite.
