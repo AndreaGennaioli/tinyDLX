@@ -332,25 +332,34 @@ def parse(lines):
     return instructions, costants
 
 
+def open_file(path):
+    lines = []
+    with open(path, 'r') as f:
+        lines = f.readlines()
+
+    clean_lines = []
+    # Remove comments and blank lines
+    for line_num, line in enumerate(lines):
+        clean_line = line.split(';')[0].strip()
+        if not clean_line:
+            continue
+        clean_lines.append((clean_line, line_num))
+
+    return clean_lines
+
+
 def main():
     if len(sys.argv) != 3:
         print("Usage: python asm.py input.asm output.bin")
         sys.exit(1)
 
     input_lines = []
-    with open(sys.argv[1], 'r') as f:
-        input_lines = f.readlines()
 
-    clean_lines = []
-    # Remove comments and blank lines
-    for line_num, line in enumerate(input_lines):
-        clean_line = line.split(';')[0].strip()
-        if not clean_line:
-            continue
-        clean_lines.append((clean_line, line_num))
+    # Include the main program file
+    input_lines += open_file(sys.argv[1])
 
     try:
-        instructions, costants = parse(clean_lines)
+        instructions, costants = parse(input_lines)
     except ParseException as e:
         print(f"ASSEMBLER ERROR: {e}")
         exit(1)
