@@ -398,13 +398,13 @@ def main():
             try:
                 val = assemble_instr(instr, costants)
             except ParseException as e:
-                print(f"ASSEMBLER ERROR at line {instr.address+1}:")
-                print(f"    {instr.source_line}")
+                print(f"ASSEMBLER ERROR at line {instr.source_line.line_num + 1}:")
+                print(f"    {instr.source_line.text}")
                 print(f"    -> {e}")
                 exit(1)
             except Exception as e:
-                print(f"CRITICAL ERROR at line {instr.address+1}:")
-                print(f"    {instr.source_line}")
+                print(f"CRITICAL ERROR at line {instr.source_line.line_num + 1}:")
+                print(f"    {instr.source_line.text}")
                 print(f"    -> {e}")
                 exit(1)
             packed_bytes = struct.pack('>I', val)
