@@ -122,7 +122,7 @@ def spr_to_int(register: str):
     """
     if register.upper() not in SPR_NAMES:
         raise ParseException(
-            f"Invalid special register '{register}'"
+            f"Invalid special register '{register}'" +
             f" (accepted names {', '.join(SPR_NAMES)})")
 
     return SPR_NAMES[register.upper()]
@@ -171,7 +171,7 @@ def check_imm(value: int, width: int, maximum: int) -> int:
 
     if value < limits["min"] or value > maximum:
         raise ParseException(
-            f"Value of '{hex(value)}' overflows imm{width}"
+            f"Value of '{hex(value)}' overflows imm{width}" +
             f" (accepted range {limits['min']}..{maximum})")
 
     return value & limits["mask"]
@@ -319,7 +319,7 @@ def parse(lines: list[SourceLine]):
 
             if costant_name in costants:
                 raise ParseException(
-                    f"Costant {costant_name} declared more than one time"
+                    f"Costant {costant_name} declared more than one time" +
                     f" at line {line_num + 1}")
 
             costants[costant_name] = i_address
@@ -333,20 +333,20 @@ def parse(lines: list[SourceLine]):
         if parts[0] == ".equ":
             if len(parts) != 3:
                 raise ParseException(
-                    f".equ requires a costant name and a value"
+                    ".equ requires a costant name and a value" +
                     f" (syntax .equ NAME VALUE) at line {line_num + 1}")
 
             costant_name = parts[1].upper()
             if costant_name in costants:
                 raise ParseException(
-                    f"Costant {costant_name} declared more than one time"
+                    f"Costant {costant_name} declared more than one time" +
                     f" at line {line_num + 1}")
 
             try:
                 costants[costant_name] = int(parts[2], 0)
             except ValueError:
                 raise ParseException(
-                    f"Invalid value '{parts[2]}' for costant {costant_name}"
+                    f"Invalid value '{parts[2]}' for costant {costant_name}" +
                     f" at line {line_num + 1}")
             continue
 
