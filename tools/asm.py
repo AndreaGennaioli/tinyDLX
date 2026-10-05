@@ -222,7 +222,6 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
 
     if parts[0].upper() not in OPCODES:
         raise ParseException(parts[0] + " is not a recognised instruction")
-        return 0
 
     mnemonic = parts[0].upper()
     op = OPCODES[mnemonic]
