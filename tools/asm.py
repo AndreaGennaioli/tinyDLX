@@ -310,17 +310,17 @@ def parse(lines: list[SourceLine]):
 
             if not costant_name:
                 raise ParseException(
-                    f"Costant name cannot be blank at line {line_num + 1}")
+                    f"Costant name cannot be blank at line {line_num}")
             if ' ' in costant_name:
                 raise ParseException(
-                    f"Costant name cannot include spaces at line {line_num + 1}")
+                    f"Costant name cannot include spaces at line {line_num}")
 
             costant_name = parts[0].upper()
 
             if costant_name in costants:
                 raise ParseException(
                     f"Costant {costant_name} declared more than one time" +
-                    f" at line {line_num + 1}")
+                    f" at line {line_num}")
 
             costants[costant_name] = i_address
 
@@ -334,20 +334,20 @@ def parse(lines: list[SourceLine]):
             if len(parts) != 3:
                 raise ParseException(
                     ".equ requires a costant name and a value" +
-                    f" (syntax .equ NAME VALUE) at line {line_num + 1}")
+                    f" (syntax .equ NAME VALUE) at line {line_num}")
 
             costant_name = parts[1].upper()
             if costant_name in costants:
                 raise ParseException(
                     f"Costant {costant_name} declared more than one time" +
-                    f" at line {line_num + 1}")
+                    f" at line {line_num}")
 
             try:
                 costants[costant_name] = int(parts[2], 0)
             except ValueError:
                 raise ParseException(
                     f"Invalid value '{parts[2]}' for costant {costant_name}" +
-                    f" at line {line_num + 1}")
+                    f" at line {line_num}")
             continue
 
         instructions.append(
@@ -366,7 +366,7 @@ def open_file(path: str) -> list[SourceLine]:
 
     clean_lines: list[SourceLine] = []
     # Remove comments and blank lines
-    for line_num, line in enumerate(lines):
+    for line_num, line in enumerate(lines, 1):
         clean_line = line.split(';')[0].strip()
         if not clean_line:
             continue
@@ -398,12 +398,12 @@ def main():
             try:
                 val = assemble_instr(instr, costants)
             except ParseException as e:
-                print(f"ASSEMBLER ERROR at line {instr.source_line.line_num + 1}:")
+                print(f"ASSEMBLER ERROR at line {instr.source_line.line_num}:")
                 print(f"    {instr.source_line.text}")
                 print(f"    -> {e}")
                 exit(1)
             except Exception as e:
-                print(f"CRITICAL ERROR at line {instr.source_line.line_num + 1}:")
+                print(f"CRITICAL ERROR at line {instr.source_line.line_num}:")
                 print(f"    {instr.source_line.text}")
                 print(f"    -> {e}")
                 exit(1)
