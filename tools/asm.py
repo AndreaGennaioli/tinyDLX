@@ -310,17 +310,17 @@ def parse(lines: list[SourceLine]):
 
             if not costant_name:
                 raise ParseException(
-                    f"Costant name cannot be blank at line {line_num}")
+                    f"Costant name cannot be blank at line {line_num} of {file_path}")
             if ' ' in costant_name:
                 raise ParseException(
-                    f"Costant name cannot include spaces at line {line_num}")
+                    f"Costant name cannot include spaces at line {line_num} of {file_path}")
 
             costant_name = parts[0].upper()
 
             if costant_name in costants:
                 raise ParseException(
                     f"Costant {costant_name} declared more than one time" +
-                    f" at line {line_num}")
+                    f" at line {line_num} of {file_path}")
 
             costants[costant_name] = i_address
 
@@ -334,20 +334,20 @@ def parse(lines: list[SourceLine]):
             if len(parts) != 3:
                 raise ParseException(
                     ".equ requires a costant name and a value" +
-                    f" (syntax .equ NAME VALUE) at line {line_num}")
+                    f" (syntax .equ NAME VALUE) at line {line_num} of {file_path}")
 
             costant_name = parts[1].upper()
             if costant_name in costants:
                 raise ParseException(
                     f"Costant {costant_name} declared more than one time" +
-                    f" at line {line_num}")
+                    f" at line {line_num} of {file_path}")
 
             try:
                 costants[costant_name] = int(parts[2], 0)
             except ValueError:
                 raise ParseException(
                     f"Invalid value '{parts[2]}' for costant {costant_name}" +
-                    f" at line {line_num}")
+                    f" at line {line_num} of {file_path}")
             continue
 
         instructions.append(
@@ -398,12 +398,14 @@ def main():
             try:
                 val = assemble_instr(instr, costants)
             except ParseException as e:
-                print(f"ASSEMBLER ERROR at line {instr.source_line.line_num}:")
+                print(f"ASSEMBLER ERROR in {instr.source_line.file_path}" +
+                      f" at line {instr.source_line.line_num}:")
                 print(f"    {instr.source_line.text}")
                 print(f"    -> {e}")
                 exit(1)
             except Exception as e:
-                print(f"CRITICAL ERROR at line {instr.source_line.line_num}:")
+                print(f"CRITICAL ERROR in {instr.source_line.file_path}" +
+                      f" at line {instr.source_line.line_num}:")
                 print(f"    {instr.source_line.text}")
                 print(f"    -> {e}")
                 exit(1)
