@@ -28,7 +28,7 @@ Constants are symbols that represent a static value. They are used only by the a
 
 ### Labels
 
-A label is a constant, it is written as `NAME:` on a line of its own. Names are case insensitive, cannot contain spaces and cannot be declared twice. A label used by a branch or a jump resolves to a PC relative displacement, a label used anywhere else resolves to its absolute address.
+A label is a constant, it is written as `NAME:` on a line of its own or before the instruction. Names are case insensitive, cannot contain spaces and cannot be declared twice. A label used by a branch or a jump resolves to a PC relative displacement, a label used anywhere else resolves to its absolute address.
 
 ### Immediates
 
