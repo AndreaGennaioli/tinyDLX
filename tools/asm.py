@@ -1,7 +1,28 @@
 import sys
 import struct
+from typing import NamedTuple, Literal, TypedDict, NotRequired
 
-OPCODES = {
+type CostantTable = dict[str, int]
+
+
+class SourceLine(NamedTuple):
+    text: str
+    file_path: str
+    line_num: int
+
+
+class Instruction(NamedTuple):
+    source_line: SourceLine
+    address: int
+
+
+class InstructionInfo(TypedDict):
+    type: Literal["R", "I", "J", "S", "M"]
+    op: int
+    func: NotRequired[int]
+
+
+OPCODES: dict[str, InstructionInfo] = {
     # ---- R-Type
     # Shift
     "SLL": {"type": "R", "op": 0x00, "func": 0x04},  # LOGIC LEFT SHIFT
@@ -78,7 +99,7 @@ class ParseException(Exception):
     pass
 
 
-def register_to_int(register):
+def register_to_int(register: str):
     """
     Converts 'R1' -> 1, 'R10' -> 10
     """
@@ -95,7 +116,7 @@ def register_to_int(register):
 SPR_NAMES = {"SR": 0, "IAR": 1, "CR": 2}
 
 
-def spr_to_int(register):
+def spr_to_int(register: str):
     """
     Converts 'SR' -> 0, 'IAR' -> 1, 'CR' -> 2
     """
@@ -107,7 +128,9 @@ def spr_to_int(register):
     return SPR_NAMES[register.upper()]
 
 
-def get_address_value(token, costants, instr_address=None):
+def get_address_value(
+    token: str, costants: CostantTable, instr_address: int | None = None
+) -> int:
     """
     Get the relative or absolute address value from a token.
     The token can be an immediate or a costant.
@@ -134,7 +157,7 @@ IMM_LIMITS = {
 }
 
 
-def check_imm(value, width, maximum):
+def check_imm(value: int, width: int, maximum: int) -> int:
     """
     Range checks a resolved immediate and returns it masked to the field width.
 
@@ -154,7 +177,7 @@ def check_imm(value, width, maximum):
     return value & limits["mask"]
 
 
-def resolve_imm(token, costants, width):
+def resolve_imm(token: str, costants: CostantTable, width: int) -> int:
     """
     Resolves a data immediate: an ALU operand, a memory offset, an interrupt
     code. It is taken as a raw bit pattern, so -1 and 0xFFFF describe the same
@@ -164,7 +187,9 @@ def resolve_imm(token, costants, width):
                      IMM_LIMITS[width]["mask"])
 
 
-def resolve_disp(token, costants, width, instr_address):
+def resolve_disp(
+    token: str, costants: CostantTable, width: int, instr_address: int
+) -> int:
     """
     Resolves a PC relative displacement for a branch or a jump. The hardware
     always sign extends this field, so a positive displacement cannot go past
@@ -176,23 +201,23 @@ def resolve_disp(token, costants, width, instr_address):
 
 
 # See the Notation section of docs/architecture/ISA.md
-def encode_r(opcode, ra, rb, rc, func):
+def encode_r(opcode: int, ra: int, rb: int, rc: int, func: int):
     return (opcode << 26) | (ra << 21) | (rb << 16) | (rc << 11) | func
 
 
-def encode_i(opcode, ra, rb, imm16):
+def encode_i(opcode: int, ra: int, rb: int, imm16: int):
     return (opcode << 26) | (ra << 21) | (rb << 16) | (imm16 & 0xFFFF)
 
 
-def encode_j(opcode, imm26):
+def encode_j(opcode: int, imm26: int):
     return (opcode << 26) | (imm26 & 0x3FFFFFF)
 
 
-def assemble_instr(instr, costants):
+def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
     """
     Assembles the instruction.
     """
-    parts = instr[0].replace(',', ' ').replace(
+    parts = instr.source_line.text.replace(',', ' ').replace(
         '(', ' ').replace(')', ' ').split()
 
     if parts[0].upper() not in OPCODES:
@@ -201,9 +226,9 @@ def assemble_instr(instr, costants):
 
     mnemonic = parts[0].upper()
     op = OPCODES[mnemonic]
-    opcode = op['op']
+    opcode: int = op['op']
 
-    if op['type'] == "R":
+    if op['type'] == "R" and 'func' in op:
         # Syntax    OP rc, ra, rb
         # Encoding  [OP] [RA] [RB] [RC] [unused] [FUNC]
         rc = register_to_int(parts[1])      # destination
@@ -211,7 +236,7 @@ def assemble_instr(instr, costants):
         rb = register_to_int(parts[3])      # second operand
 
         return encode_r(opcode, ra, rb, rc, op['func'])
-    elif op['type'] == "S":
+    elif op['type'] == "S" and 'func' in op:
         # Syntax    Move to special     MOVI2S spr, ra
         #           Move from special   MOVS2I rc, spr
         # Encoding  [OP] [RA] [RB] [RC] [unused] [FUNC]
@@ -274,12 +299,12 @@ def assemble_instr(instr, costants):
     return 0
 
 
-def parse(lines):
-    instructions = []
-    costants = {}
+def parse(lines: list[SourceLine]):
+    instructions: list[Instruction] = []
+    costants: CostantTable = {}
     i_address = 0
 
-    for [line, line_num] in lines:
+    for (line, file_path, line_num) in lines:
         parts = line.split(':', 1)
         if len(parts) > 1:
             costant_name = parts[0]
@@ -326,24 +351,29 @@ def parse(lines):
                     f" at line {line_num + 1}")
             continue
 
-        instructions.append((line, i_address, line_num))
+        instructions.append(
+            Instruction(source_line=SourceLine(text=line, file_path=file_path,
+                        line_num=line_num), address=i_address)
+        )
         i_address += 4
 
     return instructions, costants
 
 
-def open_file(path):
+def open_file(path: str) -> list[SourceLine]:
     lines = []
     with open(path, 'r') as f:
         lines = f.readlines()
 
-    clean_lines = []
+    clean_lines: list[SourceLine] = []
     # Remove comments and blank lines
     for line_num, line in enumerate(lines):
         clean_line = line.split(';')[0].strip()
         if not clean_line:
             continue
-        clean_lines.append((clean_line, line_num))
+        clean_lines.append(
+            SourceLine(text=clean_line, file_path=path, line_num=line_num)
+        )
 
     return clean_lines
 
@@ -353,7 +383,7 @@ def main():
         print("Usage: python asm.py input.asm output.bin")
         sys.exit(1)
 
-    input_lines = []
+    input_lines: list[SourceLine] = []
 
     # Include the main program file
     input_lines += open_file(sys.argv[1])
@@ -369,12 +399,12 @@ def main():
             try:
                 val = assemble_instr(instr, costants)
             except ParseException as e:
-                print(f"ASSEMBLER ERROR at line {instr[2]+1}:")
+                print(f"ASSEMBLER ERROR at line {instr.address+1}:")
                 print(f"    {instr[0]}")
                 print(f"    -> {e}")
                 exit(1)
             except Exception as e:
-                print(f"CRITICAL ERROR at line {instr[2]+1}:")
+                print(f"CRITICAL ERROR at line {instr.address+1}:")
                 print(f"    {instr[0]}")
                 print(f"    -> {e}")
                 exit(1)
