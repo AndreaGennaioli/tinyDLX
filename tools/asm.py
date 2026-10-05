@@ -1,6 +1,6 @@
 import sys
 import struct
-from typing import NamedTuple, Literal, TypedDict, NotRequired
+from typing import NamedTuple, Literal
 
 type CostantTable = dict[str, int]
 
@@ -16,82 +16,82 @@ class Instruction(NamedTuple):
     address: int
 
 
-class InstructionInfo(TypedDict):
+class InstructionInfo(NamedTuple):
     type: Literal["R", "I", "J", "S", "M"]
     op: int
-    func: NotRequired[int]
+    func: int | None = None
 
 
 OPCODES: dict[str, InstructionInfo] = {
     # ---- R-Type
     # Shift
-    "SLL": {"type": "R", "op": 0x00, "func": 0x04},  # LOGIC LEFT SHIFT
-    "SRL": {"type": "R", "op": 0x00, "func": 0x06},  # LOGIC RIGHT SHIFT
-    "SRA": {"type": "R", "op": 0x00, "func": 0x07},  # ARITHMETIC RIGHT SHIFT
+    "SLL": InstructionInfo("R", 0x00, 0x04),  # LOGIC LEFT SHIFT
+    "SRL": InstructionInfo("R", 0x00, 0x06),  # LOGIC RIGHT SHIFT
+    "SRA": InstructionInfo("R", 0x00, 0x07),  # ARITHMETIC RIGHT SHIFT
     # Arithmetic operations
-    "ADD": {"type": "R", "op": 0x00, "func": 0x20},
-    "SUB": {"type": "R", "op": 0x00, "func": 0x22},
+    "ADD": InstructionInfo("R", 0x00, 0x20),
+    "SUB": InstructionInfo("R", 0x00, 0x22),
     # Logic operations
-    "AND": {"type": "R", "op": 0x00, "func": 0x24},
-    "OR": {"type": "R", "op": 0x00, "func": 0x25},
-    "XOR": {"type": "R", "op": 0x00, "func": 0x26},
+    "AND": InstructionInfo("R", 0x00, 0x24),
+    "OR": InstructionInfo("R", 0x00, 0x25),
+    "XOR": InstructionInfo("R", 0x00, 0x26),
     # Set if condition
-    "SGT": {"type": "R", "op": 0x00, "func": 0x29},  # SET GREATER THAN
-    "SEQ": {"type": "R", "op": 0x00, "func": 0x2A},  # SET EQUAL
-    "SGE": {"type": "R", "op": 0x00, "func": 0x2B},  # SET GREATER EQUAL
-    "SLT": {"type": "R", "op": 0x00, "func": 0x2C},  # SET LESS THAN
-    "SNE": {"type": "R", "op": 0x00, "func": 0x2D},  # SET NOT EQUAL
-    "SLE": {"type": "R", "op": 0x00, "func": 0x2E},  # SET LESS EQUAL
+    "SGT": InstructionInfo("R", 0x00, 0x29),  # SET GREATER THAN
+    "SEQ": InstructionInfo("R", 0x00, 0x2A),  # SET EQUAL
+    "SGE": InstructionInfo("R", 0x00, 0x2B),  # SET GREATER EQUAL
+    "SLT": InstructionInfo("R", 0x00, 0x2C),  # SET LESS THAN
+    "SNE": InstructionInfo("R", 0x00, 0x2D),  # SET NOT EQUAL
+    "SLE": InstructionInfo("R", 0x00, 0x2E),  # SET LESS EQUAL
     # Special register operations
-    "MOVI2S": {"type": "S", "op": 0x00, "func": 0x30},  # MOVE INTEGER (register) TO SPECIAL (register)
-    "MOVS2I": {"type": "S", "op": 0x00, "func": 0x31},  # MOVE SPECIAL (register) TO INTEGER (register)
+    "MOVI2S": InstructionInfo("S", 0x00, 0x30),  # MOVE INTEGER (register) TO SPECIAL (register)
+    "MOVS2I": InstructionInfo("S", 0x00, 0x31),  # MOVE SPECIAL (register) TO INTEGER (register)
 
     # ---- J-Type
     # Jumps
-    "J": {"type": "J", "op": 0x02},
-    "JAL": {"type": "J", "op": 0x03},
+    "J": InstructionInfo("J", 0x02),
+    "JAL": InstructionInfo("J", 0x03),
     # Special instructions
-    "RFE": {"type": "J", "op": 0x3F},
-    "INT": {"type": "J", "op": 0x39},
+    "RFE": InstructionInfo("J", 0x3F),
+    "INT": InstructionInfo("J", 0x39),
 
     # ---- I-Type
     # Branch
-    "BEQZ": {"type": "I", "op": 0x04},
-    "BNEZ": {"type": "I", "op": 0x05},
+    "BEQZ": InstructionInfo("I", 0x04),
+    "BNEZ": InstructionInfo("I", 0x05),
     # Arithmetic operations
-    "ADDI": {"type": "I", "op": 0x08},
-    "ADDUI": {"type": "I", "op": 0x09},
-    "SUBI": {"type": "I", "op": 0x0A},
-    "SUBUI": {"type": "I", "op": 0x0B},
+    "ADDI": InstructionInfo("I", 0x08),
+    "ADDUI": InstructionInfo("I", 0x09),
+    "SUBI": InstructionInfo("I", 0x0A),
+    "SUBUI": InstructionInfo("I", 0x0B),
     # Logic operations
-    "ANDI": {"type": "I", "op": 0x0C},
-    "ORI": {"type": "I", "op": 0x0D},
-    "XORI": {"type": "I", "op": 0x0E},
+    "ANDI": InstructionInfo("I", 0x0C),
+    "ORI": InstructionInfo("I", 0x0D),
+    "XORI": InstructionInfo("I", 0x0E),
     # Load high
-    "LHI": {"type": "I", "op": 0x0F},
+    "LHI": InstructionInfo("I", 0x0F),
     # Jump
-    "JR": {"type": "I", "op": 0x12},
-    "JALR": {"type": "I", "op": 0x13},
+    "JR": InstructionInfo("I", 0x12),
+    "JALR": InstructionInfo("I", 0x13),
     # Shift
-    "SLLI": {"type": "I", "op": 0x14},  # SHIFT LEFT LOGICAL IMMEDIATE
-    "SRLI": {"type": "I", "op": 0x16},  # SHIFT RIGHT LOGICAL IMMEDIATE
-    "SRAI": {"type": "I", "op": 0x17},  # SHIFT RIGHT ARITHMETIC IMMEDIATE
+    "SLLI": InstructionInfo("I", 0x14),  # SHIFT LEFT LOGICAL IMMEDIATE
+    "SRLI": InstructionInfo("I", 0x16),  # SHIFT RIGHT LOGICAL IMMEDIATE
+    "SRAI": InstructionInfo("I", 0x17),  # SHIFT RIGHT ARITHMETIC IMMEDIATE
     # Set if condition
-    "SGTI": {"type": "I", "op": 0x19},  # SET GREATER THAN IMMEDIATE
-    "SEQI": {"type": "I", "op": 0x1A},  # SET EQUAL IMMEDIATE
-    "SGEI": {"type": "I", "op": 0x1B},  # SET GREATER EQUAL IMMEDIATE
-    "SLTI": {"type": "I", "op": 0x1C},  # SET LESS THAN IMMEDIATE
-    "SNEI": {"type": "I", "op": 0x1D},  # SET NOT EQUAL IMMEDIATE
-    "SLEI": {"type": "I", "op": 0x1E},  # SET LESS EQUAL IMMEDIATE
+    "SGTI": InstructionInfo("I", 0x19),  # SET GREATER THAN IMMEDIATE
+    "SEQI": InstructionInfo("I", 0x1A),  # SET EQUAL IMMEDIATE
+    "SGEI": InstructionInfo("I", 0x1B),  # SET GREATER EQUAL IMMEDIATE
+    "SLTI": InstructionInfo("I", 0x1C),  # SET LESS THAN IMMEDIATE
+    "SNEI": InstructionInfo("I", 0x1D),  # SET NOT EQUAL IMMEDIATE
+    "SLEI": InstructionInfo("I", 0x1E),  # SET LESS EQUAL IMMEDIATE
     # Load / Store (special I-Type, M for memory)
-    "LB": {"type": "M", "op": 0x20},
-    "LH": {"type": "M", "op": 0x21},
-    "LW": {"type": "M", "op": 0x23},
-    "LBU": {"type": "M", "op": 0x24},
-    "LHU": {"type": "M", "op": 0x25},
-    "SB": {"type": "M", "op": 0x28},
-    "SH": {"type": "M", "op": 0x29},
-    "SW": {"type": "M", "op": 0x2B},
+    "LB": InstructionInfo("M", 0x20),
+    "LH": InstructionInfo("M", 0x21),
+    "LW": InstructionInfo("M", 0x23),
+    "LBU": InstructionInfo("M", 0x24),
+    "LHU": InstructionInfo("M", 0x25),
+    "SB": InstructionInfo("M", 0x28),
+    "SH": InstructionInfo("M", 0x29),
+    "SW": InstructionInfo("M", 0x2B),
 }
 
 
@@ -225,17 +225,17 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
 
     mnemonic = parts[0].upper()
     op = OPCODES[mnemonic]
-    opcode: int = op['op']
+    opcode = op.op
 
-    if op['type'] == "R" and 'func' in op:
+    if op.type == "R" and op.func is not None:
         # Syntax    OP rc, ra, rb
         # Encoding  [OP] [RA] [RB] [RC] [unused] [FUNC]
         rc = register_to_int(parts[1])      # destination
         ra = register_to_int(parts[2])      # first operand
         rb = register_to_int(parts[3])      # second operand
 
-        return encode_r(opcode, ra, rb, rc, op['func'])
-    elif op['type'] == "S" and 'func' in op:
+        return encode_r(opcode, ra, rb, rc, op.func)
+    elif op.type == "S" and op.func is not None:
         # Syntax    Move to special     MOVI2S spr, ra
         #           Move from special   MOVS2I rc, spr
         # Encoding  [OP] [RA] [RB] [RC] [unused] [FUNC]
@@ -248,8 +248,8 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
             rc = register_to_int(parts[1])  # destination
             ra = spr_to_int(parts[2])       # source
 
-        return encode_r(opcode, ra, rb, rc, op['func'])
-    elif op['type'] == "I":
+        return encode_r(opcode, ra, rb, rc, op.func)
+    elif op.type == "I":
         # Syntax    ALU / set / shift   OP rb, ra, Imm16
         #           Load high           OP rb, Imm16        (RA unused)
         #           Branch              OP ra, Imm16        (RB unused)
@@ -258,7 +258,7 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
         if mnemonic in ["BNEZ", "BEQZ"]:
             ra = register_to_int(parts[1])  # tested register
             rb = 0
-            imm16 = resolve_disp(parts[2], costants, 16, instr[1])
+            imm16 = resolve_disp(parts[2], costants, 16, instr.address)
         elif mnemonic in ["JR", "JALR"]:
             ra = register_to_int(parts[1])  # target register
             rb = 0
@@ -273,7 +273,7 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
             imm16 = resolve_imm(parts[3], costants, 16)
 
         return encode_i(opcode, ra, rb, imm16)
-    elif op['type'] == "M":
+    elif op.type == "M":
         # I-Type with the memory syntax
         # Syntax    OP rb, Imm16(ra)
         # Encoding  [OP] [RA] [RB] [Imm16]
@@ -282,7 +282,7 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
         ra = register_to_int(parts[3])      # base address register
 
         return encode_i(opcode, ra, rb, imm16)
-    elif op['type'] == "J":
+    elif op.type == "J":
         # Syntax    OP Imm26, RFE takes no operand
         # Encoding  [OP] [Imm26]
         if mnemonic in ["RFE"]:
@@ -291,7 +291,7 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
             # An interrupt code, not an address: never PC relative
             imm26 = resolve_imm(parts[1], costants, 26)
         else:
-            imm26 = resolve_disp(parts[1], costants, 26, instr[1])
+            imm26 = resolve_disp(parts[1], costants, 26, instr.address)
 
         return encode_j(opcode, imm26)
 
@@ -399,12 +399,12 @@ def main():
                 val = assemble_instr(instr, costants)
             except ParseException as e:
                 print(f"ASSEMBLER ERROR at line {instr.address+1}:")
-                print(f"    {instr[0]}")
+                print(f"    {instr.source_line}")
                 print(f"    -> {e}")
                 exit(1)
             except Exception as e:
                 print(f"CRITICAL ERROR at line {instr.address+1}:")
-                print(f"    {instr[0]}")
+                print(f"    {instr.source_line}")
                 print(f"    -> {e}")
                 exit(1)
             packed_bytes = struct.pack('>I', val)
