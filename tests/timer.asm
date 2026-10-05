@@ -8,16 +8,19 @@
 ; - R1 is incremented in the MAIN loop and checked during the automated test
 ; - R2 is used to count the numbers of timer interrupts
 ; ============================================================================
+.equ STARTUP_CIRCUIT_HIGH 0xC000
+.equ INTERRUPT_CONTROLLER_HIGH 0xC00C
+.equ TIMER_HIGH 0xC014
 
 ; Startup check
-LHI R26, 0xC000
+LHI R26, STARTUP_CIRCUIT_HIGH
 LB  R27, 0x0000(R26)
 
 BEQZ R27, HANDLE_INTERRUPT
 
 HANDLE_STARTUP:
   ; Startup Circuit
-  LHI R26, 0xC000
+  LHI R26, STARTUP_CIRCUIT_HIGH
   SB  R0, 0x0000(R26)        ; Dummy write to set SC to 0
 
   ; Enable interrupts
@@ -30,14 +33,14 @@ HANDLE_STARTUP:
 
   ; Set the timer period to 50
   ADDI R27, R0, 50
-  LHI  R26, 0xC014
+  LHI  R26, TIMER_HIGH
   SW R27, 0x0000(R26)
 
   J MAIN
 
 HANDLE_INTERRUPT:
   ; Read IC
-  LHI R26, 0xC00C
+  LHI R26, INTERRUPT_CONTROLLER_HIGH
   LB  R27, 0x0000(R26)
   ; Check for interrupt code 1 (Timer)
   SUBUI R27, R27, 1
@@ -48,7 +51,7 @@ HANDLE_INTERRUPT:
 HANDLE_TIMER:
   ADDUI R2, R2, 1
   ; Ack the timer. The dummy read must return 1
-  LHI   R26, 0xC014
+  LHI   R26, TIMER_HIGH
   LW    R27, 0x0004(R26)
   SUBUI R27, R27, 1
   BNEZ  R27, FAIL

@@ -304,6 +304,28 @@ def parse(lines):
                 continue
             line = parts[1].strip()
 
+        # Check for directives
+        parts = line.split()
+        if parts[0] == ".equ":
+            if len(parts) != 3:
+                raise ParseException(
+                    f".equ requires a costant name and a value"
+                    f" (syntax .equ NAME VALUE) at line {line_num + 1}")
+
+            costant_name = parts[1].upper()
+            if costant_name in costants:
+                raise ParseException(
+                    f"Costant {costant_name} declared more than one time"
+                    f" at line {line_num + 1}")
+
+            try:
+                costants[costant_name] = int(parts[2], 0)
+            except ValueError:
+                raise ParseException(
+                    f"Invalid value '{parts[2]}' for costant {costant_name}"
+                    f" at line {line_num + 1}")
+            continue
+
         instructions.append((line, i_address, line_num))
         i_address += 4
 

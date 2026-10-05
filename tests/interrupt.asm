@@ -6,9 +6,14 @@
 ; - see docs/architecture/Memory.md
 ; - R26 and R27 are reserved by the "kernel"
 ; ============================================================================
+.equ STARTUP_CIRCUIT_HIGH 0xC000
+.equ INPUT_PORT_HIGH 0xC004
+.equ OUTPUT_PORT_HIGH 0xC008
+.equ INTERRUPT_CONTROLLER_HIGH 0xC00C
+.equ POWER_MANAGER_HIGH 0xC010
 
 ; Startup check
-LHI R26, 0xC000
+LHI R26, STARTUP_CIRCUIT_HIGH
 LB  R27, 0x0000(R26)
 
 BEQZ R27, HANDLE_INTERRUPT
@@ -18,7 +23,7 @@ HANDLE_STARTUP:
   LHI R29, 0x401F
   ADDUI R29, R29, 0xFFFC
 
-  LHI R26, 0xC000
+  LHI R26, STARTUP_CIRCUIT_HIGH
   SB  R0, 0x0000(R26)        ; Dummy write to set SC to 0
 
   ; Enable interrupts
@@ -39,7 +44,7 @@ HANDLE_INTERRUPT:
   SW R31, 12(R29)
 
 
-  LHI R1, 0xC00C
+  LHI R1, INTERRUPT_CONTROLLER_HIGH
   LB  R2, 0x0000(R1)
   ; Check for interrupt code 0 (Input port)
   BEQZ R2, HANDLE_INPUT_PORT
@@ -47,7 +52,7 @@ HANDLE_INTERRUPT:
   J EXIT_INTERRUPT_HANDLER
 
 HANDLE_INPUT_PORT:
-  LHI R1, 0xC004
+  LHI R1, INPUT_PORT_HIGH
   LBU  R3, 0x0000(R1)
   SUBI R2, R3, 0x71             ; 0x71 = 'q'
   BEQZ R2, PROC_EXIT
@@ -76,7 +81,7 @@ PROC_OUTPUT:
   ; Push R2
   SW R2, 4(R29)
 
-  LHI R1, 0xC008
+  LHI R1, OUTPUT_PORT_HIGH
 CHECK_PORT_STATUS:
   LB R2, 0x0000(R1)
 
@@ -92,7 +97,7 @@ CHECK_PORT_STATUS:
   JR R31
 
 PROC_EXIT:
-  LHI R26, 0xC010
+  LHI R26, POWER_MANAGER_HIGH
   SB R0, 0x0000(R26)
 
 MAIN:

@@ -16,11 +16,15 @@ A line may start or end with spaces. Comments are introduced by `;` and run to t
 
 Mnemonics and register names are case insensitive.
 
-There are no directives: no `.data`, no `.org`, no way to reserve or initialise memory. Data has to be built at runtime.
+The only directive is `.equ`: there is no `.data`, no `.org`, no way to reserve or initialise memory. Data has to be built at runtime.
 
 ### Costants
 
-Constants are symbols that represent a static value. They are used only by the assembler. Currently the only way to declare a constant is declaring a label.
+Constants are symbols that represent a static value. They are used only by the assembler. A constant is declared by a label or by the `.equ` directive.
+
+### .equ
+
+`.equ NAME VALUE` declares a constant with an explicit value, written like an immediate. Names follow the same rules as labels and share their namespace. Like a label, a constant used by a branch or a jump resolves to a PC relative displacement.
 
 ### Labels
 

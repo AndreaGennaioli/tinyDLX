@@ -6,7 +6,9 @@
 ;   2. Write to set it to 0
 ;   3. Read again to check
 ; ============================================================================
-LHI R1, 0xC000
+.equ STARTUP_CIRCUIT_HIGH 0xC000
+
+LHI R1, STARTUP_CIRCUIT_HIGH
 LB R2, 0x0000(R1) ; Should be 1
 
 ; Dummy write

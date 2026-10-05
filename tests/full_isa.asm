@@ -5,6 +5,8 @@
 ; The code assumes that:
 ; - RAM Base address: 0x40000000
 ; ============================================================================
+.equ RAM_HIGH 0x4000
+
 ADDI R31, R0, 8
 
 ; Target instruction for JALR test
@@ -90,7 +92,7 @@ SNE R21, R1, R4              ; R21 = 1 (R1 != R4)
 ; MEMORY OPERATIONS (Load / Store)
 ; ============================================================================
 ; Base RAM Address into R10 (0x40000000)
-LHI  R10, 0x4000             ; R10 = 0x40000000
+LHI  R10, RAM_HIGH            ; R10 = 0x40000000
 
 ADDUI R1, R0, 0x800A
 ADDI R5, R0, 0x00CF
