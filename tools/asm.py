@@ -231,6 +231,9 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
     if op.type == "R" and op.func is not None:
         # Syntax    OP rc, ra, rb
         # Encoding  [OP] [RA] [RB] [RC] [unused] [FUNC]
+        if len(parts) != 4:
+            raise ParseException(
+                f"wrong arguments count, syntax {mnemonic} rc, ra, rb")
         rc = register_to_int(parts[1])      # destination
         ra = register_to_int(parts[2])      # first operand
         rb = register_to_int(parts[3])      # second operand
@@ -243,9 +246,15 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
         rb = 0
 
         if mnemonic == "MOVI2S":
+            if len(parts) != 3:
+                raise ParseException(
+                    f"wrong arguments count, syntax {mnemonic} spr, ra")
             rc = spr_to_int(parts[1])       # destination
             ra = register_to_int(parts[2])  # source
         else:
+            if len(parts) != 3:
+                raise ParseException(
+                    f"wrong arguments count, syntax {mnemonic} rc, spr")
             rc = register_to_int(parts[1])  # destination
             ra = spr_to_int(parts[2])       # source
 
@@ -257,18 +266,30 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
         #           Jump register       OP ra               (RB, Imm16 unused)
         # Encoding  [OP] [RA] [RB] [Imm16]
         if mnemonic in ["BNEZ", "BEQZ"]:
+            if len(parts) != 3:
+                raise ParseException(
+                    f"wrong arguments count, syntax {mnemonic} ra, Imm16")
             ra = register_to_int(parts[1])  # tested register
             rb = 0
             imm16 = resolve_disp(parts[2], costants, 16, instr.address)
         elif mnemonic in ["JR", "JALR"]:
+            if len(parts) != 2:
+                raise ParseException(
+                    f"wrong arguments count, syntax {mnemonic} ra")
             ra = register_to_int(parts[1])  # target register
             rb = 0
             imm16 = 0
         elif mnemonic == "LHI":
+            if len(parts) != 3:
+                raise ParseException(
+                    f"wrong arguments count, syntax {mnemonic} ra, Imm16")
             ra = 0
             rb = register_to_int(parts[1])  # destination
             imm16 = resolve_imm(parts[2], costants, 16)
         else:
+            if len(parts) != 4:
+                raise ParseException(
+                    f"wrong arguments count, syntax {mnemonic} rb, ra, Imm16")
             rb = register_to_int(parts[1])  # destination
             ra = register_to_int(parts[2])  # source
             imm16 = resolve_imm(parts[3], costants, 16)
@@ -278,6 +299,9 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
         # I-Type with the memory syntax
         # Syntax    OP rb, Imm16(ra)
         # Encoding  [OP] [RA] [RB] [Imm16]
+        if len(parts) != 4:
+            raise ParseException(
+                f"wrong arguments count, syntax {mnemonic} rb, Imm16(ra)")
         rb = register_to_int(parts[1])      # loaded / stored register
         imm16 = resolve_imm(parts[2], costants, 16)
         ra = register_to_int(parts[3])      # base address register
@@ -287,11 +311,20 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
         # Syntax    OP Imm26, RFE takes no operand
         # Encoding  [OP] [Imm26]
         if mnemonic in ["RFE"]:
+            if len(parts) != 1:
+                raise ParseException(
+                    f"wrong arguments count, syntax {mnemonic}")
             imm26 = 0
         elif mnemonic in ["INT"]:
+            if len(parts) != 2:
+                raise ParseException(
+                    f"wrong arguments count, syntax {mnemonic} Imm26")
             # An interrupt code, not an address: never PC relative
             imm26 = resolve_imm(parts[1], costants, 26)
         else:
+            if len(parts) != 2:
+                raise ParseException(
+                    f"wrong arguments count, syntax {mnemonic} Imm26")
             imm26 = resolve_disp(parts[1], costants, 26, instr.address)
 
         return encode_j(opcode, imm26)
