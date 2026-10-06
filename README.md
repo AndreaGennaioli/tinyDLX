@@ -42,7 +42,7 @@ These are the biggest limitations of the current design:
 These are the next features I would like to implement, from the closest to the most distant in time:
 
 - Add `.word`, `.half`, `.byte` and `.string` directives to the assembler.
-- Add some example programs into an `examples/` directory (e.g. a time clock using the timer, Echo, Mini scheduler)
+- Add more example programs into an `examples/` directory (e.g. Echo, Mini scheduler)
 - Add an artificial random initialization of GPRs and RAM.
 - `--input-tape <input string>` or `--input` to submit an input string to the input port and disable input from the terminal.
 - Rewrite `dlx_memory_bus.c` to make it more readable and remove duplicated code.
