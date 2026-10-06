@@ -58,11 +58,11 @@ Requirements: Linux, `gcc`, `make`, Python 3.
 
 ```bash
 make
-python3 tools/asm.py tests/interrupt.asm tests/interrupt.bin
-./bin/cpu_seq -b tests/interrupt.bin --freq 1000
+python3 tools/asm.py examples/chronometer.asm chronometer.bin
+./bin/cpu_seq -b chronometer.bin --freq 10000
 ```
 
-The program prints the printable ASCII characters in a loop and echoes what you type; `q` turns the machine off, `Ctrl+C` stops the emulator. Run `./bin/cpu_seq --help` for all the options.
+The program prints an MM:SS chronometer driven by Timer interrupts; `q` turns the machine off, `Ctrl+C` stops the emulator. Run `./bin/cpu_seq --help` for all the options.
 
 ## Documentation
 
