@@ -1,3 +1,4 @@
+import os
 import sys
 import struct
 from typing import NamedTuple, Literal
@@ -359,7 +360,13 @@ def parse(lines: list[SourceLine]):
     return instructions, costants
 
 
-def open_file(path: str) -> list[SourceLine]:
+def open_file(path: str, included_files: set[str]) -> list[SourceLine]:
+    # Guard to prevent recursion in includes
+    realpath = os.path.realpath(path)
+    if realpath in included_files:
+        return []
+    included_files.add(realpath)
+
     lines = []
     with open(path, 'r') as f:
         lines = f.readlines()
@@ -370,9 +377,29 @@ def open_file(path: str) -> list[SourceLine]:
         clean_line = line.split(';')[0].strip()
         if not clean_line:
             continue
-        clean_lines.append(
-            SourceLine(text=clean_line, file_path=path, line_num=line_num)
-        )
+
+        # Manage include directives
+        parts = clean_line.split(maxsplit=1)
+        if parts[0] == ".include":
+            arg = parts[1] if len(parts) == 2 else ""
+
+            if len(arg) < 3 or arg[0] != '"' or arg[-1] != '"':
+                raise ParseException(
+                    ".include requires the path to the file to" +
+                    f" include (syntax .include \"PATH\") at line {line_num}" +
+                    f" of {path}")
+            # Include the file
+            include_path = os.path.join(os.path.dirname(path), arg[1:-1])
+            try:
+                clean_lines += open_file(include_path, included_files)
+            except OSError as e:
+                raise ParseException(
+                    f"Cannot include {include_path} ({e.strerror})" +
+                    f" at line {line_num} of {path}")
+        else:
+            clean_lines.append(
+                SourceLine(text=clean_line, file_path=path, line_num=line_num)
+            )
 
     return clean_lines
 
@@ -382,10 +409,16 @@ def main():
         print("Usage: python asm.py input.asm output.bin")
         sys.exit(1)
 
-    input_lines: list[SourceLine] = []
-
-    # Include the main program file
-    input_lines += open_file(sys.argv[1])
+    included_files: set[str] = set()
+    try:
+        # Include the main program file
+        input_lines = open_file(sys.argv[1], included_files)
+    except OSError as e:
+        print(f"ASSEMBLER ERROR: cannot open {sys.argv[1]} ({e.strerror})")
+        exit(1)
+    except ParseException as e:
+        print(f"ASSEMBLER ERROR: {e}")
+        exit(1)
 
     try:
         instructions, costants = parse(input_lines)

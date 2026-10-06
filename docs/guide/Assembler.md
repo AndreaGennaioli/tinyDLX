@@ -16,7 +16,7 @@ A line may start or end with spaces. Comments are introduced by `;` and run to t
 
 Mnemonics and register names are case insensitive.
 
-The only directive is `.equ`: there is no `.data`, no `.org`, no way to reserve or initialise memory. Data has to be built at runtime.
+The only directives are `.equ` and `.include`: there is no `.data`, no `.org`, no way to reserve or initialise memory. Data has to be built at runtime.
 
 ### Costants
 
@@ -26,6 +26,9 @@ Constants are symbols that represent a static value. They are used only by the a
 
 `.equ NAME VALUE` declares a constant with an explicit value, written like an immediate. Names follow the same rules as labels and share their namespace. Like a label, a constant used by a branch or a jump resolves to a PC relative displacement.
 
+### .include
+
+`.include "PATH"` inserts the lines of another source file in place of the directive. The path is relative to the file that contains the directive and is written between double quotes, so it may contain spaces (but not `;`, which starts a comment). The directive must stand on a line of its own, a label can be set only on the previous line, not in the same line of the directive. All symbols are global, so a file already included is skipped.
 ### Labels
 
 A label is a constant, it is written as `NAME:` on a line of its own or before the instruction. Names are case insensitive, cannot contain spaces and cannot be declared twice. A label used by a branch or a jump resolves to a PC relative displacement, a label used anywhere else resolves to its absolute address.

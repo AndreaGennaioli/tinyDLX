@@ -5,7 +5,7 @@
 ; The code assumes that:
 ; - RAM Base address: 0x40000000
 ; ============================================================================
-.equ RAM_HIGH 0x4000
+.include "../lib/devices.inc"
 
 ADDI R31, R0, 8
 

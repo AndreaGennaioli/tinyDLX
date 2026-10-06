@@ -8,9 +8,7 @@
 ; - R1 is incremented in the MAIN loop and checked during the automated test
 ; - R2 is used to count the numbers of timer interrupts
 ; ============================================================================
-.equ STARTUP_CIRCUIT_HIGH 0xC000
-.equ INTERRUPT_CONTROLLER_HIGH 0xC00C
-.equ TIMER_HIGH 0xC014
+.include "../lib/devices.inc"
 
 ; Startup check
 LHI R26, STARTUP_CIRCUIT_HIGH

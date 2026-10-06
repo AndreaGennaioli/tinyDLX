@@ -6,11 +6,7 @@
 ; - see docs/architecture/Memory.md
 ; - R26 and R27 are reserved by the "kernel"
 ; ============================================================================
-.equ STARTUP_CIRCUIT_HIGH 0xC000
-.equ INPUT_PORT_HIGH 0xC004
-.equ OUTPUT_PORT_HIGH 0xC008
-.equ INTERRUPT_CONTROLLER_HIGH 0xC00C
-.equ POWER_MANAGER_HIGH 0xC010
+.include "../lib/devices.inc"
 
 ; Startup check
 LHI R26, STARTUP_CIRCUIT_HIGH

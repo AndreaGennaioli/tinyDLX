@@ -1,0 +1,10 @@
+; devices.inc
+; This file defines all the devices high-address
+.equ ROM_HIGH 0x0000
+.equ RAM_HIGH 0x4000
+.equ STARTUP_CIRCUIT_HIGH 0xC000
+.equ INPUT_PORT_HIGH 0xC004
+.equ OUTPUT_PORT_HIGH 0xC008
+.equ INTERRUPT_CONTROLLER_HIGH 0xC00C
+.equ POWER_MANAGER_HIGH 0xC010
+.equ TIMER_HIGH 0xC014

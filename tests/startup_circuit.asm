@@ -6,7 +6,7 @@
 ;   2. Write to set it to 0
 ;   3. Read again to check
 ; ============================================================================
-.equ STARTUP_CIRCUIT_HIGH 0xC000
+.include "../lib/devices.inc"
 
 LHI R1, STARTUP_CIRCUIT_HIGH
 LB R2, 0x0000(R1) ; Should be 1
