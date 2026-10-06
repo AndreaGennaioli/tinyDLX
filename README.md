@@ -19,7 +19,7 @@ It started with the simple goal of achieving the emulation of a small set of ins
 - A DLX-derived instruction set: arithmetic, logic, set, shift, load/store, branch and jump instructions, plus software interrupts.
 - A sequential core that executes one instruction per cycle.
 - Memory-mapped devices: interrupt controller, startup circuit, input and output ports, power manager, programmable 32 bit timer.
-- An assembler with labels, written in Python.
+- An assembler with labels, `.equ` and `.include` directives, written in Python.
 - Options to control and inspect a run: cycle limit, register initialisation, a strict mode that turns warnings into faults, and a JSON snapshot of the final state.
 - Execution at full speed or at a chosen frequency.
 - A test suite: `make test` runs every test program (except the `stress.asm` benchmark) and compares its final state with a frozen "golden" snapshot.
