@@ -4,6 +4,12 @@
 
 A didactic emulator, written in C, of tinyDLX: a 32-bit RISC machine derived from the DLX architecture of Hennessy & Patterson.
 
+<p align="center">
+  <img src="docs/assets/chronometer.gif" alt="tinyDLX assembling and running a chronometer program" width="720">
+  <br>
+  <sub><code>examples/chronometer.asm</code>: a timer interrupt updates an MM:SS clock on the output port; <code>q</code> powers the machine off. Shown at 50× speed (<code>--freq 500000</code>, the program assumes a 10 kHz clock). Recorded with <a href="https://github.com/charmbracelet/vhs">VHS</a>.</sub>
+</p>
+
 tinyDLX is a small machine: an instruction set close to the textbook one, a flat memory with memory-mapped devices, a single interrupt line behind an interrupt controller. The project comes with its own assembler and a small test suite.
 
 ## Motivation
