@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -I./include/ -Wall -Wextra -g
+CFLAGS := -I./include/ -Wall -Wextra -g -O2 -MMD -MP
 BIN_DIR := bin
 OBJ_DIR := obj
 SRC_COMMON := $(wildcard src/common/*.c)
@@ -38,3 +38,6 @@ test: $(BIN_DIR)/cpu_seq
 
 clean:
 	rm -rf bin/* obj/*
+
+# Include all file dependencies
+-include $(OBJ_COMMON:.o=.d) $(OBJ_SEQ:.o=.d) $(OBJ_DEVICES:.o=.d)
