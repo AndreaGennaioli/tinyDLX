@@ -1,5 +1,5 @@
-#ifndef DLX_INTERRUPTS
-#define DLX_INTERRUPTS
+#ifndef DLX_INTERRUPTS_H
+#define DLX_INTERRUPTS_H
 
 #include "dlx_defs.h"
 #include <stdint.h>
@@ -8,4 +8,4 @@
 // supported debug interrupt codes
 void dlx_exec_debug_interrupt(uint32_t code, DLX_state *state);
 
-#endif // !DLX_INTERRUPTS
+#endif // !DLX_INTERRUPTS_H
