@@ -24,12 +24,7 @@ void dlx_exec_debug_interrupt(uint32_t code, DLX_state *state) {
     state->exec_state = DLX_HALT;
     break;
   default:
-    if(state->config->strict_mode) {
-      error("EXECUTE: 0x%02X unknown debug interrupt code", code);
-        state->exec_state = DLX_FAULT;
-    } else {
-      warn("EXECUTE: 0x%02X unknown debug interrupt code", code);
-    }
+    FAULT_OR_WARN(state, "EXECUTE: 0x%02X unknown debug interrupt code", code);
   }
 }
 

@@ -2,6 +2,7 @@
 #define DLX_DEFS_H
 
 #include <stdint.h>
+#include "debug.h"
 
 #define DLX_GPR_COUNT 32 // General Purpose Register count
 #define DLX_REG_ZERO 0   // R0: register wired to 0
@@ -16,6 +17,14 @@
 // MMIO Devices
 // Code 0xF is reserved to 'no interrupt asserted'
 #define DLX_MAX_DEVICES 15
+
+#define FAULT_OR_WARN(state, ...)     \
+  if ((state)->config->strict_mode) { \
+    error(__VA_ARGS__);               \
+    (state)->exec_state = DLX_FAULT;  \
+  } else {                            \
+    warn(__VA_ARGS__);                \
+  }
 
 // Address space:
 // 0 ___________ 0x40000000___________ 0xC0000000 _________ 0xFFFFFFFF

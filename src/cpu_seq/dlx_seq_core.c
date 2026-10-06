@@ -187,12 +187,7 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
       break;
     case I_MOVI2S_FUNC:
       if(decoded_i->rc >= DLX_SPR_COUNT) {
-        if(state->config->strict_mode) {
-          error("EXECUTE: 0x%02X is not a Special Purpose Register", decoded_i->rc);
-          state->exec_state = DLX_FAULT;
-        } else {
-          warn("EXECUTE: 0x%02X is not a Special Purpose Register", decoded_i->rc);
-        }
+        FAULT_OR_WARN(state, "EXECUTE: 0x%02X is not a Special Purpose Register", decoded_i->rc);
       } else {
         // Write into SPR using its proper mask.
         state->spr[decoded_i->rc] = (state->gpr[decoded_i->ra] & dlx_spr_wmask[decoded_i->rc])
@@ -201,23 +196,13 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
       break;
     case I_MOVS2I_FUNC:
       if(decoded_i->ra >= DLX_SPR_COUNT) {
-        if(state->config->strict_mode) {
-          error("EXECUTE: 0x%02X is not a Special Purpose Register", decoded_i->ra);
-          state->exec_state = DLX_FAULT;
-        } else {
-          warn("EXECUTE: 0x%02X is not a Special Purpose Register", decoded_i->ra);
-        }
+        FAULT_OR_WARN(state, "EXECUTE: 0x%02X is not a Special Purpose Register", decoded_i->ra);
       } else {
         state->gpr[decoded_i->rc] = state->spr[decoded_i->ra];
       }
       break;
     default:
-      if(state->config->strict_mode) {
-        error("EXECUTE: 0x%02X not implemented R type function", decoded_i->func);
-        state->exec_state = DLX_FAULT;
-      } else {
-        warn("EXECUTE: 0x%02X not implemented R type function", decoded_i->func);
-      }
+      FAULT_OR_WARN(state, "EXECUTE: 0x%02X not implemented R type function", decoded_i->func);
     }
     break;
   case I_ADDI:
@@ -377,12 +362,7 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
       error("EXECUTE: INT 0x80 with interrupts disabled; nested traps unsupported");
       state->exec_state = DLX_FAULT;
     } else {
-      if(state->config->strict_mode) {
-        error("EXECUTE: 0x%02X unknown interrupt", decoded_i->imm26);
-        state->exec_state = DLX_FAULT;
-      } else {
-        warn("EXECUTE: 0x%02X unknown interrupt", decoded_i->imm26);
-      }
+      FAULT_OR_WARN(state, "EXECUTE: 0x%02X unknown interrupt", decoded_i->imm26);
     }
     break;
   case I_RFE:
@@ -390,12 +370,7 @@ static void execute(DLX_state *state, decoded_instruction *decoded_i) {
     state->pc = state->spr[DLX_SPR_IAR];
     break;
   default:
-    if(state->config->strict_mode) {
-      error("EXECUTE: 0x%02X not implemented instruction", decoded_i->opcode);
-      state->exec_state = DLX_FAULT;
-    } else {
-      warn("EXECUTE: 0x%02X not implemented instruction", decoded_i->opcode);
-    }
+    FAULT_OR_WARN(state, "EXECUTE: 0x%02X not implemented instruction", decoded_i->opcode);
   }
 
   // R0 is wired to 0
