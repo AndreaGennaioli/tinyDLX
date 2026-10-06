@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
     dlx_seq_step(&state);
     state.cycles++;
 
-    if(state.config->max_cycles != 0 && state.cycles >= state.config->max_cycles) {
+    if(state.exec_state == DLX_RUNNING && state.config->max_cycles != 0 && state.cycles >= state.config->max_cycles) {
       state.exec_state = DLX_TIMEOUT;
       break;
     }
