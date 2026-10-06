@@ -78,6 +78,7 @@ If you prefer jumping straight to the code, the key files for understanding the 
 - `include/`: headers
 - `tools/`: the assembler and the test suite runner
 - `tests/`: assembly test programs and the snapshots the test suite compares them with
+- `lib/`: `.inc` files included into tests and example programs
 - `docs/`: documentation
 
 ## Transparency note about the use of AI
