@@ -44,9 +44,12 @@ OPCODES: dict[str, InstructionInfo] = {
     "SNE": InstructionInfo("R", 0x00, 0x2D),  # SET NOT EQUAL
     "SLE": InstructionInfo("R", 0x00, 0x2E),  # SET LESS EQUAL
     # Special register operations
-    "MOVI2S": InstructionInfo("S", 0x00, 0x30),  # MOVE INTEGER (register) TO SPECIAL (register)
-    "MOVS2I": InstructionInfo("S", 0x00, 0x31),  # MOVE SPECIAL (register) TO INTEGER (register)
-
+    "MOVI2S": InstructionInfo(
+        "S", 0x00, 0x30
+    ),  # MOVE INTEGER (register) TO SPECIAL (register)
+    "MOVS2I": InstructionInfo(
+        "S", 0x00, 0x31
+    ),  # MOVE SPECIAL (register) TO INTEGER (register)
     # ---- J-Type
     # Jumps
     "J": InstructionInfo("J", 0x02),
@@ -54,7 +57,6 @@ OPCODES: dict[str, InstructionInfo] = {
     # Special instructions
     "RFE": InstructionInfo("J", 0x3F),
     "INT": InstructionInfo("J", 0x39),
-
     # ---- I-Type
     # Branch
     "BEQZ": InstructionInfo("I", 0x04),
@@ -104,7 +106,7 @@ def register_to_int(register: str):
     """
     Converts 'R1' -> 1, 'R10' -> 10
     """
-    register_int = int(register.upper().replace('R', ''))
+    register_int = int(register.upper().replace("R", ""))
 
     if register_int < 0 or register_int > 31:
         raise ParseException("Invalid register " + register)
@@ -123,8 +125,9 @@ def spr_to_int(register: str):
     """
     if register.upper() not in SPR_NAMES:
         raise ParseException(
-            f"Invalid special register '{register}'" +
-            f" (accepted names {', '.join(SPR_NAMES)})")
+            f"Invalid special register '{register}'"
+            + f" (accepted names {', '.join(SPR_NAMES)})"
+        )
 
     return SPR_NAMES[register.upper()]
 
@@ -172,8 +175,9 @@ def check_imm(value: int, width: int, maximum: int) -> int:
 
     if value < limits["min"] or value > maximum:
         raise ParseException(
-            f"Value of '{hex(value)}' overflows imm{width}" +
-            f" (accepted range {limits['min']}..{maximum})")
+            f"Value of '{hex(value)}' overflows imm{width}"
+            + f" (accepted range {limits['min']}..{maximum})"
+        )
 
     return value & limits["mask"]
 
@@ -184,8 +188,9 @@ def resolve_imm(token: str, costants: CostantTable, width: int) -> int:
     code. It is taken as a raw bit pattern, so -1 and 0xFFFF describe the same
     16 bit field.
     """
-    return check_imm(get_address_value(token, costants), width,
-                     IMM_LIMITS[width]["mask"])
+    return check_imm(
+        get_address_value(token, costants), width, IMM_LIMITS[width]["mask"]
+    )
 
 
 def resolve_disp(
@@ -197,8 +202,11 @@ def resolve_disp(
     signed_max: the bit patterns above it read back as negative numbers and the
     jump would silently go the other way.
     """
-    return check_imm(get_address_value(token, costants, instr_address), width,
-                     IMM_LIMITS[width]["signed_max"])
+    return check_imm(
+        get_address_value(token, costants, instr_address),
+        width,
+        IMM_LIMITS[width]["signed_max"],
+    )
 
 
 # See the Notation section of docs/architecture/ISA.md
@@ -218,8 +226,12 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
     """
     Assembles the instruction.
     """
-    parts = instr.source_line.text.replace(',', ' ').replace(
-        '(', ' ').replace(')', ' ').split()
+    parts = (
+        instr.source_line.text.replace(",", " ")
+        .replace("(", " ")
+        .replace(")", " ")
+        .split()
+    )
 
     if parts[0].upper() not in OPCODES:
         raise ParseException(parts[0] + " is not a recognised instruction")
@@ -232,11 +244,10 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
         # Syntax    OP rc, ra, rb
         # Encoding  [OP] [RA] [RB] [RC] [unused] [FUNC]
         if len(parts) != 4:
-            raise ParseException(
-                f"wrong arguments count, syntax {mnemonic} rc, ra, rb")
-        rc = register_to_int(parts[1])      # destination
-        ra = register_to_int(parts[2])      # first operand
-        rb = register_to_int(parts[3])      # second operand
+            raise ParseException(f"wrong arguments count, syntax {mnemonic} rc, ra, rb")
+        rc = register_to_int(parts[1])  # destination
+        ra = register_to_int(parts[2])  # first operand
+        rb = register_to_int(parts[3])  # second operand
 
         return encode_r(opcode, ra, rb, rc, op.func)
     elif op.type == "S" and op.func is not None:
@@ -248,15 +259,17 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
         if mnemonic == "MOVI2S":
             if len(parts) != 3:
                 raise ParseException(
-                    f"wrong arguments count, syntax {mnemonic} spr, ra")
-            rc = spr_to_int(parts[1])       # destination
+                    f"wrong arguments count, syntax {mnemonic} spr, ra"
+                )
+            rc = spr_to_int(parts[1])  # destination
             ra = register_to_int(parts[2])  # source
         else:
             if len(parts) != 3:
                 raise ParseException(
-                    f"wrong arguments count, syntax {mnemonic} rc, spr")
+                    f"wrong arguments count, syntax {mnemonic} rc, spr"
+                )
             rc = register_to_int(parts[1])  # destination
-            ra = spr_to_int(parts[2])       # source
+            ra = spr_to_int(parts[2])  # source
 
         return encode_r(opcode, ra, rb, rc, op.func)
     elif op.type == "I":
@@ -268,28 +281,30 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
         if mnemonic in ["BNEZ", "BEQZ"]:
             if len(parts) != 3:
                 raise ParseException(
-                    f"wrong arguments count, syntax {mnemonic} ra, Imm16")
+                    f"wrong arguments count, syntax {mnemonic} ra, Imm16"
+                )
             ra = register_to_int(parts[1])  # tested register
             rb = 0
             imm16 = resolve_disp(parts[2], costants, 16, instr.address)
         elif mnemonic in ["JR", "JALR"]:
             if len(parts) != 2:
-                raise ParseException(
-                    f"wrong arguments count, syntax {mnemonic} ra")
+                raise ParseException(f"wrong arguments count, syntax {mnemonic} ra")
             ra = register_to_int(parts[1])  # target register
             rb = 0
             imm16 = 0
         elif mnemonic == "LHI":
             if len(parts) != 3:
                 raise ParseException(
-                    f"wrong arguments count, syntax {mnemonic} ra, Imm16")
+                    f"wrong arguments count, syntax {mnemonic} ra, Imm16"
+                )
             ra = 0
             rb = register_to_int(parts[1])  # destination
             imm16 = resolve_imm(parts[2], costants, 16)
         else:
             if len(parts) != 4:
                 raise ParseException(
-                    f"wrong arguments count, syntax {mnemonic} rb, ra, Imm16")
+                    f"wrong arguments count, syntax {mnemonic} rb, ra, Imm16"
+                )
             rb = register_to_int(parts[1])  # destination
             ra = register_to_int(parts[2])  # source
             imm16 = resolve_imm(parts[3], costants, 16)
@@ -301,10 +316,11 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
         # Encoding  [OP] [RA] [RB] [Imm16]
         if len(parts) != 4:
             raise ParseException(
-                f"wrong arguments count, syntax {mnemonic} rb, Imm16(ra)")
-        rb = register_to_int(parts[1])      # loaded / stored register
+                f"wrong arguments count, syntax {mnemonic} rb, Imm16(ra)"
+            )
+        rb = register_to_int(parts[1])  # loaded / stored register
         imm16 = resolve_imm(parts[2], costants, 16)
-        ra = register_to_int(parts[3])      # base address register
+        ra = register_to_int(parts[3])  # base address register
 
         return encode_i(opcode, ra, rb, imm16)
     elif op.type == "J":
@@ -312,19 +328,16 @@ def assemble_instr(instr: Instruction, costants: CostantTable) -> int:
         # Encoding  [OP] [Imm26]
         if mnemonic in ["RFE"]:
             if len(parts) != 1:
-                raise ParseException(
-                    f"wrong arguments count, syntax {mnemonic}")
+                raise ParseException(f"wrong arguments count, syntax {mnemonic}")
             imm26 = 0
         elif mnemonic in ["INT"]:
             if len(parts) != 2:
-                raise ParseException(
-                    f"wrong arguments count, syntax {mnemonic} Imm26")
+                raise ParseException(f"wrong arguments count, syntax {mnemonic} Imm26")
             # An interrupt code, not an address: never PC relative
             imm26 = resolve_imm(parts[1], costants, 26)
         else:
             if len(parts) != 2:
-                raise ParseException(
-                    f"wrong arguments count, syntax {mnemonic} Imm26")
+                raise ParseException(f"wrong arguments count, syntax {mnemonic} Imm26")
             imm26 = resolve_disp(parts[1], costants, 26, instr.address)
 
         return encode_j(opcode, imm26)
@@ -337,24 +350,27 @@ def parse(lines: list[SourceLine]):
     costants: CostantTable = {}
     i_address = 0
 
-    for (line, file_path, line_num) in lines:
-        parts = line.split(':', 1)
+    for line, file_path, line_num in lines:
+        parts = line.split(":", 1)
         if len(parts) > 1:
             costant_name = parts[0]
 
             if not costant_name:
                 raise ParseException(
-                    f"Costant name cannot be blank at line {line_num} of {file_path}")
-            if ' ' in costant_name:
+                    f"Costant name cannot be blank at line {line_num} of {file_path}"
+                )
+            if " " in costant_name:
                 raise ParseException(
-                    f"Costant name cannot include spaces at line {line_num} of {file_path}")
+                    f"Costant name cannot include spaces at line {line_num} of {file_path}"
+                )
 
             costant_name = parts[0].upper()
 
             if costant_name in costants:
                 raise ParseException(
-                    f"Costant {costant_name} declared more than one time" +
-                    f" at line {line_num} of {file_path}")
+                    f"Costant {costant_name} declared more than one time"
+                    + f" at line {line_num} of {file_path}"
+                )
 
             costants[costant_name] = i_address
 
@@ -367,26 +383,33 @@ def parse(lines: list[SourceLine]):
         if parts[0] == ".equ":
             if len(parts) != 3:
                 raise ParseException(
-                    ".equ requires a costant name and a value" +
-                    f" (syntax .equ NAME VALUE) at line {line_num} of {file_path}")
+                    ".equ requires a costant name and a value"
+                    + f" (syntax .equ NAME VALUE) at line {line_num} of {file_path}"
+                )
 
             costant_name = parts[1].upper()
             if costant_name in costants:
                 raise ParseException(
-                    f"Costant {costant_name} declared more than one time" +
-                    f" at line {line_num} of {file_path}")
+                    f"Costant {costant_name} declared more than one time"
+                    + f" at line {line_num} of {file_path}"
+                )
 
             try:
                 costants[costant_name] = int(parts[2], 0)
             except ValueError:
                 raise ParseException(
-                    f"Invalid value '{parts[2]}' for costant {costant_name}" +
-                    f" at line {line_num} of {file_path}")
+                    f"Invalid value '{parts[2]}' for costant {costant_name}"
+                    + f" at line {line_num} of {file_path}"
+                )
             continue
 
         instructions.append(
-            Instruction(source_line=SourceLine(text=line, file_path=file_path,
-                        line_num=line_num), address=i_address)
+            Instruction(
+                source_line=SourceLine(
+                    text=line, file_path=file_path, line_num=line_num
+                ),
+                address=i_address,
+            )
         )
         i_address += 4
 
@@ -401,13 +424,13 @@ def open_file(path: str, included_files: set[str]) -> list[SourceLine]:
     included_files.add(realpath)
 
     lines = []
-    with open(path, 'r') as f:
+    with open(path, "r") as f:
         lines = f.readlines()
 
     clean_lines: list[SourceLine] = []
     # Remove comments and blank lines
     for line_num, line in enumerate(lines, 1):
-        clean_line = line.split(';')[0].strip()
+        clean_line = line.split(";")[0].strip()
         if not clean_line:
             continue
 
@@ -418,17 +441,19 @@ def open_file(path: str, included_files: set[str]) -> list[SourceLine]:
 
             if len(arg) < 3 or arg[0] != '"' or arg[-1] != '"':
                 raise ParseException(
-                    ".include requires the path to the file to" +
-                    f" include (syntax .include \"PATH\") at line {line_num}" +
-                    f" of {path}")
+                    ".include requires the path to the file to"
+                    + f' include (syntax .include "PATH") at line {line_num}'
+                    + f" of {path}"
+                )
             # Include the file
             include_path = os.path.join(os.path.dirname(path), arg[1:-1])
             try:
                 clean_lines += open_file(include_path, included_files)
             except OSError as e:
                 raise ParseException(
-                    f"Cannot include {include_path} ({e.strerror})" +
-                    f" at line {line_num} of {path}")
+                    f"Cannot include {include_path} ({e.strerror})"
+                    + f" at line {line_num} of {path}"
+                )
         else:
             clean_lines.append(
                 SourceLine(text=clean_line, file_path=path, line_num=line_num)
@@ -459,25 +484,29 @@ def main():
         print(f"ASSEMBLER ERROR: {e}")
         exit(1)
 
-    with open(sys.argv[2], 'wb') as f:
+    with open(sys.argv[2], "wb") as f:
         for instr in instructions:
             try:
                 val = assemble_instr(instr, costants)
             except ParseException as e:
-                print(f"ASSEMBLER ERROR in {instr.source_line.file_path}" +
-                      f" at line {instr.source_line.line_num}:")
+                print(
+                    f"ASSEMBLER ERROR in {instr.source_line.file_path}"
+                    + f" at line {instr.source_line.line_num}:"
+                )
                 print(f"    {instr.source_line.text}")
                 print(f"    -> {e}")
                 exit(1)
             except Exception as e:
-                print(f"CRITICAL ERROR in {instr.source_line.file_path}" +
-                      f" at line {instr.source_line.line_num}:")
+                print(
+                    f"CRITICAL ERROR in {instr.source_line.file_path}"
+                    + f" at line {instr.source_line.line_num}:"
+                )
                 print(f"    {instr.source_line.text}")
                 print(f"    -> {e}")
                 exit(1)
-            packed_bytes = struct.pack('>I', val)
+            packed_bytes = struct.pack(">I", val)
             f.write(packed_bytes)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
