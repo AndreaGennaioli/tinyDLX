@@ -473,16 +473,16 @@ def main():
         input_lines = open_file(sys.argv[1], included_files)
     except OSError as e:
         print(f"ASSEMBLER ERROR: cannot open {sys.argv[1]} ({e.strerror})")
-        exit(1)
+        sys.exit(1)
     except ParseException as e:
         print(f"ASSEMBLER ERROR: {e}")
-        exit(1)
+        sys.exit(1)
 
     try:
         instructions, costants = parse(input_lines)
     except ParseException as e:
         print(f"ASSEMBLER ERROR: {e}")
-        exit(1)
+        sys.exit(1)
 
     with open(sys.argv[2], "wb") as f:
         for instr in instructions:
@@ -495,7 +495,7 @@ def main():
                 )
                 print(f"    {instr.source_line.text}")
                 print(f"    -> {e}")
-                exit(1)
+                sys.exit(1)
             except Exception as e:
                 print(
                     f"CRITICAL ERROR in {instr.source_line.file_path}"
@@ -503,7 +503,7 @@ def main():
                 )
                 print(f"    {instr.source_line.text}")
                 print(f"    -> {e}")
-                exit(1)
+                sys.exit(1)
             packed_bytes = struct.pack(">I", val)
             f.write(packed_bytes)
 
