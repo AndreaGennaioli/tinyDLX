@@ -478,6 +478,10 @@ def main():
         print(f"ASSEMBLER ERROR: {e}")
         sys.exit(1)
 
+    if os.path.realpath(sys.argv[2]) in included_files:
+        print(f"ASSEMBLER ERROR: output file {sys.argv[2]} is also an input file")
+        sys.exit(1)
+
     try:
         instructions, costants = parse(input_lines)
     except ParseException as e:
